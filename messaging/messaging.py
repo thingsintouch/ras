@@ -21,7 +21,7 @@ class SubscriberMultipart():
         topic_bytes, message_bytes = self.socket.recv_multipart() # this call is blocking
         topic = topic_bytes.decode('utf-8')
         message = pickle.loads(message_bytes)
-        loggerDEBUG(f"received TOPIC: {topic}, MESSAGE: {message}")
+        # loggerDEBUG(f"received TOPIC: {topic}, MESSAGE: {message}")
         return topic, message
 
 class PublisherMultipart():
@@ -32,7 +32,7 @@ class PublisherMultipart():
         self.port=port
 
     def publish(self, topic, message):
-        loggerDEBUG(f"published TOPIC: {topic}, MESSAGE: {message}")
+        # loggerDEBUG(f"published TOPIC: {topic}, MESSAGE: {message}")
         topic_bytes = str(topic).encode('utf-8')
         message_bytes = pickle.dumps(message)
         self.socket.send_multipart([topic_bytes, message_bytes])
