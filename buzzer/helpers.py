@@ -9,5 +9,5 @@ sound["card_registered"] = "cardswiped" # "odoo_async"
 sound["too_little_time_between_clockings"] = "FALSE"
 
 def buzz(msg):
-  loggerDEBUG(f"playing {msg}")
+  #loggerDEBUG(f"playing {msg}")
   buzzer.Play(sound[msg])

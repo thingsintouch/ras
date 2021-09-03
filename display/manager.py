@@ -49,7 +49,7 @@ def main():
             # , load = \
             #     message.split()
             text = f"new message on display: \n {message}"
-            loggerDEBUG(text)           
+            #loggerDEBUG(text)           
             oled.three_lines_text(message)
             time.sleep(get_display_time())
 

@@ -13,10 +13,10 @@ class PasBuz:
     def __init__(self, pins):
         self.PinBuz = pins[0]  # signal Pin
         self.PinPower = pins[1]
-        loggerDEBUG("PasBuz Class Initialized")
+        #loggerDEBUG("PasBuz Class Initialized")
 
     def Play(self, msg):
-        loggerDEBUG(f"Playing PasBuz: {msg}")
+        #loggerDEBUG(f"Playing PasBuz: {msg}")
         self.InitBuz()
         try:
             data = dic[msg]
