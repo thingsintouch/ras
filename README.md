@@ -1,7 +1,7 @@
 RFID Attendance System
 ======================
 
-This repository is used to generate the python code that runs Eficent's RFID
-Attendance System.
+Firmware that runs thingsintouch RFID
+Attendance System Terminals.
 
-[[more info](https://www.eficent.com/product)]
+[[more info](https://www.thingsintouch.com)]
