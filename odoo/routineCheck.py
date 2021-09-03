@@ -44,8 +44,8 @@ def firmwareUpdateAndReboot():
         display_off()
         time.sleep(1)
         os.system("sudo reboot")
-		time.sleep(60)
-		sys,exit(0)     
+        time.sleep(60)
+        sys,exit(0)     
     else:
         loggerINFO("Firmware Update not possible: GitHub is down")        
 
