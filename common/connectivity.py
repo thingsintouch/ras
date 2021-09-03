@@ -32,6 +32,8 @@ def internetReachable():
 def isOdooPortOpen():
     try:
         odooHost = params.get("odoo_host")
+        odooPort =  params.get("odoo_port")
+        if odooHost is None or odooPort is None: return False
         odooPort =  int(params.get("odoo_port"))
         odoo_port_open = isIpPortOpen((odooHost, odooPort))
     except Exception as e:
