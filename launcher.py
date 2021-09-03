@@ -26,15 +26,13 @@ from launcherHelper import store_factory_settings_in_database
 import lib.Utils as ut
 
 loggerINFO("###################### RAS launched ###################")
-loggerINFO(f'running on python version: {sys.version}')
+# loggerINFO(f'running on python version: {sys.version}')
 
 params = Params(db=co.PARAMS)
 
 params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
 
 store_factory_settings_in_database() 
-
-
 
 managed_essential_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
     "thermal_d": "thermal.manager",

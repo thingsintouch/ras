@@ -7,7 +7,6 @@ import common.constants as co
 import common.common as cc
 import lib.Utils as ut
 import common.logger as lo
-#from launcherHelper import copyDeviceCustomizationJson
 from common.constants import PARAMS
 from common.params import Params, Log
 from common.keys import TxType
@@ -38,7 +37,9 @@ def getPayload(settings_to_send):
 
 def acknowledgeTerminalInOdoo():
     terminal_ID_in_Odoo     = False
-    params = Params(db=PARAMS)
+    #params = Params(db=PARAMS)
+    if params.get("odooUrlTemplate") is None: return False
+
     try:
         requestURL  = params.get("odooUrlTemplate") + co.ROUTE_ACK_GATE
         headers     = {'Content-Type': 'application/json'}

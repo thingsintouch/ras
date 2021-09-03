@@ -490,7 +490,8 @@ class Oled():
 
         def update_time_related_variables():
             updateTZifNecessary()
-            if "24" in params.get("time_format"):
+            time_format = params.get("time_format")
+            if time_format == "24 hour":
                 self.hour = time.strftime("%H:%M", time.localtime())
                 num_ones = self.hour.count("1")
                 if num_ones < 3:

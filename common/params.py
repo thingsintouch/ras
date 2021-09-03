@@ -440,7 +440,7 @@ class Log():
   def set_index(self, i):
     self.index = i
     write_db(self.db, "index", str(i))
-    print(f"set index: {i}")
+    #print(f"set index: {i}")
 
   def clear_all(self):
     shutil.rmtree(self.db, ignore_errors=True)

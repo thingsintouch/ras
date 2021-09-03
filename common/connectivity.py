@@ -35,7 +35,7 @@ def isOdooPortOpen():
         odooPort =  int(params.get("odoo_port"))
         odoo_port_open = isIpPortOpen((odooHost, odooPort))
     except Exception as e:
-        loggerERROR(f"common.connectivity - exception in method isOdooPortOpen: {e}")
+        loggerDEBUG(f"common.connectivity - exception in method isOdooPortOpen: {e}")
         odoo_port_open = False
     params.put("odooPortOpen", odoo_port_open)
     return odoo_port_open
