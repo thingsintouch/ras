@@ -518,7 +518,8 @@ class Oled():
                     self.x= x_hour+2
 
         def display_hours_and_minutes(draw):
-            if "24" in params.get("time_format"):
+            time_format = params.get("time_format")
+            if time_format == "24 hour":
                 self.draw_text_not_centered(draw, [self.x, 10], fontClockTime_12hour, self.hour)
             else:
                 self.draw_text_not_centered(draw, [self.x, 10], fontClockTime_12hour, self.hour)
