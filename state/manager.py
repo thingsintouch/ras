@@ -19,8 +19,10 @@ def main():
 
     while True:
         if params.get("odooConnectedAtLeastOnce") == "0":
+            loggerDEBUG(f" checking if Odoo is reachable - first time ever (setting-up)")
             isRemoteOdooControlAvailable()
         elif params.get("acknowledged") == "0":
+            loggerDEBUG(f" checking if the terminal is acknowlegeable by Odoo - once after every launch")
             acknowledgeTerminalInOdoo()
 
         internet_reachable  = internetReachable()
