@@ -45,8 +45,8 @@ def acknowledgeTerminalInOdoo():
         headers     = {'Content-Type': 'application/json'}
         list_of_all_keys = params.get_list_of_all_keys()
         list_on_ack_from_odoo = params.get_list_of_keys_with_type(TxType.ON_ACK_FROM_ODOO)
-        print("ww"*80)
-        cc.pPrint(list_on_ack_from_odoo)
+        #print("ww"*80)
+        #cc.pPrint(list_on_ack_from_odoo)
         payload     = getPayload(list_of_all_keys)
 
         response    = requests.post(url=requestURL, json=payload, headers=headers)
@@ -58,10 +58,10 @@ def acknowledgeTerminalInOdoo():
             params.put("odooConnectedAtLeastOnce", "0")
             params.put("RASxxx", "RASxxx")
         else:
-            loggerDEBUG("Printing Entire Post Response")
-            cc.pPrint(response.json())
-            loggerDEBUG("Printing list_on_ack_from_odoo")
-            cc.pPrint(list_on_ack_from_odoo)
+            #loggerDEBUG("Printing Entire Post Response")
+            #cc.pPrint(response.json())
+            #loggerDEBUG("Printing list_on_ack_from_odoo")
+            #cc.pPrint(list_on_ack_from_odoo)
             answer = response.json().get("result", None)
             if answer:
                 error = answer.get("error", None)

@@ -84,6 +84,7 @@ def store_factory_settings_in_database():
     params = Params(db=co.PARAMS)
     for k in keys_by_Type[TxType.FACTORY_SETTINGS]:
         try:
-            params.put(k, factory_settings[k])
+            if params.get(k, None) is None:
+                params.put(k, factory_settings[k])
         except Exception as e:
             loggerERROR(f"exception while storing factory setting {k}: {e}")
