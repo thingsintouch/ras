@@ -43,7 +43,8 @@ def runShellCommand_and_returnOutput(command):
 
 def setTimeZone():
     try: 
-        timezone = params.get("tz", encoding='utf-8')
+        timezone = params.get("tz")
+        print(timezone)
         os.environ["TZ"] = timezone
         time.tzset()
         loggerINFO(f"Timezone: {timezone} - was set using tz database")
