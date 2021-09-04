@@ -103,6 +103,7 @@ def isRemoteOdooControlAvailable():
     version_things_module_in_Odoo = None
     try:
         template    = params.get("odooUrlTemplate")
+        loggerDEBUG(f"in isRemoteOdooControlAvailable() - odooUrlTemplate: {template}")
         requestURL  = template + co.ROUTE_ASK_VERSION_IN_ODOO
         headers     = {'Content-Type': 'application/json'}
 
