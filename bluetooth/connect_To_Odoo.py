@@ -20,7 +20,7 @@ def main(odooAddress):
     if odooAddressOK:
         text = f"CONNECTED\nWITH ODOO\n{odooAddress}"
         odooAdressSplitted = odooAddress.split(":")
-        length = odooAdressSplitted.len()
+        length = len(odooAdressSplitted)
         if length == 1:
             params.put("odoo_host", odooAdressSplitted[0])
             params.put("odoo_port", "443")
