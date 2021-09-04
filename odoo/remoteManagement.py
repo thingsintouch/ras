@@ -38,9 +38,11 @@ def getPayload(settings_to_send):
 def acknowledgeTerminalInOdoo():
     terminal_ID_in_Odoo     = False
     #params = Params(db=PARAMS)
-    if params.get("odooUrlTemplate") is None: return False
+    template = params.get("odooUrlTemplate")
+    if template is None: return False
 
     try:
+        loggerDEBUG(f"params.get(odooUrlTemplate) {template} . co.ROUTE_ACK_GATE {co.ROUTE_ACK_GATE} ")
         requestURL  = params.get("odooUrlTemplate") + co.ROUTE_ACK_GATE
         headers     = {'Content-Type': 'application/json'}
         list_of_all_keys = params.get_list_of_all_keys()
@@ -126,9 +128,9 @@ def isRemoteOdooControlAvailable():
         else:
             loggerINFO(f"Remote Odoo Control not Available - Answer from Odoo did not contain an answer")
     except ConnectionRefusedError as e:
-        loggerERROR(f"Remote Odoo Control not Available - ConnectionRefusedError - Request Exception : {e}")
+        loggerDEBUG(f"Remote Odoo Control not Available - ConnectionRefusedError - Request Exception : {e}")
     except Exception as e:
-        loggerERROR(f"Remote Odoo Control not Available - Exception: {e}")
+        loggerDEBUG(f"Remote Odoo Control not Available - Exception: {e}")
     
     return False
 
