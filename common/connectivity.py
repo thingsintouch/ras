@@ -29,12 +29,32 @@ def internetReachable():
     params.put("internetReachable", internet_reachable)
     return internet_reachable
 
+def extract_odoo_host_and_port():
+    odooAddress = params.get("odooUrlTemplate")
+    if odooAddress is not None:
+        odooAdressSplitted = odooAddress.split(":")
+        length = len(odooAdressSplitted)
+        if length == 1:
+            params.put("odoo_host", odooAdressSplitted[0])
+            params.put("odoo_port", "443")
+        if length == 2:
+            params.put("odoo_host", odooAdressSplitted[0])
+            params.put("odoo_port", odooAdressSplitted[1])
+        if length == 3:
+            params.put("odoo_host", odooAdressSplitted[0]+":"+odooAdressSplitted[1])
+            params.put("odoo_port", odooAdressSplitted[2])
+        odooHost = params.get("odoo_host")
+        odooPort = params.get("odoo_port")
+        loggerDEBUG(f"odoo_host {odooHost}- odoo_port {odooPort}")
+
 def isOdooPortOpen():
     try:
         odooHost = params.get("odoo_host")
-        odooPort =  params.get("odoo_port")
-        loggerDEBUG(f"odoo_host {odoo_host}- odoo_port {odoo_port}")
-        if odooHost is None or odooPort is None: return False
+        odooPort = params.get("odoo_port")
+        loggerDEBUG(f"odoo_host {odooHost}- odoo_port {odooPort}")
+        if odooHost is None or odooPort is None:
+            extract_odoo_host_and_port()
+            return False
         odooPort =  int(odooPort)
         odoo_port_open = isIpPortOpen((odooHost, odooPort))
     except Exception as e:
