@@ -39,10 +39,17 @@ def extract_odoo_host_and_port():
             params.put("odoo_host", odooAdressSplitted[0])
             params.put("odoo_port", "443")
         if length == 2:
-            params.put("odoo_host", odooAdressSplitted[0])
-            params.put("odoo_port", odooAdressSplitted[1])
+            zero = odooAdressSplitted[0]
+            one = odooAdressSplitted[1]
+            if zero == "https":
+                params.put("odoo_host", one)
+                params.put("odoo_port","443")
+            else:
+                params.put("odoo_host", zero)
+                params.put("odoo_port", one)
         if length == 3:
-            params.put("odoo_host", odooAdressSplitted[0]+":"+odooAdressSplitted[1])
+            odoo_host = odooAdressSplitted[1].replace('/','')
+            params.put("odoo_host", odoo_host)
             params.put("odoo_port", odooAdressSplitted[2])
         odooHost = params.get("odoo_host")
         odooPort = params.get("odoo_port")
