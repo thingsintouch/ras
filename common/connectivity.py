@@ -34,6 +34,7 @@ def extract_odoo_host_and_port():
     if odooAddress is not None:
         odooAdressSplitted = odooAddress.split(":")
         length = len(odooAdressSplitted)
+        loggerDEBUG(f"odooAdressSplitted {odooAdressSplitted} - length {length}")
         if length == 1:
             params.put("odoo_host", odooAdressSplitted[0])
             params.put("odoo_port", "443")
