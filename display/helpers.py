@@ -425,7 +425,7 @@ class Oled():
         self.displayClock = "yes"
         self.store_status_of_now()
         self.tz = params.get("tz")
-        cc.setTimeZone()
+        # cc.setTimeZone() # timezone is set at the beginning of ~/ras/launcher.py
         try:
             self.device_display = sh1106(
                 serial_interface = i2c(port=1, address='0x3C'),
