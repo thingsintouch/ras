@@ -20,6 +20,7 @@ from common.params import Params
 from common.launcher import launcher
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from messaging.messaging import SubscriberMultipart as Subscriber
+from common.common import setTimeZone
 
 from launcherHelper import store_factory_settings_in_database
 
@@ -31,8 +32,8 @@ loggerINFO("###################### RAS launched ###################")
 params = Params(db=co.PARAMS)
 
 params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
-
-store_factory_settings_in_database() 
+store_factory_settings_in_database()
+setTimeZone()
 
 managed_essential_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
     "thermal_d": "thermal.manager",
