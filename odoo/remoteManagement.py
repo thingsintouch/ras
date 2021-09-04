@@ -106,6 +106,9 @@ def isRemoteOdooControlAvailable():
     try:
         template    = params.get("odooUrlTemplate")
         loggerDEBUG(f"in isRemoteOdooControlAvailable() - odooUrlTemplate: {template}")
+
+        if template is None: return False
+
         requestURL  = template + co.ROUTE_ASK_VERSION_IN_ODOO
         headers     = {'Content-Type': 'application/json'}
 
