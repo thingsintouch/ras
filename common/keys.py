@@ -34,7 +34,11 @@ keys_by_Type[TxType.FACTORY_SETTINGS] = [
     "tz",
     "odooUrlTemplate",
     "odoo_host",
-    "odoo_port"
+    "odoo_port",
+    "hardware_machine",
+    "hardware_card_reader",
+    "hardware_display",
+    "harware_sound",
   ]
 
 keys_by_Type[TxType.ON_DEVICE_SETUP] = [

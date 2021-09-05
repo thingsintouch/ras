@@ -98,11 +98,12 @@ def store_factory_settings_in_database():
             loggerERROR(f"exception while storing factory setting {k}: {e}")
 
 def set_bluetooth_device_name():
-    RASxxx = params.get('RASxxx')
-    if RASxxx is None or RASxxx == "not defined":
-        bluetooth_device_name = "RAS - thingsintouch.com"
-    else:
-        bluetooth_device_name = RASxxx
+    # RASxxx = params.get('RASxxx')
+    # if RASxxx is None or RASxxx == "not defined":
+    #     bluetooth_device_name = "RAS - thingsintouch.com"
+    # else:
+    #     bluetooth_device_name = RASxxx
+    bluetooth_device_name = "RAS - thingsintouch.com" # have to change ionic app
     params.put("bluetooth_device_name", bluetooth_device_name)
 
 
