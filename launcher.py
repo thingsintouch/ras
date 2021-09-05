@@ -31,6 +31,7 @@ store_factory_settings_in_database()
 setTimeZone()
 store_hashed_machine_id()
 set_bluetooth_device_name()
+params.put("firmwareVersion","2.1")
 
 managed_essential_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
     "thermal_d": "thermal.manager",
