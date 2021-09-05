@@ -532,6 +532,7 @@ class Oled():
             self.odooReachabilityMessage = getOdooReachabilityMessage()
             update_time_related_variables()
             if self.somethingChanged():
+                loggerINFO(f"self.hour {self.hour}")
                 self.device_display.command(self.device_display._const.INVERTDISPLAY)
                 with canvas(self.device_display) as draw:
                     display_hours_and_minutes(draw)
