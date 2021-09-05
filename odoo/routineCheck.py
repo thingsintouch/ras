@@ -113,7 +113,7 @@ def routineCheck():
         if error:
             loggerDEBUG(f"Routine Check not Available - error in answer from Odoo: {error}")
         else:
-            loggerDEBUG(f"Routine Check done - no error") 
+            loggerDEBUG(f"Routine Check done - no error - {answer}") 
             params.put("isRemoteOdooControlAvailable", True)
             saveChangesToParams(answer)
             if params.get("shouldGetFirmwareUpdate") == "1":
