@@ -43,7 +43,8 @@ keys_by_Type[TxType.ON_DEVICE_SETUP] = [
     "odoo_port",
     "odooConnectedAtLeastOnce",
     "odooUrlTemplate",
-    "hasCompletedSetup"
+    "hasCompletedSetup",
+    "bluetooth_device_name"
   ]
 
 keys_by_Type[TxType.ON_ACK_FROM_ODOO] = [
