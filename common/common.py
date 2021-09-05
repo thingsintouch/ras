@@ -97,6 +97,15 @@ def store_factory_settings_in_database():
         except Exception as e:
             loggerERROR(f"exception while storing factory setting {k}: {e}")
 
+def set_bluetooth_device_name():
+    RASxxx = params.get('RASxxx')
+    if RASxxx is None or RASxxx == "not defined":
+        bluetooth_device_name = "RAS - thingsintouch.com"
+    else:
+        bluetooth_device_name = RASxxx
+    params.put("bluetooth_device_name", bluetooth_device_name)
+
+
 def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex for ports
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:

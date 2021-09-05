@@ -34,7 +34,7 @@ def extract_odoo_host_and_port():
     if odooAddress is not None:
         odooAdressSplitted = odooAddress.split(":")
         length = len(odooAdressSplitted)
-        loggerDEBUG(f"odooAdressSplitted {odooAdressSplitted} - length {length}")
+        loggerINFO(f"odooAdressSplitted {odooAdressSplitted} - length {length}")
         if length == 1:
             params.put("odoo_host", odooAdressSplitted[0])
             params.put("odoo_port", "443")
@@ -53,13 +53,13 @@ def extract_odoo_host_and_port():
             params.put("odoo_port", odooAdressSplitted[2])
         odooHost = params.get("odoo_host")
         odooPort = params.get("odoo_port")
-        loggerDEBUG(f"odoo_host {odooHost}- odoo_port {odooPort}")
+        loggerINFO(f"odoo_host {odooHost}- odoo_port {odooPort}")
 
 def isOdooPortOpen():
     try:
         odooHost = params.get("odoo_host")
         odooPort = params.get("odoo_port")
-        loggerDEBUG(f"odoo_host {odooHost}- odoo_port {odooPort}")
+        #loggerDEBUG(f"odoo_host {odooHost}- odoo_port {odooPort}")
         if odooHost is None or odooPort is None:
             extract_odoo_host_and_port()
             return False

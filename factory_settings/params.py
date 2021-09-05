@@ -11,6 +11,5 @@ factory_settings = {
     "ordered_by"          : "to be defined",
     "invoice_nr"          : "to be defined",
     "RAS_hostname"        : "01",
-    "bluetooth_device_name": "RAS - thingsintouch.com",
     "tz"                   : "Europe/Berlin"
 }

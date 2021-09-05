@@ -31,7 +31,6 @@ keys_by_Type[TxType.FACTORY_SETTINGS] = [
     "ordered_by",
     "invoice_nr",
     "RAS_hostname",
-    "bluetooth_device_name",
     "tz",
     "odooUrlTemplate",
     "odoo_host",
