@@ -15,6 +15,9 @@ import lib.Utils as ut
 from dicts import tz_dic
 from common.params import Params
 import common.constants as co
+from common.keys import keys_by_Type, TxType
+from factory_settings.params import factory_settings
+
 
 params = Params(db=co.PARAMS)
 
@@ -79,6 +82,20 @@ def getHashedMachineId():
         ).hexdigest()
 
     return hashed_machine_id
+
+def store_hashed_machine_id():
+    hashed_machine_id = getHashedMachineId()
+    params.put('hashed_machine_id', hashed_machine_id)
+
+def store_factory_settings_in_database():
+    params = Params(db=co.PARAMS)
+    for k in keys_by_Type[TxType.FACTORY_SETTINGS]:
+        try:
+            loggerDEBUG(f"key: {k} - params get k {params.get(k)}")
+            if params.get(k) is None:
+                params.put(k, factory_settings[k])
+        except Exception as e:
+            loggerERROR(f"exception while storing factory setting {k}: {e}")
 
 def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex for ports
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -66,9 +66,12 @@ def main():
             # loggerDEBUG(f"card {card} - params.keys {params.keys}")
             if card in os.listdir(co.PARAMS+'/d'):
                 full_name = read_db(co.PARAMS, card).decode('utf-8')
-                two_lines_name = full_name.replace(" ", "\n", 1)
+                if " " in full_name:
+                    two_lines_name = full_name.replace(" ", "\n", 1)
+                else:
+                    two_lines_name = "\n" + full_name
             else:
-                two_lines_name = "no\nName"
+                two_lines_name = "NOT\nDEFINED"
 
             if enough_time_between_clockings():
                 how_to_handle_the_clocking = "card_registered"

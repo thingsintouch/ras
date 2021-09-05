@@ -27,7 +27,6 @@ keys_by_Type[TxType.FACTORY_SETTINGS] = [
     "productionNumber"  ,
     "qualityInspector"  , 
     "SSIDreset"         ,
-    "hashed_machine_id",
     "setup_password",
     "ordered_by",
     "invoice_nr",
@@ -65,7 +64,8 @@ keys_by_Type[TxType.ON_ACK_FROM_DEVICE] = [
     "firmwareVersion",
     "lastFirmwareUpdateTime",
     "lastTimeTerminalStarted",
-    "updateFailedCount"
+    "updateFailedCount",
+    "hashed_machine_id",
   ]
 
 keys_by_Type.update({

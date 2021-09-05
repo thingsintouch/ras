@@ -1,7 +1,4 @@
 #! /usr/bin/python3.7
-# import launcherHelper as lh
-
-# lh.ensureMigrationsAndSettings()
 
 import os, sys, time 
 import importlib
@@ -20,9 +17,7 @@ from common.params import Params
 from common.launcher import launcher
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from messaging.messaging import SubscriberMultipart as Subscriber
-from common.common import setTimeZone
-
-from launcherHelper import store_factory_settings_in_database
+from common.common import setTimeZone, store_hashed_machine_id, store_factory_settings_in_database
 
 import lib.Utils as ut
 
@@ -34,6 +29,7 @@ params = Params(db=co.PARAMS)
 params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
 store_factory_settings_in_database()
 setTimeZone()
+store_hashed_machine_id()
 
 managed_essential_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
     "thermal_d": "thermal.manager",
