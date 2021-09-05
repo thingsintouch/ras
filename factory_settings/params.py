@@ -11,9 +11,9 @@ factory_settings = {
     "ordered_by"          : "to be defined",
     "invoice_nr"          : "to be defined",
     "RAS_hostname"        : "01",
-    "tz"                   : "Europe/Berlin"
-    "hardware_machine": "RPi Zero W",
+    "tz"                  : "Europe/Berlin",
+    "hardware_machine"    : "RPi Zero W",
     "hardware_card_reader": "MFRC522",
-    "hardware_display": "oled sh1106",
-    "harware_sound": "passive buzzer",
+    "hardware_display"    : "oled sh1106",
+    "harware_sound"       : "passive buzzer",
 }
