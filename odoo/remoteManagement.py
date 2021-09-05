@@ -41,6 +41,8 @@ def acknowledgeTerminalInOdoo():
     template = params.get("odooUrlTemplate")
     if template is None: return False
 
+    params.put("ownIpAddress", cc.get_own_IP_address())
+
     try:
         loggerDEBUG(f"params.get(odooUrlTemplate) {template} . co.ROUTE_ACK_GATE {co.ROUTE_ACK_GATE} ")
         requestURL  = params.get("odooUrlTemplate") + co.ROUTE_ACK_GATE

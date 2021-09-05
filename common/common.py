@@ -106,6 +106,16 @@ def set_bluetooth_device_name():
     bluetooth_device_name = "RAS - thingsintouch.com" # have to change ionic app
     params.put("bluetooth_device_name", bluetooth_device_name)
 
+def get_own_IP_address():
+    st = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:       
+        st.connect(('10.255.255.255', 1))
+        IP = st.getsockname()[0]
+    except Exception:
+        IP = '127.0.0.1'
+    finally:
+        st.close()
+    return IP
 
 def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex for ports
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

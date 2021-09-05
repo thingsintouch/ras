@@ -21,14 +21,15 @@ from common.common import setTimeZone, store_hashed_machine_id, store_factory_se
 
 import lib.Utils as ut
 
-loggerINFO("###################### RAS launched ###################")
-# loggerINFO(f'running on python version: {sys.version}')
-
 params = Params(db=co.PARAMS)
 
 params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
 store_factory_settings_in_database()
 setTimeZone()
+
+loggerINFO("###################### RAS launched ###################")
+# loggerINFO(f'running on python version: {sys.version}')
+
 store_hashed_machine_id()
 set_bluetooth_device_name()
 params.put("firmwareVersion","2.1")

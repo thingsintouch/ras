@@ -393,23 +393,12 @@ def multiline_text_lu(
         left = xy[0]
 
 
-def get_own_IP_address():
-    st = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:       
-        st.connect(('10.255.255.255', 1))
-        IP = st.getsockname()[0]
-    except Exception:
-        IP = '127.0.0.1'
-    finally:
-        st.close()
-    return IP
-
 def getInternetQualityMessage():
     try:
         if params.get("internetReachable") == "1":
-            ownIpAddress = params.get("ownIpAddress")
-            if ownIpAddress is None or ownIpAddress == "0":
-                params.put("ownIpAddress", get_own_IP_address())
+            # ownIpAddress = params.get("ownIpAddress")
+            # if ownIpAddress is None or ownIpAddress == "0":
+            #     params.put("ownIpAddress", get_own_IP_address())
             return "Internet"
     except Exception as e:
         loggerDEBUG(f"Exception @ Get Internet Quality Message (display.helpers) {e}")
@@ -542,7 +531,7 @@ class Oled():
             self.odooReachabilityMessage = getOdooReachabilityMessage()
             update_time_related_variables()
             if self.somethingChanged():
-                loggerINFO(f"self.hour {self.hour}")
+                #loggerINFO(f"self.hour {self.hour}")
                 self.device_display.command(self.device_display._const.INVERTDISPLAY)
                 with canvas(self.device_display) as draw:
                     display_hours_and_minutes(draw)
