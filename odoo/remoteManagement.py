@@ -28,16 +28,16 @@ def getPayload(settings_to_send):
     return payload
 
 def acknowledgeTerminalInOdoo():
-    terminal_ID_in_Odoo     = False
-    #params = Params(db=PARAMS)
+    terminal_ID_in_Odoo = False
+
     template = params.get("odooUrlTemplate")
     if template is None: return False
 
     params.put("ownIpAddress", cc.get_own_IP_address())
-
     try:
         loggerDEBUG(f"params.get(odooUrlTemplate) {template} . co.ROUTE_ACK_GATE {co.ROUTE_ACK_GATE} ")
         requestURL  = params.get("odooUrlTemplate") + co.ROUTE_ACK_GATE
+        
         headers     = {'Content-Type': 'application/json'}
         list_of_all_keys = params.get_list_of_all_keys()
         list_on_ack_from_odoo = params.get_list_of_keys_with_type(TxType.ON_ACK_FROM_ODOO)
@@ -84,16 +84,16 @@ def acknowledgeTerminalInOdoo():
 
     return terminal_ID_in_Odoo
 
-def getTerminalIDinOdoo():
-    hashed_machine_id = params.get("hashed_machine_id")
-    if not hashed_machine_id:
-        hashed_machine_id = cc.getHashedMachineId()
-        params.put("hashed_machine_id", hashed_machine_id)
-    acknowledgeTerminalInOdoo()
+# def getTerminalIDinOdoo():
+#     hashed_machine_id = params.get("hashed_machine_id")
+#     if not hashed_machine_id:
+#         hashed_machine_id = cc.getHashedMachineId()
+#         params.put("hashed_machine_id", hashed_machine_id)
+#     acknowledgeTerminalInOdoo()
 
-def ensureFirstOdooConnection_RemoteManagement():
-    loggerINFO("Terminal REMOTELY managed: ensure get Terminal ID in Odoo - initiated")
-    getTerminalIDinOdoo()
+# def ensureFirstOdooConnection_RemoteManagement():
+#     loggerINFO("Terminal REMOTELY managed: ensure get Terminal ID in Odoo - initiated")
+#     getTerminalIDinOdoo()
 
 def isRemoteOdooControlAvailable():
     version_things_module_in_Odoo = None

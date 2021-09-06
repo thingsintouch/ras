@@ -396,21 +396,22 @@ def multiline_text_lu(
 def getInternetQualityMessage():
     try:
         if params.get("internetReachable") == "1":
-            # ownIpAddress = params.get("ownIpAddress")
-            # if ownIpAddress is None or ownIpAddress == "0":
-            #     params.put("ownIpAddress", get_own_IP_address())
-            return "Internet"
+            return ""
     except Exception as e:
         loggerDEBUG(f"Exception @ Get Internet Quality Message (display.helpers) {e}")
-    return "..."
+    return "< !! >"
 
 def getOdooReachabilityMessage():
     try:
         if params.get("odooPortOpen") == "1":
-            return params.get("RASxxx")+" <---> Odoo"
+            RASxxx = params.get("RASxxx")
+            if RASxxx is None: RASxxx = "RASxxx" 
+            return RASxxx # + " <-> Odoo"
+        if params.get("odooUrlTemplate") is None:
+            return "visit ras2.eu"
     except Exception as e:
         loggerDEBUG(f"Exception @ Odoo Reachability Message (display.helpers) {e}")
-    return "< ! >"     
+        return "< ! >"     
 
 class Oled():
 

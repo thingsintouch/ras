@@ -389,15 +389,20 @@ class Log():
       with self.transaction(write=True):
         pass
 
-    if self.get("index") is not None:
-      self.set_index(int(self.get("index")))
-    else:
-      self.set_index(0)
+    self.read_and_set_index_from_db()
+    self.read_and_set_last_log_sent_from_db()
 
+  def read_and_set_last_log_sent_from_db(self):
     if self.get("last_log_sent") is not None:
       self.set_last_log_sent(int(self.get("last_log_sent")))
     else:
-      self.set_last_log_sent(0)   
+      self.set_last_log_sent(0)      
+
+  def read_and_set_index_from_db(self):
+    if self.get("index") is not None:
+      self.set_index(int(self.get("index")))
+    else:
+      self.set_index(0)    
 
   def previous_index(self, i):
     previous_index = i-1
@@ -412,8 +417,16 @@ class Log():
     return next_index
 
   def get_whole_log(self):
-    self.set_last_log_sent(self.index)
-    return self.get_inc_log()
+    self.read_and_set_index_from_db()
+    incremental_log =""
+    log_candidate = self.get_next_index(self.index)
+    while log_candidate != self.index:
+      entry = self.get(str(log_candidate))
+      self.set_last_log_sent(log_candidate)
+      if entry is not None and entry != "":
+        incremental_log = entry + '\n' + incremental_log
+      log_candidate = self.get_next_index(self.last_log_sent)
+    return incremental_log   
 
   def sanitize_index(self,i):
     i = int(i)
@@ -423,11 +436,13 @@ class Log():
 
   def get_inc_log(self): # from begin to end both logs included
     incremental_log =""
+    self.read_and_set_last_log_sent_from_db()
+    self.read_and_set_index_from_db()
     log_candidate = self.get_next_index(self.last_log_sent)
     while log_candidate != self.index:
       entry = self.get(str(log_candidate))
       self.set_last_log_sent(log_candidate)
-      if entry is not None or entry != '':
+      if entry is not None and entry != "":
         incremental_log = entry + '\n' + incremental_log
       log_candidate = self.get_next_index(self.last_log_sent)
     return incremental_log    
@@ -447,7 +462,7 @@ class Log():
   def set_last_log_sent(self, i):
     self.last_log_sent = i
     write_db(self.db, "last_log_sent", str(i))
-    #print(f"set index: {i}")
+    #print(f"++++++++++++++++ last log sent - set to: {i}")
 
   def clear_all(self):
     shutil.rmtree(self.db, ignore_errors=True)

@@ -95,7 +95,7 @@ def store_factory_settings_in_database():
             if params.get(k) is None:
                 params.put(k, factory_settings[k])
         except Exception as e:
-            loggerERROR(f"exception while storing factory setting {k}: {e}")
+            loggerDEBUG(f"exception while storing factory setting {k}: {e}")
 
 def set_bluetooth_device_name():
     # RASxxx = params.get('RASxxx')

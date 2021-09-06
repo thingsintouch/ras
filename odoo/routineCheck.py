@@ -56,6 +56,7 @@ def getAnswerFromOdooRoutineCheck():
         requestURL  = params.get("odooUrlTemplate") + \
             co.ROUTE_OUTGOING_IN_ODOO + "/" + params.get("routefromOdooToDevice")
         headers     = {'Content-Type': 'application/json'}
+        #print("+#+_"*50)
         #cc.pPrint(incrementalLog)
         payload     = {'question': co.QUESTION_ASK_FOR_ROUTINE_CHECK,
                     'productName': productName,
