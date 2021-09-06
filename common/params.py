@@ -382,6 +382,7 @@ class Log():
     for i in range(co.MAX_NUMBER_OF_LOG_ENTRIES+1):
       self.keys[str(i)]=[TxType.LOG]
     self.keys["index"] = [TxType.LOG]
+    self.keys["last_log_sent"] = [TxType.LOG]
 
     # create the database if it doesn't exist...
     if not os.path.exists(self.db + "/d"):
@@ -391,7 +392,12 @@ class Log():
     if self.get("index") is not None:
       self.set_index(int(self.get("index")))
     else:
-      self.set_index(0) # where the next entry comes
+      self.set_index(0)
+
+    if self.get("last_log_sent") is not None:
+      self.set_last_log_sent(int(self.get("last_log_sent")))
+    else:
+      self.set_last_log_sent(0)   
 
   def previous_index(self, i):
     previous_index = i-1
@@ -415,20 +421,16 @@ class Log():
     if i>co.MAX_NUMBER_OF_LOG_ENTRIES: i = co.MAX_NUMBER_OF_LOG_ENTRIES
     return i
 
-  def get_inc_log(self, begin, end): # from begin to end both logs included
-    begin = self.sanitize_index(begin)
-    end   = self.sanitize_index(end)
-    if begin == end: return ''
+  def get_inc_log(self): # from begin to end both logs included
     incremental_log =""
-    index = begin
-    entry = self.get(str(index))
-    incremental_log = entry + '\n' + incremental_log
-    index = self.get_next_index(index)
-    while index != end:
-      entry = self.get(str(index))
+    log_candidate = self.get_next_index(self.last_log_sent)
+    while log_candidate != self.index:
+      entry = self.get(str(log_candidate))
+      self.set_last_log_sent(log_candidate)
       incremental_log = entry + '\n' + incremental_log
-      index = self.get_next_index(index)
+      log_candidate = self.get_next_index(self.last_log_sent)
     return incremental_log    
+
 
   def next_index(self):
     next_index = self.index+1
@@ -439,6 +441,11 @@ class Log():
   def set_index(self, i):
     self.index = i
     write_db(self.db, "index", str(i))
+    #print(f"set index: {i}")
+
+  def set_last_log_sent(self, i):
+    self.last_log_sent = i
+    write_db(self.db, "last_log_sent", str(i))
     #print(f"set index: {i}")
 
   def clear_all(self):

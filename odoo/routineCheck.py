@@ -52,19 +52,12 @@ def firmwareUpdateAndReboot():
 
 def getAnswerFromOdooRoutineCheck():
     try:
-        index_now = int(log_db.get('index'))
-        until_here = int(log_db.previous_index(index_now))
-        last_log = int(params.get('lastLogMessage'))
-        incrementalLog = log_db.get_inc_log(last_log, until_here)
-        params.put('lastLogMessage', str(index_now))
-
+        incrementalLog = log_db.get_inc_log()
         requestURL  = params.get("odooUrlTemplate") + \
             co.ROUTE_OUTGOING_IN_ODOO + "/" + params.get("routefromOdooToDevice")
         headers     = {'Content-Type': 'application/json'}
-
-        cc.pPrint(incrementalLog)
+        #cc.pPrint(incrementalLog)
         payload     = {'question': co.QUESTION_ASK_FOR_ROUTINE_CHECK,
-                    'lastLogMessage': index_now,
                     'productName': productName,
                     'incrementalLog': incrementalLog}
         response    = requests.post(url=requestURL, json=payload, headers=headers)
