@@ -415,7 +415,7 @@ class Log():
     if i>co.MAX_NUMBER_OF_LOG_ENTRIES: i = co.MAX_NUMBER_OF_LOG_ENTRIES
     return i
 
-  def get_inc_log(self, begin, end):
+  def get_inc_log(self, begin, end): # from begin to end both logs included
     begin = self.sanitize_index(begin)
     end   = self.sanitize_index(end)
     if begin == end: return ''
@@ -424,8 +424,7 @@ class Log():
     entry = self.get(str(index))
     incremental_log = entry + '\n' + incremental_log
     index = self.get_next_index(index)
-    stop_mark = self.previous_index(end)
-    while index != stop_mark:
+    while index != end:
       entry = self.get(str(index))
       incremental_log = entry + '\n' + incremental_log
       index = self.get_next_index(index)

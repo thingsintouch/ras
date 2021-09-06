@@ -53,14 +53,10 @@ def firmwareUpdateAndReboot():
 def getAnswerFromOdooRoutineCheck():
     try:
         index_now = int(log_db.get('index'))
-        until_here = int(log_db.get_next_index(index_now))
+        until_here = int(log_db.previous_index(index_now))
         last_log = int(params.get('lastLogMessage'))
-
-        if index_now != last_log:
-            incrementalLog = log_db.get_inc_log(last_log, until_here)
-            params.put('lastLogMessage', str(index_now))
-        else:
-            incrementalLog =''
+        incrementalLog = log_db.get_inc_log(last_log, until_here)
+        params.put('lastLogMessage', str(index_now))
 
         requestURL  = params.get("odooUrlTemplate") + \
             co.ROUTE_OUTGOING_IN_ODOO + "/" + params.get("routefromOdooToDevice")
