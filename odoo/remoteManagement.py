@@ -15,18 +15,13 @@ from common.keys import TxType
 params = Params(db=PARAMS)
 log_db =  Log()
 
-def prepare_incrementalLog():
-    last_index = int(log_db.get('index'))
-    inc_log = log_db.get_whole_log(last_index)
-    #cc.pPrint(inc_log)
-    return inc_log
 
 def getPayload(settings_to_send):
     payload = {}
-    inc_log = prepare_incrementalLog()
+    inc_log = log_db.get_whole_log()
     params.put('incrementalLog', inc_log)
-    last_log = int(log_db.get('index', 0))
-    params.put('lastLogMessage', str(last_log))
+    # last_log = int(log_db.get('index', 0))
+    # params.put('lastLogMessage', str(last_log))
     for s in settings_to_send:
         try:
             payload[s] = params.get(s)

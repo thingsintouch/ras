@@ -411,9 +411,9 @@ class Log():
       next_index = 0
     return next_index
 
-  def get_whole_log(self, begin):
-    end = self.previous_index(begin)
-    return self.get_inc_log(begin, end)
+  def get_whole_log(self):
+    self.set_last_log_sent(self.index)
+    return self.get_inc_log()
 
   def sanitize_index(self,i):
     i = int(i)
