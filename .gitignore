@@ -27,5 +27,6 @@ dicts/deviceCustomization.sample.json
 killme_settings.py
 
 data
-factory_settings/params.py
+factory_settings/custom_params.py
 
+factory_settings/custom_params copy.py

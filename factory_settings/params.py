@@ -1,7 +1,7 @@
 factory_settings = {
     "firmwareAtShipment"  : "v2.0",
     "productName"         : "RAS2.1",
-    "productionDate"      : "to be defined",
+    "productionDate"      : "20210906",
     "productionLocation"  : "Frankfurt",
     "productionNumber"    : "01",
     "qualityInspector"    : "Luis", 
