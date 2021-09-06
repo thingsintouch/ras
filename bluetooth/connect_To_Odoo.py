@@ -4,6 +4,7 @@ from common import constants as co
 from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG, loggerERROR
 from common.params import Params
 from display.helpers import Oled
+from common.connectivity import extract_odoo_host_and_port 
 
 from odoo.remoteManagement import isRemoteOdooControlAvailable
 from buzzer.helpers import buzz
@@ -19,6 +20,7 @@ def main(odooAddress):
     
     params.put("displayClock", "no")
     if odooAddressOK:
+        extract_odoo_host_and_port()
         text = f"CONNECTED\n\nWITH ODOO"
         loggerINFO(f"CONNECTED WITH ODOO: {odooAddress}")
         buzz("success_odoo_connection")
