@@ -427,7 +427,8 @@ class Log():
     while log_candidate != self.index:
       entry = self.get(str(log_candidate))
       self.set_last_log_sent(log_candidate)
-      incremental_log = entry + '\n' + incremental_log
+      if entry is not None or entry != '':
+        incremental_log = entry + '\n' + incremental_log
       log_candidate = self.get_next_index(self.last_log_sent)
     return incremental_log    
 
