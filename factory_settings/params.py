@@ -15,5 +15,6 @@ factory_settings = {
     "hardware_machine"    : "RPi Zero W",
     "hardware_card_reader": "MFRC522",
     "hardware_display"    : "oled sh1106",
-    "harware_sound"       : "passive buzzer",
+    "hardware_sound"      : "passive buzzer",
+    "time_format"         : "12 hour",
 }

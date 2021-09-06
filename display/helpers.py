@@ -396,19 +396,19 @@ def multiline_text_lu(
 def getInternetQualityMessage():
     try:
         if params.get("internetReachable") == "1":
-            return ""
+            return " "
     except Exception as e:
         loggerDEBUG(f"Exception @ Get Internet Quality Message (display.helpers) {e}")
     return "< !! >"
 
 def getOdooReachabilityMessage():
-    try:
+    try: 
         if params.get("odooPortOpen") == "1":
             RASxxx = params.get("RASxxx")
             if RASxxx is None: RASxxx = "RASxxx" 
             return RASxxx # + " <-> Odoo"
         if params.get("odooUrlTemplate") is None:
-            return "visit ras2.eu"
+            return "ras2.eu"
     except Exception as e:
         loggerDEBUG(f"Exception @ Odoo Reachability Message (display.helpers) {e}")
         return "< ! >"     
@@ -420,8 +420,8 @@ class Oled():
         self.am_pm ="AM"
         self.x =10
         self.x_am_pm = 108
-        self.internetQualityMessage = "No Internet"
-        self.odooReachabilityMessage = "..searching.."
+        self.internetQualityMessage = "< !! >"
+        self.odooReachabilityMessage = "ras2.eu"
         self.displayClock = "yes"
         self.store_status_of_now()
         self.tz = params.get("tz")
@@ -536,6 +536,8 @@ class Oled():
                 self.device_display.command(self.device_display._const.INVERTDISPLAY)
                 with canvas(self.device_display) as draw:
                     display_hours_and_minutes(draw)
+                    if self.internetQualityMessage is None: self.internetQualityMessage = "< !! >"
+                    if self.odooReachabilityMessage is None: self. odooReachabilityMessage = "ras2.eu"
                     self.draw_text_centered(draw, [0, 0], fontClockInfos, self.internetQualityMessage)
                     self.draw_text_centered(draw, [0, 49], fontClockInfos, self.odooReachabilityMessage)
         else:
