@@ -27,3 +27,5 @@ dicts/deviceCustomization.sample.json
 killme_settings.py
 
 data
+factory_settings/params.py
+
