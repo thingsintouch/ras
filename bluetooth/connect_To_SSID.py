@@ -18,7 +18,7 @@ def main(ssidName, ssidAddress):
     text = f"CONNECTING\nWITH SSID\n{ssidName}"
     loggerINFO(text)           
     oled.three_lines_text(text)
-    answer = (rs('nmcli dev wifi con '+ssidName+' password '+ssidPassword))
+    answer = (rs('sudo nmcli dev wifi con '+ssidName+' password '+ssidPassword))
     if internetReachable():
         text = f"CONNECTED\nWITH THE\nINTERNET"
     else:
