@@ -12,13 +12,16 @@ params = Params(db=co.PARAMS)
 
 
 def main(ssidName, ssidAddress):
-
+    print("1 --------1 ----------in main - connectToSSID")
     oled = Oled()
+    print("2 --------2----------after oled instantiation")
     params.put("displayClock", "no")
     text = f"CONNECTING\nWITH SSID\n{ssidName}"
-    loggerINFO(text)           
+    loggerINFO(text)
+    print("3 --------3 ----------before three lines oled")          
     oled.three_lines_text(text)
     answer = (rs('sudo nmcli dev wifi con '+ssidName+' password '+ssidPassword))
+    print("4 --------4 ----------before if")
     if internetReachable():
         text = f"CONNECTED\nWITH THE\nINTERNET"
     else:
