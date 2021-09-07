@@ -11,7 +11,7 @@ from common.common import runShellCommand_and_returnOutput as rs
 from common.connectivity import internetReachable, isOdooPortOpen
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from multiprocessing import Process #, Manager
-from bluetooth import connect_To_Odoo
+from bluetooth import connect_To_Odoo, connect_To_SSID
 
 from common.params import Params
 from common import constants as co
