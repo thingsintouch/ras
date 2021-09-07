@@ -134,6 +134,9 @@ class ConnectToSSIDCharacteristic(Characteristic):
         splittedString = valueString.split("\n")
         self.ssidName = splittedString[0]
         self.ssidPassword = splittedString[1]
+        print("#"*100)
+        print("#"*100)
+        print("#"*100)
         print(f'ssidName : {self.ssidName}; ssidPassword : {self.ssidPassword};')
         self.connectToSSIDProcess = Process(target=connect_To_SSID.main, args=(self.ssidName, self.ssidPassword, ))
         self.connectToSSIDProcess.start()
