@@ -16,6 +16,7 @@ def main(ssidName, ssidPassword):
     params.put("displayClock", "no")
     text = f"CONNECTING\nWITH SSID\n{ssidName}"
     loggerINFO(text)
+    print(next)
     oled.three_lines_text(text)
     answer = (rs('sudo nmcli dev wifi con '+ssidName+' password '+ssidPassword))
     if internetReachable():
@@ -23,6 +24,7 @@ def main(ssidName, ssidPassword):
     else:
        text = f"NO CONNECTION\nWITH THE\nINTERNET"
     loggerINFO(text)
+    print(next)
     time.sleep(4) 
     params.put("displayClock", "yes")
 

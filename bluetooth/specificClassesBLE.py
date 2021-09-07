@@ -286,7 +286,7 @@ class NotifyCharacteristic(Characteristic):
     def periodical_tasks(self):
         try:
 
-            if internetReachable():
+            if False: #internetReachable():
                 internetByte = TRUE.decode()
             else:
                 internetByte = FALSE.decode()
