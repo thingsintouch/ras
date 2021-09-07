@@ -1,7 +1,7 @@
 from multiprocessing import Process
 from bluetooth import connect_To_SSID
 
-ssidName = 'FRITZ!Box 6490 Cable'
+ssidName = "FRITZ!Box 6490 Cable"
 ssidPassword = '522968262011056618'
 print("#"*100)
 print("#"*100)
