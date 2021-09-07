@@ -11,7 +11,7 @@ from common.common import runShellCommand_and_returnOutput as rs
 #params = Params(db=co.PARAMS)
 
 
-def main(ssidName, ssidAddress):
+def main(ssidName, ssidPassword):
     #oled = Oled()
     #params.put("displayClock", "no")
     #text = f"CONNECTING\nWITH SSID\n{ssidName}"
