@@ -62,6 +62,7 @@ keys_by_Type[TxType.ON_ACK_FROM_ODOO] = [
     "minimumTimeBetweenClockings"     , # in seconds
     "period_odoo_routine_check"       , # in seconds
     "timeToDisplayResultAfterClocking",
+    "setup_password",
   ]
 
 keys_by_Type[TxType.ON_ACK_FROM_DEVICE] = [
