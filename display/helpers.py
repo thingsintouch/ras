@@ -28,6 +28,7 @@ fontClockTime = ImageFont.truetype(fontRoboto, 42)
 fontClockTime_12hour = ImageFont.truetype(fontRoboto, 38)
 fontClockInfos = ImageFont.truetype(fontRoboto, 14)
 font_three_lines = ImageFont.truetype(fontRoboto, 16)
+font_three_lines_small = ImageFont.truetype(fontRoboto, 10)
 
 
 
@@ -450,6 +451,12 @@ class Oled():
         self.device_display.command(self.device_display._const.NORMALDISPLAY)
         with canvas(self.device_display) as draw:
             self.draw_text_centered(draw, origin, font_three_lines, text)
+    
+    def three_lines_text_small(self, text="\n...connecting..."):
+        origin = [0,0]
+        self.device_display.command(self.device_display._const.NORMALDISPLAY)
+        with canvas(self.device_display) as draw:
+            self.draw_text_centered(draw, origin, font_three_lines_small, text)
 
 
     def store_status_of_now(self):

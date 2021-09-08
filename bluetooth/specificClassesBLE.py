@@ -274,10 +274,10 @@ class NotifyCharacteristic(Characteristic):
     def notify_value(self):
         try:
             if not self.notifying: return
-            for i, b in enumerate(self.valueToNotify):
-                print(f'value {b} - type {type(b)}')
+            # for i, b in enumerate(self.valueToNotify):
+            #     print(f'value {b} - type {type(b)}')
             arrayOfBytes = [dbus.Byte(ord(b)) for b in self.valueToNotify]
-            loggerDEBUG(f"sending notification: {self.notification} -  {arrayOfBytes}")
+            #loggerDEBUG(f"sending notification: {self.notification} -  {arrayOfBytes}")
             self.notification += 1
             self.PropertiesChanged( GATT_CHRC_IFACE, {'Value': arrayOfBytes}, [])
         except Exception as e:
@@ -295,9 +295,6 @@ class NotifyCharacteristic(Characteristic):
                 odooPortByte = TRUE.decode()
             else:
                 odooPortByte = FALSE.decode()
-
-            # internetByte = FALSE.decode() #### REMOVE REMOVE REMOVE REMOVE REMOVE REMOVE 
-            # odooPortByte = FALSE.decode() #### REMOVE REMOVE REMOVE REMOVE REMOVE REMOVE
 
             self.valueToNotify = [
                 internetByte,
@@ -319,7 +316,7 @@ class NotifyCharacteristic(Characteristic):
         if self.notifying:
             loggerDEBUG('Already notifying, nothing to do')
         else:
-            loggerDEBUG('Begin Notifying +++++++++++++++++++++++++')
+            loggerDEBUG('Begin Notifying ++++++++++ START +++++++++++++++')
             loggerDEBUG('+'*100)
             loggerDEBUG('+'*100)
             loggerDEBUG('+'*100)
@@ -331,6 +328,10 @@ class NotifyCharacteristic(Characteristic):
 
     def StopNotify(self):
         if self.notifying:
+            loggerDEBUG('Stop Notifying +++++++++++ STOP ++++++++++++++')
+            loggerDEBUG('-'*100)
+            loggerDEBUG('-'*100)
+            loggerDEBUG('-'*100)
             self.notifying = False  
             if self.timeout_int:              
                 Gobject.source_remove(self.timeout_int)
