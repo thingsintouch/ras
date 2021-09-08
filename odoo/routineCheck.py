@@ -62,8 +62,15 @@ def getAnswerFromOdooRoutineCheck():
                     'productName': productName,
                     'incrementalLog': incrementalLog}
         response    = requests.post(url=requestURL, json=payload, headers=headers)
-        answer      = response.json().get("result", False)
-        return  answer
+        if params.get("odooPortOpen") != "0" and response.status_code == 404:
+            loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
+            loggerINFO(f"odooConnectedAtLeastOnce set to 0")
+            params.put("odooConnectedAtLeastOnce", "0")
+            params.put("RASxxx", "RASxxx")
+            return False
+        else:
+            answer      = response.json().get("result", False)
+            return  answer
     except ConnectionRefusedError as e:
         loggerDEBUG(f"Routine Check not Available - ConnectionRefusedError - Request Exception : {e}")
         return False

@@ -100,6 +100,7 @@ keys_by_Type.update({
       "periodCPUtemperatureLOGS"        , # in minutes
       "minimumTimeBetweenClockings"     , # in seconds
       "period_odoo_routine_check"       , # in seconds
+      "setup_password",
     ]
   })
 

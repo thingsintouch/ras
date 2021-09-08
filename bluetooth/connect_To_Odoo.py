@@ -16,16 +16,14 @@ def main(odooAddress):
     buzz("OK")
     params.put("displayClock", "no")
     text = f"CONNECTING\nWITH ODOO\n{odooAddress}"
-    loggerINFO(text)
     oled.three_lines_text_small(text)
-
     params.put("odooUrlTemplate", odooAddress)
     odooAddressOK = isRemoteOdooControlAvailable()
     
     if odooAddressOK:
         extract_odoo_host_and_port()
         text = f"SUCCESSFULLY\nCONNECTED WITH ODOO\n{odooAddress}"
-        loggerINFO(f"CONNECTED WITH ODOO: {odooAddress}")
+        loggerINFO(f"Connected with Odoo: {odooAddress}")
         buzz("success_odoo_connection")
     else:
         text = f"NO CONNECTION\nPOSSIBLE\n{odooAddress}"

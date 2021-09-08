@@ -17,7 +17,6 @@ def main(ssidName, ssidPassword):
     buzz("OK")
     params.put("displayClock", "no")
     text = f"CONNECTING\nWITH SSID\n{ssidName}"
-    loggerINFO(text)
     oled.three_lines_text_small(text)
     if " " in ssidName:
         ssidName = "'" + ssidName + "'"
@@ -25,10 +24,10 @@ def main(ssidName, ssidPassword):
     if internetReachable():
         buzz("success_odoo_connection")
         text = f"CONNECTED\nWITH THE\nINTERNET"
+        loggerINFO(f"Connected to Interned - SSID: {ssidName}")
     else:
         buzz("failed_odoo_connection")
         text = f"NO CONNECTION\nWITH THE\nINTERNET"
-    loggerINFO(text)
     oled.three_lines_text_small(text)
     time.sleep(4) 
     params.put("displayClock", "yes")
