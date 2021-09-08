@@ -48,9 +48,13 @@ def extract_odoo_host_and_port():
                 params.put("odoo_host", zero)
                 params.put("odoo_port", one)
         if length == 3:
-            odoo_host = odooAdressSplitted[1].replace('/','')
-            params.put("odoo_host", odoo_host)
-            params.put("odoo_port", odooAdressSplitted[2])
+            if "//" in odooAdressSplitted[1]:
+                odoo_host = odooAdressSplitted[1].replace('/','')
+                params.put("odoo_host", odoo_host)
+                params.put("odoo_port", odooAdressSplitted[2])
+            else:
+                params.put("odoo_host", "0")
+                params.put("odoo_port", "0")
         odooHost = params.get("odoo_host")
         odooPort = params.get("odoo_port")
         loggerINFO(f"odoo_host {odooHost}- odoo_port {odooPort}")
