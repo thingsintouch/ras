@@ -501,10 +501,16 @@ class Oled():
             if time_format == "24 hour":
                 self.hour = time.strftime("%H:%M", time.localtime())
                 num_ones = self.hour.count("1")
-                if num_ones < 3:
-                    self.x= 10
+                if num_ones == 0:
+                    self.x = 13                    
+                elif num_ones == 1:
+                    self.x = 14
+                elif num_ones == 2:
+                    self.x = 15
+                elif num_ones == 3:
+                    self.x = 16
                 else:
-                    self.x= 12
+                    self.x= 17
             else:
                 t = time.localtime()
                 #print(f"time.tzname: {time.tzname}")
