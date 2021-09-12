@@ -52,4 +52,3 @@ LOG = WORKING_DIR + "/data/log"
 
 MAX_NUMBER_OF_LOG_ENTRIES = 100
 
-#PARAMS_DB_TRANSFERRED_FLAG = WORKING_DIR + "/data/params_db_transferred_flag"
