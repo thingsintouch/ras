@@ -88,7 +88,6 @@ def store_hashed_machine_id():
     params.put('hashed_machine_id', hashed_machine_id)
 
 def store_factory_settings_in_database():
-    #params = Params(db=co.PARAMS)
     if params.get("odooConnectedAtLeastOnce") != "1":
         for k in keys_by_Type[TxType.FACTORY_SETTINGS]:
             try:
