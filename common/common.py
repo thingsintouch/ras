@@ -138,7 +138,7 @@ def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex f
 
 def ensure_git_does_not_change_env_file():
     try:
-        runShellCommand("cd /home/pi/ras")
+        #runShellCommand("cd /home/pi/ras")
         runShellCommand("sudo git update-index --skip-worktree .env")
     except Exception as e:
         loggerDEBUG(f"ensure_git_does_not_change_env_file -- Exception: {e}")
