@@ -407,7 +407,7 @@ def getOdooReachabilityMessage():
         if params.get("odooPortOpen") == "1":
             RASxxx = params.get("RASxxx")
             if RASxxx is None: RASxxx = "RASxxx" 
-            return RASxxx # + " <-> Odoo"
+            return RASxxx 
         if params.get("odooUrlTemplate") is None:
             return "ras2.eu"
     except Exception as e:
@@ -539,7 +539,7 @@ class Oled():
                 self.draw_text_not_centered(draw, [self.x_am_pm, 33], fontClockInfos,self.am_pm)
 
         self.displayClock = params.get("displayClock")
-        #loggerDEBUG(f"######################################### DISPLAY_TIME {self.displayClock}")
+        #loggerDEBUG(f"######### DISPLAY_TIME {self.displayClock}")
         if self.displayClock == "yes":
             self.internetQualityMessage = getInternetQualityMessage()
             self.odooReachabilityMessage = getOdooReachabilityMessage()
