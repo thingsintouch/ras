@@ -17,7 +17,8 @@ from common.params import Params
 from common.launcher import launcher
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from messaging.messaging import SubscriberMultipart as Subscriber
-from common.common import setTimeZone, store_hashed_machine_id, store_factory_settings_in_database, set_bluetooth_device_name
+from common.common import setTimeZone, store_hashed_machine_id, store_factory_settings_in_database
+from common.common import set_bluetooth_device_name, ensure_git_does_not_change_env_file
 
 import lib.Utils as ut
 
@@ -33,6 +34,7 @@ loggerINFO("###################### RAS launched ###################")
 store_hashed_machine_id()
 set_bluetooth_device_name()
 params.put("firmwareVersion",co.RAS_VERSION)
+ensure_git_does_not_change_env_file()
 
 managed_essential_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
     "thermal_d": "thermal.manager",
