@@ -1,6 +1,6 @@
 from decouple import config
 
-RAS_VERSION = "2.3"
+RAS_VERSION = "2.4 - LOCAL"
 WORKING_DIR = config("WORKING_DIR")
 DIR_WIFI_CONNECTIONS = config("DIR_WIFI_CONNECTIONS")
 SSID_WIFICONNECT = config("SSID_WIFICONNECT")
@@ -51,4 +51,15 @@ CLOCKINGS = WORKING_DIR + "/data/clockings"
 LOG = WORKING_DIR + "/data/log"
 
 MAX_NUMBER_OF_LOG_ENTRIES = 100
+
+try:
+    ODOO_SERVER_LOCAL = config("ODOO_SERVER_LOCAL")
+    SSID_NAME = config("SSID_NAME")
+    SSID_PASSWORD = config("SSID_PASSWORD")
+    ODOO_HOST_LOCAL = config("ODOO_HOST_LOCAL")
+    ODOO_PORT_LOCAL = config("ODOO_PORT_LOCAL") 
+    ODOO_SCHEME_LOCAL = config("ODOO_SCHEME_LOCAL")  
+except Exception as e:
+    ODOO_SERVER_LOCAL = "False"
+    print("No ODOO_SERVER_LOCAL in env")
 

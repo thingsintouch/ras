@@ -25,7 +25,10 @@ def isPingable(address):
     return isSuccesRunningSubprocess(command)
 
 def internetReachable():
-    internet_reachable = isPingable("1.1.1.1")
+    if co.ODOO_SERVER_LOCAL == "True":
+        internet_reachable = True
+    else:
+        internet_reachable = isPingable("1.1.1.1")
     params.put("internetReachable", internet_reachable)
     return internet_reachable
 

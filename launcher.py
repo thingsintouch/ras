@@ -19,6 +19,7 @@ from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, l
 from messaging.messaging import SubscriberMultipart as Subscriber
 from common.common import setTimeZone, store_hashed_machine_id, store_factory_settings_in_database
 from common.common import set_bluetooth_device_name, ensure_git_does_not_change_env_file
+from common.common import runShellCommand_and_returnOutput as rs
 
 import lib.Utils as ut
 
@@ -35,6 +36,17 @@ store_hashed_machine_id()
 set_bluetooth_device_name()
 params.put("firmwareVersion",co.RAS_VERSION)
 ensure_git_does_not_change_env_file()
+
+if co.ODOO_SERVER_LOCAL == 'True':
+    ssidName = co.SSID_NAME
+    ssidPassword = co.SSID_PASSWORD
+    if " " in ssidName:
+        ssidName = "'" + ssidName + "'"
+    answer = (rs('sudo nmcli dev wifi con '+ssidName+' password '+ssidPassword))
+    odoo_url_local_template = co.ODOO_SCHEME_LOCAL+"://"+ co.ODOO_HOST_LOCAL + ":" + co.ODOO_PORT_LOCAL
+    params.put("odooUrlTemplate",odoo_url_local_template)
+    params.put("odoo_host",co.ODOO_HOST_LOCAL)
+    params.put("odoo_port",co.ODOO_PORT_LOCAL)
 
 managed_essential_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
     "thermal_d": "thermal.manager",
