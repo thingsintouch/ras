@@ -59,11 +59,11 @@ if co.ODOO_SERVER_LOCAL == 'True':
         except Exception as e:
             print(f"could not setup ssid : {ssidName}, error: {e}")    
         try:
-            answer = (rs('sudo nmcli connection modify "Wired connection 1" ipv4.method "manual" ipv4.addresses "192.168.10.167/24"')
+            answer = (rs('sudo nmcli connection modify "Wired connection 1" ipv4.method "manual" ipv4.addresses "192.168.10.167/24"'))
         except Exception as e:
             print(f"could not change (Wired) Ethernet IP Address to 167: {e}")    
         try:
-            answer = (rs('sudo nmcli connection modify '+ssidName+ ' ipv4.method "manual" ipv4.addresses "192.168.10.168/24"')
+            answer = (rs('sudo nmcli connection modify '+ssidName+ ' ipv4.method "manual" ipv4.addresses "192.168.10.168/24"'))
         except Exception as e:
             print(f"could not change wiFi IP Address to 168: {e}")
         try:
