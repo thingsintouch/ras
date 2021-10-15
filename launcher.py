@@ -37,16 +37,45 @@ set_bluetooth_device_name()
 params.put("firmwareVersion",co.RAS_VERSION)
 ensure_git_does_not_change_env_file()
 
+configured_odoo_local = False
+try:
+    if params.get("configuredOdooLocal") == "1":
+        configured_odoo_local = True
+except Exception as e:
+    print(f"parameter configuredOdooLocal not defined: {e}")
+
 if co.ODOO_SERVER_LOCAL == 'True':
-    ssidName = co.SSID_NAME
-    ssidPassword = co.SSID_PASSWORD
-    if " " in ssidName:
-        ssidName = "'" + ssidName + "'"
-    answer = (rs('sudo nmcli dev wifi con '+ssidName+' password '+ssidPassword))
     odoo_url_local_template = co.ODOO_SCHEME_LOCAL+"://"+ co.ODOO_HOST_LOCAL + ":" + co.ODOO_PORT_LOCAL
     params.put("odooUrlTemplate",odoo_url_local_template)
     params.put("odoo_host",co.ODOO_HOST_LOCAL)
     params.put("odoo_port",co.ODOO_PORT_LOCAL)
+    if not configured_odoo_local:
+        ssidName = co.SSID_NAME
+        ssidPassword = co.SSID_PASSWORD
+        if " " in ssidName:
+            ssidName = "'" + ssidName + "'"
+        try:
+            answer = (rs('sudo nmcli dev wifi con '+ssidName+' password '+ssidPassword))
+        except Exception as e:
+            print(f"could not setup ssid : {ssidName}, error: {e}")    
+        try:
+            answer = (rs('sudo nmcli connection modify "Wired connection 1" ipv4.method "manual" ipv4.addresses "192.168.10.167/24"')
+        except Exception as e:
+            print(f"could not change (Wired) Ethernet IP Address to 167: {e}")    
+        try:
+            answer = (rs('sudo nmcli connection modify '+ssidName+ ' ipv4.method "manual" ipv4.addresses "192.168.10.168/24"')
+        except Exception as e:
+            print(f"could not change wiFi IP Address to 168: {e}")
+        try:
+            params.put("configuredOdooLocal", "1")
+        except Exception as e:
+            print(f"could not change parameter configuredOdooLocal: {e}")       
+        answer = (rs('sudo systemctl restart NetworkManager')
+        print("-----############### SHUTDOWN ###############------")
+        os.system("sudo shutdown now")
+        time.sleep(60)
+        sys.exit(0)
+
 
 managed_essential_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
     "thermal_d": "thermal.manager",

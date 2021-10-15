@@ -114,7 +114,8 @@ keys_by_Type.update({
       "internetReachable",
       "odooPortOpen",
       "thermalMessageCounter",
-      'lastLogMessage'
+      'lastLogMessage',
+      "configuredOdooLocal"
     ]
   })
 
