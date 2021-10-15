@@ -70,7 +70,7 @@ if co.ODOO_SERVER_LOCAL == 'True':
             params.put("configuredOdooLocal", "1")
         except Exception as e:
             print(f"could not change parameter configuredOdooLocal: {e}")       
-        answer = (rs('sudo systemctl restart NetworkManager')
+        answer = (rs('sudo systemctl restart NetworkManager'))
         print("-----############### SHUTDOWN ###############------")
         os.system("sudo shutdown now")
         time.sleep(60)
