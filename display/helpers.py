@@ -16,7 +16,7 @@ import types
 from common.params import Params
 import common.constants as co
 
-import lib.Utils as ut
+# import lib.Utils as ut
 
 import common.common as cc
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
@@ -396,11 +396,12 @@ def multiline_text_lu(
 
 def getInternetQualityMessage():
     try:
-        if params.get("internetReachable") == "1":
-            return " "
+        if params.get("ownIpAddress")is not None:
+            ip = str(params.get("ownIpAddress"))
+            return ip
     except Exception as e:
         loggerDEBUG(f"Exception @ Get Internet Quality Message (display.helpers) {e}")
-    return "< !! >"
+    return "no IP address"
 
 def getOdooReachabilityMessage():
     try: 

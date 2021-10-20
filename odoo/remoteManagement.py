@@ -5,7 +5,7 @@ import os
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 import common.constants as co
 import common.common as cc
-import lib.Utils as ut
+#import lib.Utils as ut
 import common.logger as lo
 from common.constants import PARAMS
 from common.params import Params, Log
@@ -148,7 +148,7 @@ def resetSettings():
         answer = response.json().get("result", None)
         if answer:
             error = answer.get("error", None)
-            ut.storeOptionInDeviceCustomization("isRemoteOdooControlAvailable", True)
+            params.put("isRemoteOdooControlAvailable", "1")
             if error:
                 loggerINFO(f"resetSettings not Available - error in answer from Odoo: {error}")
                 return False
@@ -162,5 +162,5 @@ def resetSettings():
     except Exception as e:
         loggerERROR(f"resetSettings not Available - Exception: {e}")
 
-    ut.storeOptionInDeviceCustomization("isRemoteOdooControlAvailable", False)
+    params.put("isRemoteOdooControlAvailable", "0")
     return False     

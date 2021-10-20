@@ -3,7 +3,6 @@ import psutil
 import zmq
 
 from common import constants as co
-# from connectivity import helpers as ch   # connectivity helpers
 from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG
 from messaging.messaging import PublisherMultipart as Publisher
 

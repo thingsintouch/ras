@@ -6,12 +6,13 @@ import subprocess
 import os
 import time
 import socket
+import secrets
 
 from hashlib import blake2b
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from . import constants as co
-import lib.Utils as ut
+# import lib.Utils as ut
 from dicts import tz_dic
 from common.params import Params
 import common.constants as co
@@ -58,16 +59,10 @@ def setTimeZone():
 
 def getMachineID():
     try:
-        with open(co.MACHINE_ID_FILE,"r")as f:
-            machine_id= bytes(f.readline().replace('\n',''), encoding='utf8')
-        #loggerDEBUG(f"got machine ID: {machine_id}")
+        machine_id = secrets.token_hex(16)
     except Exception as e:
-        loggerERROR(f"Exception while retreiving Machine ID from its file: {e}")
-        machine_id = None
-    if not machine_id:
-        #TODO generate machine_id randomly and write it to machineID
-        loggerINFO(f"No MACHINE ID found.") # A random MACHINE ID will be generated and saved. 
-        pass
+        loggerERROR(f"Exception while generating random Machine ID : {e}, machine_id gets standard software defined constant id")
+        machine_id = '01234567890123456789012345678901'
     return machine_id 
 
 def getHashedMachineId():
@@ -84,8 +79,9 @@ def getHashedMachineId():
     return hashed_machine_id
 
 def store_hashed_machine_id():
-    hashed_machine_id = getHashedMachineId()
-    params.put('hashed_machine_id', hashed_machine_id)
+    if params.get('hashed_machine_id') is None:
+        hashed_machine_id = getHashedMachineId()
+        params.put('hashed_machine_id', hashed_machine_id)
 
 def store_factory_settings_in_database():
     if params.get("odooConnectedAtLeastOnce") != "1":
@@ -107,12 +103,13 @@ def set_bluetooth_device_name():
     params.put("bluetooth_device_name", bluetooth_device_name)
 
 def get_own_IP_address():
+    IP = '127.0.0.1'
     st = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:       
         st.connect(('10.255.255.255', 1))
         IP = st.getsockname()[0]
     except Exception:
-        IP = '127.0.0.1'
+        loggerDEBUG(f"exception while getting the IP Address: {e}")
     finally:
         st.close()
     return IP

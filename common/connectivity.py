@@ -24,11 +24,8 @@ def isPingable(address):
     command = "ping -c 1 " + address
     return isSuccesRunningSubprocess(command)
 
-def internetReachable():
-    if co.ODOO_SERVER_LOCAL == "True":
-        internet_reachable = True
-    else:
-        internet_reachable = isPingable("1.1.1.1")
+def internetReachable(): # in the local branch , we "fake" that internet is allways reachable
+    internet_reachable = True
     params.put("internetReachable", internet_reachable)
     return internet_reachable
 
