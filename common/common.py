@@ -68,7 +68,7 @@ def getMachineID():
 def getHashedMachineId():
     machine_id = getMachineID()
     m = bytes(machine_id, 'utf-8')
-    ds = bytes(co.HASH_DIGEST_SIZE, 'utf-8')
+    ds = co.HASH_DIGEST_SIZE
     k = bytes(co.HASH_KEY, 'utf-8')
     s = bytes(co.HASH_SALT, 'utf-8')
 
