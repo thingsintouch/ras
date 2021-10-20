@@ -69,7 +69,7 @@ def getHashedMachineId():
     machine_id = getMachineID()
 
     hashed_machine_id = blake2b( \
-        machine_id,
+        machine_id.encode('utf-8'),
         digest_size=co.HASH_DIGEST_SIZE,
         key=co.HASH_KEY,
         salt=co.HASH_SALT
