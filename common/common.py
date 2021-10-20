@@ -67,13 +67,18 @@ def getMachineID():
 
 def getHashedMachineId():
     machine_id = getMachineID()
+    m = bytes(machine_id, 'utf-8')
+    ds = bytes(co.HASH_DIGEST_SIZE, 'utf-8')
+    k = bytes(co.HASH_KEY, 'utf-8')
+    s = bytes(co.HASH_SALT, 'utf-8')
 
-    hashed_machine_id = blake2b( \
-        machine_id.encode('utf-8'),
-        digest_size=co.HASH_DIGEST_SIZE,
-        key=co.HASH_KEY,
-        salt=co.HASH_SALT
-        ).encode('utf-8').hexdigest()
+    hashed_machine_id = blake2b( m, \
+        digest_size=ds,
+        key=k,
+        salt=s
+        ).hexdigest()
+
+    loggerDEBUG(f"hashed machine id: {hashed_machine_id}")
 
     return hashed_machine_id
 
