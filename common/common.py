@@ -74,7 +74,7 @@ def getHashedMachineId():
         key=co.HASH_KEY,
         salt=co.HASH_SALT,
         person=co.HASH_PERSON_REGISTER_TERMINAL, 
-        ).encode('utf-8').hexdigest()
+        ).hexdigest()
 
     return hashed_machine_id
 
