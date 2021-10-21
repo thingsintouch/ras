@@ -1,0 +1,6 @@
+#!/bin/bash
+while :
+   do
+      sudo sh -c "echo '.' >> /dev/watchdog"
+      sleep 13
+   done
