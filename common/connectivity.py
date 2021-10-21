@@ -4,6 +4,7 @@ import socket
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from common.params import Params
 from common import constants as co
+from common.common import get_own_IP_address
 
 
 params = Params(db=co.PARAMS)
@@ -27,6 +28,10 @@ def isPingable(address):
 def internetReachable(): # in the local branch , we "fake" that internet is allways reachable
     internet_reachable = True
     params.put("internetReachable", internet_reachable)
+    try:
+        params.put("ownIpAddress", get_own_IP_address())
+    except Exception as e:
+        loggerDEBUG(f"exception while getting the IP Address: {e}")
     return internet_reachable
 
 def extract_odoo_host_and_port():
