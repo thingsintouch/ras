@@ -58,11 +58,16 @@ def setTimeZone():
         return False
 
 def getMachineID():
+    # Extract serial from cpuinfo file
     try:
-        machine_id = secrets.token_hex(16)
+        with open('/proc/cpuinfo','r') as f:
+            for line in f:
+                if 'Serial' in line:
+                    machine_id = line[10:26]
     except Exception as e:
-        loggerERROR(f"Exception while generating random Machine ID : {e}, machine_id gets standard software defined constant id")
-        machine_id = '01234567890123456789012345678901'
+        loggerERROR(f"Exception while getting serial number from cpuinfo file : {e}, machine_id gets random id")
+        machine_id = secrets.token_hex(16)
+    loggerDEBUG(f"machine id (= cpuinfo serial number) is {machine_id}")
     return machine_id 
 
 def getHashedMachineId():
