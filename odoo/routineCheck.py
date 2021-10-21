@@ -40,8 +40,9 @@ def firmwareUpdateAndReboot():
     if isPingable("github.com"):
         loggerINFO("<<<<++++++++ Firmware Update and Reboot +++++++>>>>>>")
         os.chdir(co.WORKING_DIR)
-        os.system("sudo git fetch ras released")
-        os.system("sudo git reset --hard ras/released")
+        os.system("sudo git pull")
+        # os.system("sudo git fetch ras released")
+        # os.system("sudo git reset --hard ras/released")
         display_off()
         time.sleep(1)
         os.system("sudo reboot")
