@@ -59,7 +59,7 @@ def setTimeZone():
 
 def set_device_UTC_time(UTC_timestamp):
     try:
-        command = "sudo date -s " + UTC_timestamp
+        command = "sudo date -s '" + UTC_timestamp + "'"
         answer = runShellCommand_and_returnOutput(command)
         loggerDEBUG(f"set device time to UTC: {UTC_timestamp} with shell command answer {answer}")
         return True
