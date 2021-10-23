@@ -57,6 +57,18 @@ def setTimeZone():
         loggerERROR(f"exception in method setTimeZone (using tz database): {e}")
         return False
 
+def set_device_UTC_time(UTC_timestamp):
+    try:
+        command = "sudo date -s " + UTC_timestamp
+        answer = runShellCommand_and_returnOutput(command)
+        loggerDEBUG(f"set device time to UTC: {UTC_timestamp} with shell command answer {answer}")
+        return True
+    except Exception as e:
+        loggerERROR(f"exception in method set_device_UTC_time: {e}")
+        return False    
+
+
+
 def getMachineID():
     # Extract serial from cpuinfo file
     try:
