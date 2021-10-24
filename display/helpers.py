@@ -396,12 +396,13 @@ def multiline_text_lu(
 
 def getInternetQualityMessage():
     try:
-        if params.get("ownIpAddress")is not None:
+        if params.get("ownIpAddress") is not None:
             ip = str(params.get("ownIpAddress"))
-            return ip
+            #return ip
+            return "<-->"
     except Exception as e:
         loggerDEBUG(f"Exception @ Get Internet Quality Message (display.helpers) {e}")
-    return "no IP address"
+    return "<!>"
 
 def getOdooReachabilityMessage():
     try: 

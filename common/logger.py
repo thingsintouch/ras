@@ -33,13 +33,6 @@ def appendToIncrementalLog(message):
     message = escape_ansi(message)
     log_db.put(message)
 
-    # currentLog = params.get("incrementalLog")
-    # if currentLog:
-    #     currentLog = currentLog + "\n" + message
-    # else:
-    #     currentLog = message
-    # params.put("incrementalLog", currentLog)
-
 def loggerDEBUG(message):
     logger.debug(message)
 
