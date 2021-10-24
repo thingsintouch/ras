@@ -105,9 +105,9 @@ def saveChangesToParams(answer):
                 loggerDEBUG(f"this key in answer from routine call is NOT STORED {k}: {ans}")
 
 def synchronize_Terminal_timestamp_with_Odoo_timestamp(answer):
-    if 'odoo_server_UTC_timestamp' in answer:
-        odoo_UTC_timestamp = answer['odoo_server_UTC_timestamp']
-        cc.set_device_UTC_time(odoo_UTC_timestamp)
+    if 'odoo_server_timestamp' in answer:
+        odoo_timestamp = answer['odoo_server_timestamp']
+        cc.set_device_time(odoo_timestamp)
 
 def routineCheck():
     answer = getAnswerFromOdooRoutineCheck()

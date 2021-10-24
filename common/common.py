@@ -48,23 +48,27 @@ def runShellCommand_and_returnOutput(command):
 def setTimeZone():
     try: 
         timezone = params.get("tz")
-        #print(timezone)
+        loggerINFO(f"Setting timezone: {timezone}")
         os.environ["TZ"] = timezone
         time.tzset()
-        loggerINFO(f"Timezone: {timezone} - was set using tz database")
+        command1 = "sudo rm -rf /etc/localtime"
+        command2 = "sudo ln -s /usr/share/zoneinfo/"+timezone+" /etc/localtime"
+        answer1 = runShellCommand_and_returnOutput(command1)
+        answer2 = runShellCommand_and_returnOutput(command2)        
+        loggerINFO(f"Timezone was set- answer1: {answer1}; answer2: {answer2}")
         return True
     except Exception as e:
         loggerERROR(f"exception in method setTimeZone (using tz database): {e}")
         return False
 
-def set_device_UTC_time(UTC_timestamp):
+def set_device_time(timestamp):
     try:
-        command = "sudo date -s '" + UTC_timestamp + "'"
+        command = "sudo date -s '" + timestamp + "'"
         answer = runShellCommand_and_returnOutput(command)
-        loggerDEBUG(f"set device time to UTC: {UTC_timestamp} with shell command answer {answer}")
+        loggerDEBUG(f"set device time: {timestamp} with shell command answer {answer}")
         return True
     except Exception as e:
-        loggerERROR(f"exception in method set_device_UTC_time: {e}")
+        loggerERROR(f"exception in method set_device_time: {e}")
         return False    
 
 
