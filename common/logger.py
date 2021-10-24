@@ -6,7 +6,7 @@ import os
 from common.constants import PARAMS
 from common.params import Params, Log
 import re
-import datetime as datetime
+from datetime import datetime
 
 params = Params(db=PARAMS)
 log_db =  Log()
