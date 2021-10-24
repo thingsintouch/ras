@@ -106,10 +106,15 @@ def saveChangesToParams(answer):
 
 def synchronize_Terminal_timestamp_with_Odoo_timestamp(answer):
     if 'odoo_server_timestamp' in answer:
-        odoo_timestamp = float(answer['odoo_server_timestamp'])
-        timestamp_in_local_tz = time.strftime("%Y-%m-%d %H:%M:%S", time.strptime(time.ctime(odoo_timestamp)))
-        loggerDEBUG(f"timestamp in local tz: {timestamp_in_local_tz}")
-        cc.set_device_time(timestamp_in_local_tz)
+        # odoo_UTC_timestamp = float(answer['odoo_server_timestamp']) # in UTC
+        # timestamp_in_local_tz = time.strftime("%Y-%m-%d %H:%M:%S", time.strptime(time.ctime(odoo_UTC_timestamp)))
+        # loggerDEBUG(f"timestamp in local tz: {timestamp_in_local_tz}")
+
+        now_on_odoo_server = (answer['odoo_server_timestamp']) # in UTC
+        loggerDEBUG(f"now on odoo server: {now_on_odoo_server}")
+
+        #cc.set_device_time(timestamp_in_local_tz)
+        cc.set_device_time(now_on_odoo_server)
 
 def routineCheck():
     answer = getAnswerFromOdooRoutineCheck()
