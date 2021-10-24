@@ -44,18 +44,18 @@ def loggerDEBUG(message):
     logger.debug(message)
 
 def loggerINFO(message):
-    appendToIncrementalLog(datetime.utcnow() + "UTC -INFO " + message)
+    appendToIncrementalLog(datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") + " UTC -INFO " + message)
     logger.info(message)
 
 def loggerWARNING(message):
-    appendToIncrementalLog(datetime.utcnow() + "UTC -WARNING " + message)
+    appendToIncrementalLog(datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") + " UTC -WARNING " + message)
     logger.warning(message)
 
 def loggerERROR(message):
-    appendToIncrementalLog(datetime.utcnow() + "UTC -ERROR " + message)
+    appendToIncrementalLog(datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") + " UTC -ERROR " + message)
     logger.error(message)
 
 def loggerCRITICAL(message):
-    appendToIncrementalLog(datetime.utcnow() + "UTC -CRITICAL " + message)
+    appendToIncrementalLog(datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") + " UTC -CRITICAL " + message)
     logger.critical(message)
 
