@@ -6,6 +6,7 @@ import os
 from common.constants import PARAMS
 from common.params import Params, Log
 import re
+import datetime as datetime
 
 params = Params(db=PARAMS)
 log_db =  Log()
@@ -43,18 +44,18 @@ def loggerDEBUG(message):
     logger.debug(message)
 
 def loggerINFO(message):
-    appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "INFO " + message)
+    appendToIncrementalLog(datetime.utcnow() + "UTC -INFO " + message)
     logger.info(message)
 
 def loggerWARNING(message):
-    appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "WARNING " + message)
+    appendToIncrementalLog(datetime.utcnow() + "UTC -WARNING " + message)
     logger.warning(message)
 
 def loggerERROR(message):
-    appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "ERROR " + message)
+    appendToIncrementalLog(datetime.utcnow() + "UTC -ERROR " + message)
     logger.error(message)
 
 def loggerCRITICAL(message):
-    appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "CRITICAL " + message)
+    appendToIncrementalLog(datetime.utcnow() + "UTC -CRITICAL " + message)
     logger.critical(message)
 
