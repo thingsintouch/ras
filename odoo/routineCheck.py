@@ -104,17 +104,17 @@ def saveChangesToParams(answer):
             else:
                 loggerDEBUG(f"this key in answer from routine call is NOT STORED {k}: {ans}")
 
-def synchronize_Terminal_timestamp_with_Odoo_timestamp(answer):
-    if 'odoo_server_timestamp' in answer:
+def synchronize_Terminal_timestamp_with_Odoo_UTC_timestamp(answer):
+    if 'odoo_server_utc_timestamp' in answer:
         # odoo_UTC_timestamp = float(answer['odoo_server_timestamp']) # in UTC
         # timestamp_in_local_tz = time.strftime("%Y-%m-%d %H:%M:%S", time.strptime(time.ctime(odoo_UTC_timestamp)))
         # loggerDEBUG(f"timestamp in local tz: {timestamp_in_local_tz}")
 
-        now_on_odoo_server = (answer['odoo_server_timestamp']) # in UTC
-        loggerDEBUG(f"now on odoo server: {now_on_odoo_server}")
+        utc_now_on_odoo_server = (answer['odoo_server_utc_timestamp']) # in UTC
+        loggerDEBUG(f"now on odoo server: {utc_now_on_odoo_server}")
 
         #cc.set_device_time(timestamp_in_local_tz)
-        cc.set_device_time(now_on_odoo_server)
+        cc.set_device_time(utc_now_on_odoo_server)
 
 def routineCheck():
     answer = getAnswerFromOdooRoutineCheck()
@@ -127,7 +127,7 @@ def routineCheck():
             loggerDEBUG(f"Routine Check done - no error - {answer}") # {answer}
             params.put("isRemoteOdooControlAvailable", True)
             saveChangesToParams(answer)
-            synchronize_Terminal_timestamp_with_Odoo_timestamp(answer)
+            synchronize_Terminal_timestamp_with_Odoo_UTC_timestamp(answer)
             if params.get("shouldGetFirmwareUpdate") == "1":
                 params.put("shouldGetFirmwareUpdate",'0')
                 firmwareUpdateAndReboot()
