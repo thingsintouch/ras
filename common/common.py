@@ -57,7 +57,7 @@ def setTimeZone():
         command2 = "sudo ln -s /usr/share/zoneinfo/"+timezone+" /etc/localtime"
         answer1 = runShellCommand_and_returnOutput(command1)
         answer2 = runShellCommand_and_returnOutput(command2)        
-        loggerINFO(f"Timezone was set- answer1: {answer1}; answer2: {answer2}; answer3: {answer3}")
+        loggerDEBUG(f"Timezone was set- answer1: {answer1}; answer2: {answer2}; answer3: {answer3}")
         return True
     except Exception as e:
         loggerERROR(f"exception in method setTimeZone (using tz database): {e}")

@@ -106,14 +106,8 @@ def saveChangesToParams(answer):
 
 def synchronize_Terminal_timestamp_with_Odoo_UTC_timestamp(answer):
     if 'odoo_server_utc_timestamp' in answer:
-        # odoo_UTC_timestamp = float(answer['odoo_server_timestamp']) # in UTC
-        # timestamp_in_local_tz = time.strftime("%Y-%m-%d %H:%M:%S", time.strptime(time.ctime(odoo_UTC_timestamp)))
-        # loggerDEBUG(f"timestamp in local tz: {timestamp_in_local_tz}")
-
-        utc_now_on_odoo_server = (answer['odoo_server_utc_timestamp']) # in UTC
-        loggerDEBUG(f"now on odoo server: {utc_now_on_odoo_server}")
-
-        #cc.set_device_time(timestamp_in_local_tz)
+        utc_now_on_odoo_server = (answer['odoo_server_utc_timestamp'])
+        loggerDEBUG(f"utc now on odoo server: {utc_now_on_odoo_server}")
         cc.set_device_time(utc_now_on_odoo_server)
 
 def routineCheck():
