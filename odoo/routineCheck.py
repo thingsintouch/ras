@@ -107,10 +107,9 @@ def saveChangesToParams(answer):
 def synchronize_Terminal_timestamp_with_Odoo_timestamp(answer):
     if 'odoo_server_timestamp' in answer:
         odoo_timestamp = float(answer['odoo_server_timestamp'])
-        timestamp_in_local_tz = time.ctime(odoo_timestamp)
-        #.strftime("%Y-%m-%d %H:%M:%S")
+        timestamp_in_local_tz = time.strptime(time.ctime(odoo_timestamp)).strftime("%Y-%m-%d %H:%M:%S")
         loggerDEBUG(f"timestamp in local tz: {timestamp_in_local_tz}")
-        cc.set_device_time(odoo_timestamp)
+        cc.set_device_time(timestamp_in_local_tz)
 
 def routineCheck():
     answer = getAnswerFromOdooRoutineCheck()
