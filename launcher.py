@@ -105,18 +105,18 @@ def log_running_processes_list():
     if running_dead:
         loggerINFO("alive processes: " + cf.GREEN + ' ; '.join(running_alive) + cf.RESET)    
         loggerINFO("dead processes: " + cf.RED + ' ; '.join(running_dead) + cf.RESET)
-        for p in running_dead:
-            if p not in to_resuscitate:
-                to_resuscitate.append(p)
-            try:
-                start_managed_process(p)
-                if running[p].is_alive():
-                    to_resuscitate.remove(p)
-                    loggerINFO("process successfuly restarted: "+p)
-                else:
-                    loggerDEBUG(f"could no restart {p}, but I keep trying :)")
-            except Exception as e:
-                loggerERROR(f'failed to re-start dead process {p} - with exception {e}')
+        # for p in running_dead:
+        #     if p not in to_resuscitate:
+        #         to_resuscitate.append(p)
+        #     try:
+        #         start_managed_process(p)
+        #         if running[p].is_alive():
+        #             to_resuscitate.remove(p)
+        #             loggerINFO("process successfuly restarted: "+p)
+        #         else:
+        #             loggerDEBUG(f"could no restart {p}, but I keep trying :)")
+        #     except Exception as e:
+        #         loggerERROR(f'failed to re-start dead process {p} - with exception {e}')
 
 def manager_thread():
     def get_thermal_status(counter):
