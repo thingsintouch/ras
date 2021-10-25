@@ -53,6 +53,7 @@ managed_essential_processes = { # key(=process name) : (pythonmodule where the p
 managed_NON_essential_processes = {}
 daemon_processes = {}
 running: Dict[str, Process] = {}
+to_resuscitate = []
 
 managed_processes = {
     **managed_essential_processes,
@@ -105,9 +106,15 @@ def log_running_processes_list():
         loggerINFO("alive processes: " + cf.GREEN + ' ; '.join(running_alive) + cf.RESET)    
         loggerINFO("dead processes: " + cf.RED + ' ; '.join(running_dead) + cf.RESET)
         for p in running_dead:
-            loggerINFO("restarting dead process: "+p)
+            if p not in to_resuscitate:
+                to_resuscitate.append(p)
             try:
                 start_managed_process(p)
+                if running[p].is_alive():
+                    to_resuscitate.remove(p)
+                    loggerINFO("process successfuly restarted: "+p)
+                else:
+                    loggerDEBUG(f"could no restart {p}, but I keep trying :)")
             except Exception as e:
                 loggerERROR(f'failed to re-start dead process {p} - with exception {e}')
 
