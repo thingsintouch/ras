@@ -6,12 +6,13 @@ import subprocess
 import os
 import time
 import socket
+import secrets
 
 from hashlib import blake2b
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from . import constants as co
-import lib.Utils as ut
+#import lib.Utils as ut
 from dicts import tz_dic
 from common.params import Params
 import common.constants as co
@@ -57,17 +58,16 @@ def setTimeZone():
         return False
 
 def getMachineID():
+    # Extract serial from cpuinfo file
     try:
-        with open(co.MACHINE_ID_FILE,"r")as f:
-            machine_id= bytes(f.readline().replace('\n',''), encoding='utf8')
-        #loggerDEBUG(f"got machine ID: {machine_id}")
+        with open('/proc/cpuinfo','r') as f:
+            for line in f:
+                if 'Serial' in line:
+                    machine_id = line[10:26]
     except Exception as e:
-        loggerERROR(f"Exception while retreiving Machine ID from its file: {e}")
-        machine_id = None
-    if not machine_id:
-        #TODO generate machine_id randomly and write it to machineID
-        loggerINFO(f"No MACHINE ID found.") # A random MACHINE ID will be generated and saved. 
-        pass
+        loggerERROR(f"Exception while getting serial number from cpuinfo file : {e}, machine_id gets random id")
+        machine_id = secrets.token_hex(16)
+    loggerDEBUG(f"machine id (= cpuinfo serial number (or random when there was an Exception)) is {machine_id}")
     return machine_id 
 
 def getHashedMachineId():
