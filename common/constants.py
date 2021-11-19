@@ -1,6 +1,6 @@
 from decouple import config
 
-RAS_VERSION = "2.3"
+RAS_VERSION = "2.4"
 WORKING_DIR = config("WORKING_DIR")
 DIR_WIFI_CONNECTIONS = config("DIR_WIFI_CONNECTIONS")
 SSID_WIFICONNECT = config("SSID_WIFICONNECT")
