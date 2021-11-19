@@ -84,8 +84,9 @@ def getHashedMachineId():
     return hashed_machine_id
 
 def store_hashed_machine_id():
-    hashed_machine_id = getHashedMachineId()
-    params.put('hashed_machine_id', hashed_machine_id)
+    if params.get('hashed_machine_id') is None:
+        hashed_machine_id = getHashedMachineId()
+        params.put('hashed_machine_id', hashed_machine_id)
 
 def store_factory_settings_in_database():
     if params.get("odooConnectedAtLeastOnce") != "1":
