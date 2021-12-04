@@ -1,69 +1,55 @@
-import requests
-import json
-#import os
 from os import listdir, remove
 from os.path import isfile, join
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
-import common.constants as co
-import common.common as cc
+
+from odoo.odooRequests import register_async_clocking
 
 from common.constants import PARAMS, CLOCKINGS
 from common.params import Params
-from common.keys import TxType, keys_by_Type
-
 
 params              = Params(db=PARAMS)
 
-productName         = params.get('productName')
+def get_sorted_clockings_from_older_to_newer():
+    clocking_tuples = []
+    for f in listdir(CLOCKINGS):
+        if isfile(join(CLOCKINGS, f)):
+            splitted  = f.split("-")
+            card_code = splitted[0]
+            timestamp = splitted[1]
+            clocking_tuples.append((timestamp, card_code, f))
+    return sorted(clocking_tuples, key=lambda clocking: clocking[0])
 
-def getClockings():
-    return [f for f in listdir(CLOCKINGS) if isfile(join(CLOCKINGS, f))]
-
-
-def postToOdooRegisterClockings():
-    try:
-        requestURL  = params.get("odooUrlTemplate") +  co.ROUTE_INCOMING_IN_ODOO + \
-                      "/" + params.get("routefromDeviceToOdoo")
-        headers     = {'Content-Type': 'application/json'}
-        clockings   = getClockings()
-        # loggerDEBUG(f"#####################--------------##############")
-        # cc.pPrint(clockings)
-        # loggerDEBUG(f"#####################--------------##############")
-        payload     = {
-                    'question'      : co.QUESTION_ASK_FOR_REGISTER_CLOCKINGS,
-                    'productName'   : productName,
-                    'clockings'     : clockings
-                    }
-        response    = requests.post(url=requestURL, json=payload, headers=headers)
-        answer      = response.json().get("result", False)
-        #loggerDEBUG(f"REGISTER CLOCKINGS answer: {answer}")
-        return  answer
-    except ConnectionRefusedError as e:
-        loggerDEBUG(f"Register Clockings not Available - ConnectionRefusedError - Request Exception : {e}")
-        return False
-    except Exception as e:
-        loggerDEBUG(f"Register Clockings not Available - Exception: {e}")
-        return False
+def store_name_for_a_rfid_code(code, name):
+    if code in params.keys:
+        if name != params.get(code):
+            loggerDEBUG(f"store_name_for_a_rfid_code - storing {code}: {name}")
+            params.put(code,name)
+    else:
+        params.add_rfid_card_code_to_keys(code)
+        loggerDEBUG(f"store_name_for_a_rfid_code - CREATED and storing {code}: {name}")
+        #loggerDEBUG(f"params.keys {params.keys}")
+        params.put(code,name)                
 
 def registerClockings():
-    answer = postToOdooRegisterClockings()
+    template                    = params.get("odooUrlTemplate")
+    serial_async                = params.get("serial_async")
+    passphrase_async            = params.get("passphrase_async")
+    card_codes_to_not_process   = []
 
-    if answer:
-        error = answer.get("error", False)
-        if error:
-            loggerDEBUG(f"Register Clockings not Available - error in answer from Odoo: {error}")
-        else:
-            loggerDEBUG(f"Register Clockings done - no error") 
-            params.put("isRemoteOdooControlAvailable", True)
-            processed_clockings = answer.get("processed_clockings", False)
-            if processed_clockings:
-                for c in processed_clockings:
-                    remove(join(CLOCKINGS,c))
-            return True
-    else:
-        loggerDEBUG(f"Register Clockings not Available - No Answer from Odoo")        
-
-    params.put("isRemoteOdooControlAvailable", False)
-    return False
-
+    sorted_clocking_tuples = get_sorted_clockings_from_older_to_newer()
+    print(f"sorted_clocking_tuples {sorted_clocking_tuples}")
+    for c in sorted_clocking_tuples:
+        print(f"processing clocking {c}")
+        if c[1] not in card_codes_to_not_process:
+            try:
+                answer = register_async_clocking(template, serial_async, passphrase_async, c[2])
+            except Exception as e:
+                loggerDEBUG(f"Could not Register Clocking {c[2]} - Exception: {e}")
+                answer = False
+            if answer:
+                if answer.get("logged", False):
+                    remove(join(CLOCKINGS,c[2]))
+                    store_name_for_a_rfid_code(c[1], answer.get("employee_name","-"))
+                else: # do not process all the older clockings if a clocking for a card has failed
+                    card_codes_to_not_process.append(c[1]) 
