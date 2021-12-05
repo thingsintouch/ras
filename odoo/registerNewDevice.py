@@ -8,6 +8,7 @@ params              = Params(db=PARAMS)
 
 def save_parameters_for_new_device(answer):
     try:
+        params.put("RASxxx", answer["name"])
         params.put("odooUrlTemplate",   answer["host"])
         extract_odoo_host_and_port()
         params.put("serial_sync",       answer["inputs"]["sync_clocking"]["serial"])

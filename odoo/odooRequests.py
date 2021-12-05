@@ -2,6 +2,7 @@ import requests
 import json
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
+from common.common import get_own_IP_address
 
 def register_async_clocking(template, serial, passphrase, card_code_and_timestamp):
     """ 
@@ -91,7 +92,8 @@ def register_new_device_in_Odoo(odooAddress):
 
     try:
         requestURL  = odooAddress
-        payload     = {'template': 'thingsintouch.ras'}
+        ownIpAddress = get_own_IP_address()
+        payload     = {'template': 'thingsintouch.ras', 'ip': ownIpAddress}
         loggerDEBUG(f"in register_new_device_in_Odoo() - requestURL: {requestURL}, payload: {payload}")
 
         posting     = requests.post(url=requestURL, data=payload)

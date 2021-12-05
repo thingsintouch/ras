@@ -116,6 +116,7 @@ def get_own_IP_address():
         IP = '127.0.0.1'
     finally:
         st.close()
+    params.put("ownIpAddress", IP)
     return IP
 
 def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex for ports

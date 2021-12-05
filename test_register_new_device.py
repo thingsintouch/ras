@@ -1,6 +1,6 @@
 from odoo.registerNewDevice import registerNewDevice
 
-odooAddress    = "http://lu:9131/iot/6186/conf"
+odooAddress    = "http://lu:9131/iot/260a/conf"
 
 answer = registerNewDevice(odooAddress)
 
