@@ -8,9 +8,6 @@ from typing import Dict, List
 import flask
 import zmq
 from colorama import Fore as cf
-# Fore: BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, RESET.
-# Back: BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, RESET.
-# Style: DIM, NORMAL, BRIGHT, RESET_ALL
 
 from common import constants as co
 from common.params import Params
@@ -20,7 +17,6 @@ from messaging.messaging import SubscriberMultipart as Subscriber
 from common.common import setTimeZone, store_hashed_machine_id, store_factory_settings_in_database
 from common.common import set_bluetooth_device_name, ensure_git_does_not_change_env_file
 
-#import lib.Utils as ut
 
 params = Params(db=co.PARAMS)
 
@@ -31,7 +27,7 @@ setTimeZone()
 loggerINFO("###################### RAS launched ###################")
 # loggerINFO(f'running on python version: {sys.version}')
 
-store_hashed_machine_id()
+# store_hashed_machine_id()
 set_bluetooth_device_name()
 params.put("firmwareVersion",co.RAS_VERSION)
 ensure_git_does_not_change_env_file()
