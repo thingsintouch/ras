@@ -15,6 +15,7 @@ def save_parameters_for_new_device(answer):
         params.put("passphrase_sync",   answer["inputs"]["sync_clocking"]["passphrase"])
         params.put("serial_async",      answer["inputs"]["async_clocking"]["serial"])
         params.put("passphrase_async",  answer["inputs"]["async_clocking"]["passphrase"])
+        params.put("odooConnectedAtLeastOnce", "1")
         return True
     except Exception as e:
         loggerDEBUG(f"save_parameters_for_new_device - Exception: {e}")

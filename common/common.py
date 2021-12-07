@@ -90,7 +90,9 @@ def store_hashed_machine_id():
 
 def store_factory_settings_in_database():
     if params.get("odooConnectedAtLeastOnce") != "1":
-        for k in keys_by_Type[TxType.FACTORY_SETTINGS]:
+        keys_to_store = keys_by_Type[TxType.FACTORY_SETTINGS] + \
+                        keys_by_Type[TxType.FACTORY_DEFAULT_VALUES]
+        for k in keys_to_store:
             try:
                 loggerDEBUG(f"key: {k} - params get k {params.get(k)}")
                 if params.get(k) is None:

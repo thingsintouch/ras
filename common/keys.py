@@ -3,6 +3,7 @@ from enum import Enum, auto
 
 class TxType(Enum): 
   FACTORY_SETTINGS            = auto()  # will never change
+  FACTORY_DEFAULT_VALUES      = auto()  # default values (pre-settings)
   ON_DEVICE_SETUP             = auto()  # parameters are defined on device setup
   ON_ACK_FROM_ODOO            = auto()
   ON_ACK_FROM_DEVICE          = auto()
@@ -19,6 +20,34 @@ keys_by_Type[TxType.DISPLAY_MESSAGE] = [
     "too_little_time_between_clockings"
   ]
 
+
+keys_by_Type[TxType.FACTORY_DEFAULT_VALUES] = [
+    "odooUrlTemplate",
+    "odoo_host",
+    "odoo_port",
+
+    "setup_password",
+
+    "tz",
+    "time_format",
+
+    "card_registered",
+    "too_little_time_between_clockings",
+    "minimumTimeBetweenClockings",
+
+    "period_odoo_routine_check",
+
+    "timeToDisplayResultAfterClocking",
+
+    "shouldGetFirmwareUpdate",
+    "shutdownTerminal",
+    "rebootTerminal",
+
+    "partialFactoryReset",  # do not delete locally stored clocking data
+    "fullFactoryReset",     # will delete locally stored clocking data
+
+  ]
+
 keys_by_Type[TxType.FACTORY_SETTINGS] = [
     "firmwareAtShipment",
     "productName"       ,
@@ -26,20 +55,15 @@ keys_by_Type[TxType.FACTORY_SETTINGS] = [
     "productionLocation",
     "productionNumber"  ,
     "qualityInspector"  , 
-    "SSIDreset"         ,
-    "setup_password",
+
     "ordered_by",
     "invoice_nr",
-    "RAS_hostname",
-    "tz",
-    "odooUrlTemplate",
-    "odoo_host",
-    "odoo_port",
+
     "hardware_machine",
     "hardware_card_reader",
     "hardware_display",
     "hardware_sound",
-    "time_format",
+
   ]
 
 keys_by_Type[TxType.ON_DEVICE_SETUP] = [
@@ -85,16 +109,11 @@ keys_by_Type.update({
       "showEmployeeName"                ,
       "sshPassword"                     ,
       "language"                        ,
-      "tz"                              ,
-      "time_format"                     ,
       "timeoutToCheckAttendance"        ,  
       "periodEvaluateReachability"      ,
       "periodDisplayClock"              ,
-      "timeToDisplayResultAfterClocking",
       "location"                        ,
-      "shouldGetFirmwareUpdate"         , # True, False
       "setRebootAt"                     , # time for next reboot (not periodically, one time reboot)
-      'shutdownTerminal'                ,
       "gitBranch"                       ,
       "gitCommit"                       ,
       "gitRemote"                       ,
@@ -103,9 +122,27 @@ keys_by_Type.update({
       "updateAvailable"                 , # to be proofed in Odoo every day @03:00 + random
       "lastConnectionOdooTerminal"      ,
       "periodCPUtemperatureLOGS"        , # in minutes
-      "minimumTimeBetweenClockings"     , # in seconds
-      "period_odoo_routine_check"       , # in seconds
-      "setup_password",
+
+    "setup_password",
+
+    "tz",
+    "time_format",
+
+    "card_registered",
+    "too_little_time_between_clockings",
+    "minimumTimeBetweenClockings",
+
+    "period_odoo_routine_check",
+    
+    "timeToDisplayResultAfterClocking",
+
+    "shouldGetFirmwareUpdate",
+    "shutdownTerminal",
+    "rebootTerminal",
+
+    "partialFactoryReset",
+    "fullFactoryReset",
+
     ]
   })
 
