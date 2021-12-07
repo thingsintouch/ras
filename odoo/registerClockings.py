@@ -38,9 +38,9 @@ def registerClockings():
     card_codes_to_not_process   = []
 
     sorted_clocking_tuples = get_sorted_clockings_from_older_to_newer()
-    print(f"sorted_clocking_tuples {sorted_clocking_tuples}")
+    loggerDEBUG(f"sorted_clocking_tuples {sorted_clocking_tuples}")
     for c in sorted_clocking_tuples:
-        print(f"processing clocking {c}")
+        loggerDEBUG(f"processing clocking {c}")
         if c[1] not in card_codes_to_not_process:
             try:
                 answer = register_async_clocking(template, serial_async, passphrase_async, c[2])

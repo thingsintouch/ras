@@ -2,51 +2,55 @@ from enum import Enum, auto
 
 
 class TxType(Enum): 
-  FACTORY_SETTINGS            = auto()  # will never change
-  FACTORY_DEFAULT_VALUES      = auto()  # default values (pre-settings)
-  ON_DEVICE_SETUP             = auto()  # parameters are defined on device setup
-  ON_ACK_FROM_ODOO            = auto()
-  ON_ACK_FROM_DEVICE          = auto()
-  ON_ROUTINE_CALLS            = auto()  # Updates come from Odoo - do not clear on start,
-  FLAG                        = auto()  # used as flag in the firmware
-  LOG                         = auto()  # key to store the logs
-  DISPLAY_MESSAGE             = auto()  # which message will be displayed
-  RFID_CARD_CODE              = auto() 
+    FACTORY_SETTINGS            = auto()  # will never change
+    FACTORY_DEFAULT_VALUES      = auto()  # default values (pre-settings)
+    ON_DEVICE_SETUP             = auto()  # parameters are defined on device setup
+    ON_ACK_FROM_ODOO            = auto()
+    ON_ACK_FROM_DEVICE          = auto()
+    ON_ROUTINE_CALLS            = auto()  # Updates come from Odoo - do not clear on start,
+    FLAG                        = auto()  # used as flag in the firmware
+    LOG                         = auto()  # key to store the logs
+    DISPLAY_MESSAGE             = auto()  # which message will be displayed
+    RFID_CARD_CODE              = auto() 
 
 keys_by_Type = {}
 
 keys_by_Type[TxType.DISPLAY_MESSAGE] = [
     "card_registered",
     "too_little_time_between_clockings"
-  ]
+    ]
 
-
-keys_by_Type[TxType.FACTORY_DEFAULT_VALUES] = [
-    "odooUrlTemplate",
-    "odoo_host",
-    "odoo_port",
+keys_by_Type[TxType.ON_ROUTINE_CALLS] =     \
+    keys_by_Type[TxType.DISPLAY_MESSAGE] + [
 
     "setup_password",
 
     "tz",
     "time_format",
 
-    "card_registered",
-    "too_little_time_between_clockings",
     "minimumTimeBetweenClockings",
 
     "period_odoo_routine_check",
-
+    "period_register_clockings",
+    
     "timeToDisplayResultAfterClocking",
 
     "shouldGetFirmwareUpdate",
     "shutdownTerminal",
     "rebootTerminal",
 
-    "partialFactoryReset",  # do not delete locally stored clocking data
-    "fullFactoryReset",     # will delete locally stored clocking data
+    "partialFactoryReset", # do not delete locally stored clocking data
+    "fullFactoryReset",    # will delete locally stored clocking data
+    ] 
 
-  ]
+
+keys_by_Type[TxType.FACTORY_DEFAULT_VALUES]  = \
+    keys_by_Type[TxType.ON_ROUTINE_CALLS] + [
+
+    "odooUrlTemplate",
+    "odoo_host",
+    "odoo_port",
+    ]
 
 keys_by_Type[TxType.FACTORY_SETTINGS] = [
     "firmwareAtShipment",
@@ -103,50 +107,6 @@ keys_by_Type[TxType.ON_ACK_FROM_DEVICE] = [
   ]
 
 keys_by_Type.update({
-  TxType.ON_ROUTINE_CALLS:
-    [
-      "ssh"                             ,
-      "showEmployeeName"                ,
-      "sshPassword"                     ,
-      "language"                        ,
-      "timeoutToCheckAttendance"        ,  
-      "periodEvaluateReachability"      ,
-      "periodDisplayClock"              ,
-      "location"                        ,
-      "setRebootAt"                     , # time for next reboot (not periodically, one time reboot)
-      "gitBranch"                       ,
-      "gitCommit"                       ,
-      "gitRemote"                       ,
-      "updateOTAcommand"                ,
-      "doFactoryReset"                  ,
-      "updateAvailable"                 , # to be proofed in Odoo every day @03:00 + random
-      "lastConnectionOdooTerminal"      ,
-      "periodCPUtemperatureLOGS"        , # in minutes
-
-    "setup_password",
-
-    "tz",
-    "time_format",
-
-    "card_registered",
-    "too_little_time_between_clockings",
-    "minimumTimeBetweenClockings",
-
-    "period_odoo_routine_check",
-    
-    "timeToDisplayResultAfterClocking",
-
-    "shouldGetFirmwareUpdate",
-    "shutdownTerminal",
-    "rebootTerminal",
-
-    "partialFactoryReset",
-    "fullFactoryReset",
-
-    ]
-  })
-
-keys_by_Type.update({
   TxType.FLAG:
     [
       "displayClock",
@@ -180,3 +140,25 @@ for e in TxType:
         keys[k] = existing
 
 keys_routine_calls={}
+
+"""
+Candidates for Routine Calls #################################################
+      "ssh"                             ,
+      "showEmployeeName"                ,
+      "sshPassword"                     ,
+      "language"                        ,
+      "timeoutToCheckAttendance"        ,  
+      "periodEvaluateReachability"      ,
+      "periodDisplayClock"              ,
+      "location"                        ,
+      "setRebootAt"                     , # time for next reboot (not periodically, one time reboot)
+      "gitBranch"                       ,
+      "gitCommit"                       ,
+      "gitRemote"                       ,
+      "updateOTAcommand"                ,
+      "doFactoryReset"                  ,
+      "updateAvailable"                 , # to be proofed in Odoo every day @03:00 + random
+      "lastConnectionOdooTerminal"      ,
+      "periodCPUtemperatureLOGS"        , # in minutes
+
+"""

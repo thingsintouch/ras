@@ -1,20 +1,17 @@
 from time import sleep
 
-from common.constants import PERIOD_ODOO_REGISTER_CLOCKINGS, PARAMS
-#from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG
 from odoo.registerClockings import registerClockings
-from common.params import Params
 
-params = Params(db=PARAMS)
+from common.common import get_period
+from common.common import BLOCKING_waiting_until_RAS_acknowledged_from_Odoo
 
 def main():
-    
-    while params.get("acknowledged") == "0":
-        sleep(PERIOD_ODOO_REGISTER_CLOCKINGS) # waiting_to_be_acknowledged
+
+    BLOCKING_waiting_until_RAS_acknowledged_from_Odoo()
 
     while True:
         registerClockings()
-        sleep(PERIOD_ODOO_REGISTER_CLOCKINGS)
+        sleep(get_period("period_register_clockings"))
 
 
 if __name__ == "__main__":

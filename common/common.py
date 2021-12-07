@@ -145,3 +145,24 @@ def ensure_git_does_not_change_env_file():
         runShellCommand("sudo git update-index --skip-worktree .env")
     except Exception as e:
         loggerDEBUG(f"ensure_git_does_not_change_env_file -- Exception: {e}")
+
+def get_period(period_name):
+    try:
+        n = params.get(period_name)
+        default = co.DEFAULT_MINIMUM_PERIOD
+        if n is None:
+            period = default
+        elif n:
+            period = int(n)
+            if period < default:
+                period = default
+        else:
+            period = default
+    except Exception as e:
+        loggerDEBUG(f"exception in  get_period for {period_name}: {e} - period set to 14s")
+        period = 14     
+    return period
+
+def BLOCKING_waiting_until_RAS_acknowledged_from_Odoo():
+    while params.get("acknowledged") != "1":
+        time.sleep(16) # waiting_to_be_acknowledged

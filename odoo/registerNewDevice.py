@@ -4,7 +4,7 @@ from common.connectivity import extract_odoo_host_and_port
 from common.constants import PARAMS
 from common.params import Params
 
-params              = Params(db=PARAMS)
+params = Params(db=PARAMS)
 
 def save_parameters_for_new_device(answer):
     try:
