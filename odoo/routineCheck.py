@@ -20,3 +20,4 @@ def routineCheck():
     except Exception as e:
         loggerDEBUG(f"Could not do ROUTINE CHECK - Exception: {e}")
         answer = False
+    

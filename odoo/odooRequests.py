@@ -4,136 +4,103 @@ import json
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from common.common import get_own_IP_address
 
-def register_async_clocking(template, serial, passphrase, card_code_and_timestamp):
+from common.constants import PARAMS
+from common.params import Params
+
+params = Params(db=PARAMS)
+
+def get_iot_template():
+    return params.get("odooUrlTemplate") + "/iot/"
+
+def post_request_and_get_answer(requestURL, payload):
+    try:
+        posting     = requests.post(url=requestURL, data=payload)
+        
+        if params.get("odooPortOpen") != "0" and posting.status_code == 404:
+            loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
+            loggerINFO(f"odooConnectedAtLeastOnce set to 0")
+            params.put("odooConnectedAtLeastOnce", "0")
+            params.put("RASxxx", "ras2.eu")
+            answer = False
+        else:
+            answer = posting.json()
+
+    except ConnectionRefusedError as e:
+        loggerDEBUG(f"post_request_and_get_answer - ConnectionRefusedError - Request Exception : {e}")
+        answer = False
+
+    except Exception as e:
+        loggerDEBUG(f"post_request_and_get_answer not Available - Exception: {e}")
+        answer = False
+
+    loggerDEBUG(f"in post_request_and_get_answer - requestURL {requestURL} -payload {payload} -answer: {answer}")
+    return answer
+
+
+def register_async_clocking(card_code_and_timestamp):
     """ 
         Returns answer from Odoo for Making aa ASYNC hronous Clocking
         with rfid_card_code
         It will register the Timestamp based on the Clock of the Odoo Server.
         serial is the serial of the input (not the serial of the device)
     """
+    requestURL  = get_iot_template() + str(params.get("serial_async")) + "/action"
+    payload     = {
+        'passphrase': str(params.get("passphrase_async")),
+        "value"     : str(card_code_and_timestamp)
+        }
+    return post_request_and_get_answer(requestURL, payload)
 
-    try:
-        requestURL  = template + "/iot/" + str(serial) + "/action"
-        payload     = {'passphrase': str(passphrase), "value": str(card_code_and_timestamp)}
-        loggerDEBUG(f"in register_clocking() - requestURL: {requestURL}, payload: {payload}")
 
-        posting     = requests.post(url=requestURL, data=payload)
-        answer      = posting.json()        
-        loggerDEBUG(f"in register_clocking - answer: {answer}")     
-
-        return answer
-
-    except ConnectionRefusedError as e:
-        loggerDEBUG(f"register_clocking not Available - ConnectionRefusedError - Request Exception : {e}")
-
-    except Exception as e:
-        loggerDEBUG(f"register_clocking not Available - Exception: {e}")
-    
-    return False 
-
-def register_sync_clocking(template, serial, passphrase, rfid_card_code):
+def register_sync_clocking(rfid_card_code):
     """ 
         Returns answer from Odoo for Making a Synchronous Clocking
         with rfid_card_code
         It will register the Timestamp based on the Clock of the Odoo Server.
         serial is the serial of the input (not the serial of the device)
     """
+    requestURL  = get_iot_template() + str(params.get("serial_sync")) + "/action"
+    payload     = {
+        'passphrase': str(params.get("passphrase_sync")),
+        "value": str(rfid_card_code)}
+    return post_request_and_get_answer(requestURL, payload)
 
-    try:
-        requestURL  = template + "/iot/" + str(serial) + "/action"
-        payload     = {'passphrase': str(passphrase), "value": str(rfid_card_code)}
-        loggerDEBUG(f"in register_clocking() - requestURL: {requestURL}, payload: {payload}")
 
-        posting     = requests.post(url=requestURL, data=payload)
-        answer      = posting.json()        
-        loggerINFO(f"in register_clocking - answer: {answer}")     
-
-        return answer
-
-    except ConnectionRefusedError as e:
-        loggerDEBUG(f"register_clocking not Available - ConnectionRefusedError - Request Exception : {e}")
-
-    except Exception as e:
-        loggerDEBUG(f"register_clocking not Available - Exception: {e}")
-    
-    return False    
-
-def check_if_registered(template, serial, passphrase):
+def check_if_registered(passphrase):
     """ 
         Returns True if registered in Odoo
         serial is the serial of the input (not the serial of the device)
     """
+    requestURL  = get_iot_template() + str(params.get("serial_async")) + "/check"
+    payload     = {
+        'passphrase': str(params.get("passphrase_async"))
+        }
+    return post_request_and_get_answer(requestURL, payload)
 
-    try:
-        requestURL  = template + "/iot/" + str(serial) + "/check"
-        payload     = {'passphrase': str(passphrase)}
-        loggerDEBUG(f"in check_if_registered() - requestURL: {requestURL}, payload: {payload}")
-
-        posting     = requests.post(url=requestURL, data=payload)
-        answer      = posting.json()        
-        loggerINFO(f"in check_if_registered() - answer: {answer}")     
-
-        state       = answer.get("state", False)
-        return state
-
-    except ConnectionRefusedError as e:
-        loggerDEBUG(f"Remote Odoo Control not Available - ConnectionRefusedError - Request Exception : {e}")
-
-    except Exception as e:
-        loggerDEBUG(f"Remote Odoo Control not Available - Exception: {e}")
-    
-    return False
 
 def register_new_device_in_Odoo(odooAddress):
     """ 
         Returns  x x if registered in Odoo
         
     """
+    requestURL  = odooAddress
+    payload     = {
+        'template': 'thingsintouch.ras',
+        'ip': get_own_IP_address()
+        }
+    return post_request_and_get_answer(requestURL, payload)
 
-    try:
-        requestURL  = odooAddress
-        ownIpAddress = get_own_IP_address()
-        payload     = {'template': 'thingsintouch.ras', 'ip': ownIpAddress}
-        loggerDEBUG(f"in register_new_device_in_Odoo() - requestURL: {requestURL}, payload: {payload}")
 
-        posting     = requests.post(url=requestURL, data=payload)
-        answer      = posting.json()        
-        loggerINFO(f"in register_new_device_in_Odoo() - answer: {answer}")     
-
-        #state       = answer.get("state", False)
-        return answer
-
-    except ConnectionRefusedError as e:
-        loggerDEBUG(f"register_new_device_in_Odoo() - ConnectionRefusedError - Request Exception : {e}")
-
-    except Exception as e:
-        loggerDEBUG(f"register_new_device_in_Odoo() - Exception: {e}")
-    
-    return False
-
-def routine_check(template, serial, passphrase, to_send):
+def routine_check(to_send):
     """ 
         Returns answer from Odoo for Making aa ASYNC hronous Clocking
         with rfid_card_code
         It will register the Timestamp based on the Clock of the Odoo Server.
         serial is the serial of the input (not the serial of the device)
     """
-
-    try:
-        requestURL  = template + "/iot/" + str(serial) + "/ras_routine"
-        payload     = {'passphrase': str(passphrase), "value": to_send}
-        loggerDEBUG(f"in routine_check_request() - requestURL: {requestURL}, payload: {payload}")
-
-        posting     = requests.post(url=requestURL, data=payload)
-        answer      = posting.json()        
-        loggerDEBUG(f"in routine_check_request - answer: {answer}")     
-
-        return answer
-
-    except ConnectionRefusedError as e:
-        loggerDEBUG(f"routine_check_request not Available - ConnectionRefusedError - Request Exception : {e}")
-
-    except Exception as e:
-        loggerDEBUG(f"routine_check_request not Available - Exception: {e}")
-    
-    return False 
+    requestURL  = get_iot_template() + str(params.get("serial_async")) + "/ras_routine"
+    payload     = {
+        'passphrase': str(params.get("passphrase_async")),
+        "value"     : to_send
+        }
+    return post_request_and_get_answer(requestURL, payload)
