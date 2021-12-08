@@ -1,9 +1,9 @@
 from odoo.odooRequests import check_if_registered
 
 template    = "http://lu:9131"
-serial      = "b41dc469-385e-4c68-bcd5-cb85ce7b4606"
-passphrase  = "08b5e8e0-56b7-48c4-b03c-555c539e829a"
+serial      = "1c2b000a-698a-4ce4-a680-5b95ae771d29"
+passphrase  = "916ad7ee-c4b1-470c-be0b-e7989d63a0c6"
 
-registered = check_if_registered(template, serial, passphrase)
+registered = check_if_registered()
 
 print(f"registered (state): {registered}")

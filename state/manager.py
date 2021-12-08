@@ -15,11 +15,7 @@ params = Params(db=co.PARAMS)
 
 def check_if_registered_once_after_every_launch():
     if params.get("acknowledged") != "1":
-        template        = params.get("odooUrlTemplate")
-        serial_rfid     = params.get("serial_sync")
-        passphrase_rfid = params.get("passphrase_sync")
-        loggerDEBUG(f" checking if the terminal is acknowlegeable by Odoo - once after every launch")
-        if check_if_registered(template, serial_rfid, passphrase_rfid):
+        if check_if_registered():
             params.put("acknowledged", "1")
 
 def main():

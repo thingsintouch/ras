@@ -32,24 +32,23 @@ def store_name_for_a_rfid_code(code, name):
         params.put(code,name)                
 
 def registerClockings():
-    template                    = params.get("odooUrlTemplate")
-    serial_async                = params.get("serial_async")
-    passphrase_async            = params.get("passphrase_async")
     card_codes_to_not_process   = []
 
     sorted_clocking_tuples = get_sorted_clockings_from_older_to_newer()
     loggerDEBUG(f"sorted_clocking_tuples {sorted_clocking_tuples}")
-    for c in sorted_clocking_tuples:
-        loggerDEBUG(f"processing clocking {c}")
-        if c[1] not in card_codes_to_not_process:
+    for clocking_tuple in sorted_clocking_tuples:
+        loggerDEBUG(f"processing clocking {clocking_tuple}")
+        card_code = c[1]
+        if card_code not in card_codes_to_not_process:
             try:
-                answer = register_async_clocking(template, serial_async, passphrase_async, c[2])
+                card_code_and_timestamp = c[2]
+                answer = register_async_clocking(card_code_and_timestamp)
             except Exception as e:
-                loggerDEBUG(f"Could not Register Clocking {c[2]} - Exception: {e}")
+                loggerDEBUG(f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}")
                 answer = False
             if answer:
                 if answer.get("logged", False):
-                    remove(join(CLOCKINGS,c[2]))
-                    store_name_for_a_rfid_code(c[1], answer.get("employee_name","-"))
+                    remove(join(CLOCKINGS,card_code_and_timestamp))
+                    store_name_for_a_rfid_code(card_code, answer.get("employee_name","-"))
                 else: # do not process all the older clockings if a clocking for a card has failed
-                    card_codes_to_not_process.append(c[1]) 
+                    card_codes_to_not_process.append(card_code) 

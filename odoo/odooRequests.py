@@ -21,17 +21,17 @@ def post_request_and_get_answer(requestURL, payload):
             loggerINFO(f"odooConnectedAtLeastOnce set to 0")
             params.put("odooConnectedAtLeastOnce", "0")
             params.put("RASxxx", "ras2.eu")
-            answer = False
+            answer = {"error": "404"}
         else:
             answer = posting.json()
 
     except ConnectionRefusedError as e:
         loggerDEBUG(f"post_request_and_get_answer - ConnectionRefusedError - Request Exception : {e}")
-        answer = False
+        answer = {"error": "ConnectionRefusedError"}
 
     except Exception as e:
         loggerDEBUG(f"post_request_and_get_answer not Available - Exception: {e}")
-        answer = False
+        answer = {"error": e}
 
     loggerDEBUG(f"in post_request_and_get_answer - requestURL {requestURL} -payload {payload} -answer: {answer}")
     return answer
@@ -66,7 +66,7 @@ def register_sync_clocking(rfid_card_code):
     return post_request_and_get_answer(requestURL, payload)
 
 
-def check_if_registered(passphrase):
+def check_if_registered():
     """ 
         Returns True if registered in Odoo
         serial is the serial of the input (not the serial of the device)
@@ -75,7 +75,9 @@ def check_if_registered(passphrase):
     payload     = {
         'passphrase': str(params.get("passphrase_async"))
         }
-    return post_request_and_get_answer(requestURL, payload)
+    answer = post_request_and_get_answer(requestURL, payload)
+
+    return answer.get("state", False)
 
 
 def register_new_device_in_Odoo(odooAddress):
