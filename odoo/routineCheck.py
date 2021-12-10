@@ -1,6 +1,3 @@
-import os
-import time
-
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
 from odoo.odooRequests import routine_check
@@ -9,14 +6,19 @@ from common.constants import PARAMS
 from common.params import Params, Log
 from common.keys import TxType, keys_by_Type
 
-from display.helpers import sh1106
-from common.connectivity import isPingable
-
 params              = Params(db=PARAMS)
 
 keys_to_be_saved =  keys_by_Type[TxType.ON_ROUTINE_CALLS] + keys_by_Type[TxType.DISPLAY_MESSAGE]
 # cc.pPrint(keys_to_be_saved)
 productName = params.get('productName')
+
+list_of_boolean_flags = [
+    "shouldGetFirmwareUpdate",
+    "rebootTerminal",
+    "partialFactoryReset",
+    "fullFactoryReset",
+    "shutdownTerminal",
+]
 
 def routineCheck():
     to_send = {
@@ -34,12 +36,6 @@ def routineCheck():
             loggerDEBUG(f"Routine Check done - no error - {answer}") # {answer}
             params.put("isRemoteOdooControlAvailable", "1")
             saveChangesToParams(answer)
-            if params.get("shouldGetFirmwareUpdate") == "1":
-                params.put("shouldGetFirmwareUpdate",'0')
-                firmwareUpdateAndReboot()
-            if params.get('shutdownTerminal') == "1":
-                params.put('shutdownTerminal','0')
-                shutdownTerminal()
             return True
     else:
         loggerDEBUG(f"Routine Check not Available - No Answer from Odoo")        
@@ -56,8 +52,13 @@ def saveChangesToParams(answer):
             if k in keys_to_be_saved:
                 ans = str(ans)
                 if ans != params.get(k):
-                    loggerDEBUG(f"from routine check - storing {k}: {ans}")
-                    params.put(k,ans)
+                    if k in list_of_boolean_flags:
+                        if ans == "1":
+                            loggerDEBUG(f"from routine check - storing {k}: {ans}")
+                            params.put(k,ans)
+                    else:
+                        loggerDEBUG(f"from routine check - storing {k}: {ans}")
+                        params.put(k,ans)                       
             elif k == "rfid_codes_to_names":
                 for code in ans:
                     if code in params.keys:
@@ -71,31 +72,3 @@ def saveChangesToParams(answer):
                         params.put(code,ans[code])                        
             else:
                 loggerDEBUG(f"this key in answer from routine call is NOT STORED {k}: {ans}")
-
-def display_off():
-    try:
-        display = sh1106()
-        display.display_off()
-    except Exception as e:
-        loggerINFO(f"could not execute -display_off- before shutdown or reboot: {e}")   
-
-def shutdownTerminal():
-    #display_off()
-    loggerINFO("-----############### SHUTDOWN ###############------")
-    #os.system("sudo shutdown now")
-    #time.sleep(60)
-    #sys.exit(0)
-
-def firmwareUpdateAndReboot():
-    if isPingable("github.com"):
-        loggerINFO("<<<<++++++++ Firmware Update and Reboot +++++++>>>>>>")
-        #os.chdir(co.WORKING_DIR)
-        #os.system("sudo git fetch ras released")
-        #os.system("sudo git reset --hard ras/released")
-        # display_off()
-        # time.sleep(1)
-        # os.system("sudo reboot")
-        # time.sleep(60)
-        # sys,exit(0)     
-    else:
-        loggerINFO("Firmware Update not possible: GitHub is down")     

@@ -38,10 +38,10 @@ def registerClockings():
     loggerDEBUG(f"sorted_clocking_tuples {sorted_clocking_tuples}")
     for clocking_tuple in sorted_clocking_tuples:
         loggerDEBUG(f"processing clocking {clocking_tuple}")
-        card_code = c[1]
+        card_code = clocking_tuple[1]
         if card_code not in card_codes_to_not_process:
             try:
-                card_code_and_timestamp = c[2]
+                card_code_and_timestamp = clocking_tuple[2]
                 answer = register_async_clocking(card_code_and_timestamp)
             except Exception as e:
                 loggerDEBUG(f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}")

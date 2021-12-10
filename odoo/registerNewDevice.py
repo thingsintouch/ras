@@ -1,10 +1,19 @@
 from odoo.odooRequests import register_new_device_in_Odoo
 from common.connectivity import extract_odoo_host_and_port
 
+from common.keys import TxType, keys_by_Type
+
 from common.constants import PARAMS
 from common.params import Params
 
 params = Params(db=PARAMS)
+
+def parameters_to_send_on_registering():
+    to_send = {}
+    keys_to_be_sent =  keys_by_Type[TxType.ON_REGISTERING_FROM_DEVICE]
+    for k in keys_to_be_sent:
+        to_send[k] = params.get(k)
+    return to_send
 
 def save_parameters_for_new_device(answer):
     try:
@@ -22,7 +31,7 @@ def save_parameters_for_new_device(answer):
     return False
 
 def registerNewDevice(odooAddress):
-    answer = register_new_device_in_Odoo(odooAddress)
+    answer = register_new_device_in_Odoo(odooAddress, parameters_to_send_on_registering())
     if answer:
         result = save_parameters_for_new_device(answer)
         return result

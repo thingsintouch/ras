@@ -8,7 +8,8 @@ import time
 from dbus.mainloop.glib import DBusGMainLoop
 from common.common import runShellCommand_and_returnOutput as rs
 #from common.launcher import launcher
-from common.connectivity import internetReachable, isOdooPortOpen
+from common.connectivity import internetReachable
+from odoo.odooRequests import check_if_registered
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from multiprocessing import Process #, Manager
 from bluetooth import connect_To_Odoo, connect_To_SSID
@@ -29,7 +30,9 @@ ADAPTER_IFACE =                'org.Bluez.Adapter1'
 
 PATH_HCI0 =                    '/org/bluez/hci0'
 
-UUID_GATESETUP_SERVICE      = '5468696e-6773-496e-546f-756368000100'
+UUID_BASIS = '5468696e-6773-496e-546f-756368000'
+
+UUID_GATESETUP_SERVICE      = UUID_BASIS + '100'
 #UUID_GATE_SSIDs_SERVICE     = '5468696e-6773-496e-546f-756368000101'
 # ThingsInTouch Services        go from 0x001000 to 0x001FFF
 # ThingsInTouch Characteristics go from 0x100000 to 0x1FFFFF
@@ -37,13 +40,21 @@ UUID_GATESETUP_SERVICE      = '5468696e-6773-496e-546f-756368000100'
 # UUID_NOTIFY_TEST_CHARACTERISTIC         = '5468696e-6773-496e-546f-756368100001'
 # UUID_SERIAL_NUMBER_CHARACTERISTIC       = '5468696e-6773-496e-546f-756368100002'
 # UUID_DEVICE_TYPE_CHARACTERISTIC         = '5468696e-6773-496e-546f-756368100003'
-UUID_INTERNET_CONNECTED_CHARACTERISTIC  = '5468696e-6773-496e-546f-756368100004'
-UUID_SSIDS_CHARACTERISTIC               = '5468696e-6773-496e-546f-756368100005'
-UUID_CONNECT_TO_SSID_CHARACTERISTIC     = '5468696e-6773-496e-546f-756368100006'
-UUID_NOTIFY_CHARACTERISTIC              = '5468696e-6773-496e-546f-756368100007'
-UUID_CONNECT_TO_ODOO_CHARACTERISTIC     = '5468696e-6773-496e-546f-756368100008'
-UUID_CHECK_SETUP_PASSWORD_CHARACTERISTIC= '5468696e-6773-496e-546f-756368100009'
+UUID_INTERNET_CONNECTED_CHARACTERISTIC  = UUID_BASIS + '004'
+UUID_SSIDS_CHARACTERISTIC               = UUID_BASIS + '005'
+UUID_CONNECT_TO_SSID_CHARACTERISTIC     = UUID_BASIS + '006'
+UUID_NOTIFY_CHARACTERISTIC              = UUID_BASIS + '007'
+UUID_CONNECT_TO_ODOO_CHARACTERISTIC     = UUID_BASIS + '008'
+UUID_CHECK_SETUP_PASSWORD_CHARACTERISTIC= UUID_BASIS + '009'
+UUID_BOOLEAN_FLAGS                      = UUID_BASIS + '010'
 
+# list_of_boolean_flags = [
+#     "shouldGetFirmwareUpdate",
+#     "rebootTerminal",
+#     "partialFactoryReset",
+#     "fullFactoryReset",
+#     "shutdownTerminal",
+# ]
 
 DEVICE_NAME = params.get("bluetooth_device_name")
 
@@ -234,6 +245,41 @@ class CheckSetupPasswordCharacteristic(Characteristic):
             print("#"*100)
             print("#"*100)            
 
+class SetBooleanFlagCharacteristic(Characteristic):
+    """
+    (write) boolean Flag to be set to true
+    """
+
+    def __init__(self, service):
+        self.bus = dbus.SystemBus()
+        self.uuid = UUID_BOOLEAN_FLAGS
+        self.index = self.uuid[-6:]
+        Characteristic.__init__(self, self.bus, self.index,self.uuid,        
+                ['write'], #['read', 'write', 'writable-auxiliaries', 'notify'],
+                service)
+        self.value = N_A
+        self.notifying = False
+
+    def WriteValue(self, value, options):
+        try:
+            valueString =""
+            for i in range(0,len(value)):
+                valueString+= str(value[i])
+            splittedString = valueString.split("\n")
+            booleanFlag = splittedString[0]
+            print(f'Connect To Set Boolean Flag Characteristic was written : {booleanFlag}')
+            print("#"*100)
+            print("#"*100)
+            print("#"*100)
+            params.put(booleanFlag,"1")
+            self.value= FALSE
+
+        except Exception as e:
+            print(f'Exception in Write Value - Connect To Odoo: {e}')
+            print("#"*100)
+            print("#"*100)
+            print("#"*100)            
+
 class NotifyCharacteristic(Characteristic):
     """
 
@@ -291,7 +337,7 @@ class NotifyCharacteristic(Characteristic):
             else:
                 internetByte = FALSE.decode()
 
-            if isOdooPortOpen():
+            if check_if_registered():
                 odooPortByte = TRUE.decode()
             else:
                 odooPortByte = FALSE.decode()
@@ -350,6 +396,7 @@ class GateSetupService(Service):
         self.add_characteristic(NotifyCharacteristic(self))
         self.add_characteristic(ConnectToOdooCharacteristic(self))
         self.add_characteristic(CheckSetupPasswordCharacteristic(self))
+        self.add_characteristic(SetBooleanFlagCharacteristic(self))
 
 class GateSetupApplication(Application):
     def __init__(self):

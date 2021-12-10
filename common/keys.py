@@ -6,7 +6,7 @@ class TxType(Enum):
     FACTORY_DEFAULT_VALUES      = auto()  # default values (pre-settings)
     ON_DEVICE_SETUP             = auto()  # parameters are defined on device setup
     ON_ACK_FROM_ODOO            = auto()
-    ON_ACK_FROM_DEVICE          = auto()
+    ON_REGISTERING_FROM_DEVICE  = auto()
     ON_ROUTINE_CALLS            = auto()  # Updates come from Odoo - do not clear on start,
     FLAG                        = auto()  # used as flag in the firmware
     LOG                         = auto()  # key to store the logs
@@ -41,6 +41,7 @@ keys_by_Type[TxType.ON_ROUTINE_CALLS] =     \
 
     "partialFactoryReset", # do not delete locally stored clocking data
     "fullFactoryReset",    # will delete locally stored clocking data
+    "RASxxx",
     ] 
 
 
@@ -85,25 +86,25 @@ keys_by_Type[TxType.ON_DEVICE_SETUP] = [
   ]
 
 keys_by_Type[TxType.ON_ACK_FROM_ODOO] = [
-    "terminalIDinOdoo",
+    #"terminalIDinOdoo",
     #"id",
     "RASxxx",
-    "routefromDeviceToOdoo",
-    "routefromOdooToDevice",
+    #"routefromDeviceToOdoo",
+    #"routefromOdooToDevice",
     "version_things_module_in_Odoo",
     "minimumTimeBetweenClockings"     , # in seconds
-    "period_odoo_routine_check"       , # in seconds
+    "period_odoo_routine_check", # in seconds
     "timeToDisplayResultAfterClocking",
-    "setup_password",
+    "firmwareVersion",
   ]
 
-keys_by_Type[TxType.ON_ACK_FROM_DEVICE] = [
+keys_by_Type[TxType.ON_REGISTERING_FROM_DEVICE] = [
     "ownIpAddress",
-    "firmwareVersion",
     "lastFirmwareUpdateTime",
     "lastTimeTerminalStarted",
     "updateFailedCount",
     "hashed_machine_id",
+    "setup_password",
   ]
 
 keys_by_Type.update({

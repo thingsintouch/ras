@@ -10,7 +10,8 @@ from common.params import Params
 params = Params(db=PARAMS)
 
 def get_iot_template():
-    return params.get("odooUrlTemplate") + "/iot/"
+    template = params.get("odooUrlTemplate") or ""
+    return template + "/iot/"
 
 def post_request_and_get_answer(requestURL, payload):
     try:
@@ -80,20 +81,19 @@ def check_if_registered():
     return answer.get("state", False)
 
 
-def register_new_device_in_Odoo(odooAddress):
+def register_new_device_in_Odoo(odooAddress, payload):
     """ 
         Returns  x x if registered in Odoo
         
     """
     requestURL  = odooAddress
-    payload     = {
-        'template': 'thingsintouch.ras',
-        'ip': get_own_IP_address()
-        }
+    payload['template'] = 'thingsintouch.ras'
+    payload['ip']       = get_own_IP_address()
+
     return post_request_and_get_answer(requestURL, payload)
 
 
-def routine_check(to_send):
+def routine_check(payload):
     """ 
         Returns answer from Odoo for Making aa ASYNC hronous Clocking
         with rfid_card_code
@@ -101,8 +101,7 @@ def routine_check(to_send):
         serial is the serial of the input (not the serial of the device)
     """
     requestURL  = get_iot_template() + str(params.get("serial_async")) + "/ras_routine"
-    payload     = {
+    payload.update({
         'passphrase': str(params.get("passphrase_async")),
-        "value"     : to_send
-        }
+        })
     return post_request_and_get_answer(requestURL, payload)
