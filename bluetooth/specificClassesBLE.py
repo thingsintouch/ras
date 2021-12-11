@@ -30,9 +30,9 @@ ADAPTER_IFACE =                'org.Bluez.Adapter1'
 
 PATH_HCI0 =                    '/org/bluez/hci0'
 
-UUID_BASIS = '5468696e-6773-496e-546f-756368000'
+UUID_BASIS = '5468696e-6773-496e-546f-756368'
 
-UUID_GATESETUP_SERVICE      = UUID_BASIS + '100'
+UUID_GATESETUP_SERVICE                  = UUID_BASIS + '000100'
 #UUID_GATE_SSIDs_SERVICE     = '5468696e-6773-496e-546f-756368000101'
 # ThingsInTouch Services        go from 0x001000 to 0x001FFF
 # ThingsInTouch Characteristics go from 0x100000 to 0x1FFFFF
@@ -40,13 +40,13 @@ UUID_GATESETUP_SERVICE      = UUID_BASIS + '100'
 # UUID_NOTIFY_TEST_CHARACTERISTIC         = '5468696e-6773-496e-546f-756368100001'
 # UUID_SERIAL_NUMBER_CHARACTERISTIC       = '5468696e-6773-496e-546f-756368100002'
 # UUID_DEVICE_TYPE_CHARACTERISTIC         = '5468696e-6773-496e-546f-756368100003'
-UUID_INTERNET_CONNECTED_CHARACTERISTIC  = UUID_BASIS + '004'
-UUID_SSIDS_CHARACTERISTIC               = UUID_BASIS + '005'
-UUID_CONNECT_TO_SSID_CHARACTERISTIC     = UUID_BASIS + '006'
-UUID_NOTIFY_CHARACTERISTIC              = UUID_BASIS + '007'
-UUID_CONNECT_TO_ODOO_CHARACTERISTIC     = UUID_BASIS + '008'
-UUID_CHECK_SETUP_PASSWORD_CHARACTERISTIC= UUID_BASIS + '009'
-UUID_BOOLEAN_FLAGS                      = UUID_BASIS + '010'
+UUID_INTERNET_CONNECTED_CHARACTERISTIC  = UUID_BASIS + '100004'
+UUID_SSIDS_CHARACTERISTIC               = UUID_BASIS + '100005'
+UUID_CONNECT_TO_SSID_CHARACTERISTIC     = UUID_BASIS + '100006'
+UUID_NOTIFY_CHARACTERISTIC              = UUID_BASIS + '100007'
+UUID_CONNECT_TO_ODOO_CHARACTERISTIC     = UUID_BASIS + '100008'
+UUID_CHECK_SETUP_PASSWORD_CHARACTERISTIC= UUID_BASIS + '100009'
+UUID_BOOLEAN_FLAGS_CHARACTERISTIC                      = UUID_BASIS + '100010'
 
 # list_of_boolean_flags = [
 #     "shouldGetFirmwareUpdate",
@@ -252,7 +252,7 @@ class SetBooleanFlagCharacteristic(Characteristic):
 
     def __init__(self, service):
         self.bus = dbus.SystemBus()
-        self.uuid = UUID_BOOLEAN_FLAGS
+        self.uuid = UUID_BOOLEAN_FLAGS_CHARACTERISTIC
         self.index = self.uuid[-6:]
         Characteristic.__init__(self, self.bus, self.index,self.uuid,        
                 ['write'], #['read', 'write', 'writable-auxiliaries', 'notify'],
