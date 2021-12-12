@@ -85,14 +85,19 @@ class Status_Flags_To_Check():
         loggerINFO("-----############### rebootTerminal ###############------")
         # os.system("sudo reboot")
         # time.sleep(60)
-        # sys,exit(0)  
+        # sys.exit(0)  
 
     def partialFactoryReset(self):
         loggerINFO("-----############### partialFactoryReset ###############------")
+        params.delete_all_keys()
         self.rebootTerminal()
 
     def fullFactoryReset(self):
         loggerINFO("-----############### fullFactoryReset ###############------")
+        display_off()
+        params.delete_all_keys()
+        os.system("sudo rm -R /home/pi/ras/data")
+        time.sleep(1)
         self.rebootTerminal()
    
     

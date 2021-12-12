@@ -311,9 +311,16 @@ class Params():
     return result
 
   def delete(self, key):
-    with self.transaction(write=True) as txn:
-      txn.delete(key)
-
+    try:
+      with self.transaction(write=True) as txn:
+        txn.delete(key)
+    except Exception as e:
+      pass
+  
+  def delete_all_keys(self):
+    for k in self.keys:
+      self.delete(k)
+      
   def get(self, key, block=False, encoding='utf-8'):
     if key not in keys:
       raise UnknownKeyName(key)
