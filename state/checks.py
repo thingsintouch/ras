@@ -55,8 +55,8 @@ class Status_Flags_To_Check():
                 display_off()
                 loggerINFO("-"*20 + boolean_flag + "#"*20)
                 self.action_for_boolean_flag[boolean_flag]()
-                #time.sleep(20)
-                #sys.exit(0)
+                time.sleep(20)
+                sys.exit(0)
 
     def check_if_registered_once_after_every_launch(self):
         if not self.acknowledged:
@@ -67,25 +67,25 @@ class Status_Flags_To_Check():
     def shouldGetFirmwareUpdate(self):
         if isPingable("github.com"):
             loggerINFO("<<<<++++++++ Firmware Update +++++++>>>>>>")
-            # os.chdir(co.WORKING_DIR)
-            # os.system("sudo git pull")
-            # display_off()
-            # time.sleep(1)
+            os.chdir(co.WORKING_DIR)
+            os.system("sudo git pull")
+            display_off()
+            time.sleep(1)
             self.rebootTerminal()
         else:
             loggerINFO("Firmware Update not possible: GitHub is down")   
 
     def shutdownTerminal(self):
         loggerINFO("-----############### shutdownTerminal ###############------")
-        # os.system("sudo shutdown now")
-        # time.sleep(60)
-        # sys.exit(0)
+        os.system("sudo shutdown now")
+        time.sleep(60)
+        sys.exit(0)
 
     def rebootTerminal(self):
         loggerINFO("-----############### rebootTerminal ###############------")
-        # os.system("sudo reboot")
-        # time.sleep(60)
-        # sys.exit(0)  
+        os.system("sudo reboot")
+        time.sleep(60)
+        sys.exit(0)  
 
     def partialFactoryReset(self):
         loggerINFO("-----############### partialFactoryReset ###############------")
