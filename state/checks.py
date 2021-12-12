@@ -71,7 +71,6 @@ class Status_Flags_To_Check():
             loggerINFO("<<<<++++++++ Firmware Update +++++++>>>>>>")
             os.chdir(co.WORKING_DIR)
             os.system("sudo git pull")
-            display_off()
             time.sleep(1)
             self.rebootTerminal()
         else:
@@ -96,10 +95,11 @@ class Status_Flags_To_Check():
 
     def fullFactoryReset(self):
         loggerINFO("-----############### fullFactoryReset ###############------")
-        display_off()
         params.delete_all_keys()
-        os.system("sudo rm -R /home/pi/ras/data")
-        time.sleep(1)
-        self.rebootTerminal()
+        os.system("sudo sh /home/pi/ras/state/fullFactoryReset.sh")
+        time.sleep(60)
+        sys.exit(0) 
+
+
    
     
