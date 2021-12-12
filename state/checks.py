@@ -91,7 +91,7 @@ class Status_Flags_To_Check():
 
     def partialFactoryReset(self):
         loggerINFO("-----############### partialFactoryReset ###############------")
-        params.delete_all_keys()
+        params.delete_all_keys_except_RFIDs()
         self.rebootTerminal()
 
     def fullFactoryReset(self):
