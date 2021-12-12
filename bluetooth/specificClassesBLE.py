@@ -311,7 +311,8 @@ class NotifyCharacteristic(Characteristic):
         #self.value = codifyAnswer(N_A, N_A, N_A)
         self.notifying = False
         self.timeout_int = False
-
+        self.internetAtLeastOnceReachable = False
+        self.registeredInOdooAtLeastOnce = False
 
     def ReadValue(self, options):
         print(f"TestCharacteristic Read: {self.value}")
@@ -332,13 +333,15 @@ class NotifyCharacteristic(Characteristic):
     def periodical_tasks(self):
         try:
 
-            if internetReachable():
+            if self.internetAtLeastOnceReachable or internetReachable():
                 internetByte = TRUE.decode()
+                self.internetAtLeastOnceReachable = True
             else:
                 internetByte = FALSE.decode()
 
-            if check_if_registered():
+            if self.registeredInOdooAtLeastOnce or check_if_registered():
                 odooPortByte = TRUE.decode()
+                self.registeredInOdooAtLeastOnce = True
             else:
                 odooPortByte = FALSE.decode()
 
