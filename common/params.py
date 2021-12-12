@@ -326,13 +326,6 @@ class Params():
       if TxType.RFID_CARD_CODE.value not in self.keys[k]:
         self.delete(k)
 
-    # list_of_all_keys = self.get_list_of_all_keys()
-    # list_of_RFIDs = self.get_list_of_keys_with_type(TxType.RFID_CARD_CODE)
-    # for k in list_of_RFIDs:
-    #   list_of_all_keys.remove(k)
-    # for k in list_of_all_keys:
-    #   self.delete(k)
-
   def get(self, key, block=False, encoding='utf-8'):
     if key not in keys:
       raise UnknownKeyName(key)
