@@ -45,9 +45,12 @@ def runShellCommand_and_returnOutput(command):
         #loggerERROR(f"error on shell command: {command}")
         return False
 
-def setTimeZone():
-    try: 
-        timezone = params.get("tz")
+def setTimeZone(tz = False):
+    try:
+        if tz:
+            timezone = tz
+        else:
+            timezone = params.get("tz")
         #print(timezone)
         os.environ["TZ"] = timezone
         time.tzset()

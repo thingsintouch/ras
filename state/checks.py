@@ -11,6 +11,7 @@ from common import constants as co
 from common.params import Params
 from odoo.odooRequests import check_if_registered
 from common.connectivity import isPingable
+from common.common import setTimeZone
 
 
 params = Params(db=co.PARAMS)
@@ -38,7 +39,7 @@ class Status_Flags_To_Check():
 
     def __init__(self):
         self.acknowledged = False
-        self.tz = params.get("tz")
+        # self.tz = params.get("tz")
         self.action_for_boolean_flag = {
             "shouldGetFirmwareUpdate"   : self.shouldGetFirmwareUpdate,
             "shutdownTerminal"          : self.shutdownTerminal,
@@ -47,7 +48,7 @@ class Status_Flags_To_Check():
             "fullFactoryReset"          : self.fullFactoryReset,
         }
 
-    def check(self):
+    def check_and_execute(self):
         self.check_if_registered_once_after_every_launch()
         for boolean_flag in list_of_boolean_flags:
             if params.get(boolean_flag) == "1":
@@ -98,6 +99,16 @@ class Status_Flags_To_Check():
         time.sleep(60)
         sys.exit(0) 
 
+class Timezone_Checker():
+
+    def __init__(self):
+        self.timezone_current = params.get("tz")
+    
+    def check_and_set(self):
+        timezone_now = params.get("tz") 
+        if timezone_now != self.timezone_current:
+           setTimeZone(tz= timezone_now) 
+           self.timezone_current = timezone_now
 
    
     

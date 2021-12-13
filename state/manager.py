@@ -6,15 +6,18 @@ from common import constants as co
 from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG
 from messaging.messaging import PublisherMultipart as Publisher
 from common.connectivity import internetReachable, isOdooPortOpen
-from state.checks import Status_Flags_To_Check
+from state.checks import Status_Flags_To_Check, Timezone_Checker
 
 
-status_flags = Status_Flags_To_Check()
+status_flags        = Status_Flags_To_Check()
+timezone_checker    = Timezone_Checker()
+
 
 def main():
 
     while True:
-        status_flags.check()
+        status_flags.check_and_execute()
+        timezone_checker.check_and_set()
         internet_reachable  = internetReachable()
         odoo_port_open      = isOdooPortOpen()
         loggerDEBUG(f"internet pingable {internet_reachable} - odoo port open {odoo_port_open}")
