@@ -60,9 +60,7 @@ class Status_Flags_To_Check():
 
     def check_if_registered_once_after_every_launch(self):
         if not self.acknowledged:
-            loggerDEBUG("--- state - checks.py -L64 - check_if_registered_once_after_every_launch")
             if check_if_registered():
-                loggerDEBUG("---state - checks.py -L64 - check_if_registered_once_after_every_launch")
                 params.put("acknowledged", "1")
                 self.acknowledged = True
 
