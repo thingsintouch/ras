@@ -42,7 +42,8 @@ def registerClockings():
         if card_code not in card_codes_to_not_process:
             try:
                 card_code_and_timestamp = clocking_tuple[2]
-                answer = register_async_clocking(card_code_and_timestamp)
+                timestamp = clocking_tuple[0]
+                answer = register_async_clocking(card_code, timestamp)
             except Exception as e:
                 loggerDEBUG(f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}")
                 answer = False

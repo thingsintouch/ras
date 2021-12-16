@@ -38,7 +38,7 @@ def post_request_and_get_answer(requestURL, payload):
     return answer
 
 
-def register_async_clocking(card_code_and_timestamp):
+def register_async_clocking(card_code, timestamp):
     """ 
         Returns answer from Odoo for Making aa ASYNC hronous Clocking
         with rfid_card_code
@@ -47,8 +47,9 @@ def register_async_clocking(card_code_and_timestamp):
     """
     requestURL  = get_iot_template() + str(params.get("serial_async")) + "/action"
     payload     = {
-        'passphrase': str(params.get("passphrase_async")),
-        "value"     : str(card_code_and_timestamp)
+        'passphrase'    : str(params.get("passphrase_async")),
+        "card_code"     : str(card_code),
+        "timestamp"     : int(timestamp)
         }
     return post_request_and_get_answer(requestURL, payload)
 
@@ -62,8 +63,9 @@ def register_sync_clocking(rfid_card_code):
     """
     requestURL  = get_iot_template() + str(params.get("serial_sync")) + "/action"
     payload     = {
-        'passphrase': str(params.get("passphrase_sync")),
-        "value": str(rfid_card_code)}
+        'passphrase'    : str(params.get("passphrase_sync")),
+        "value"         : str(rfid_card_code)
+        }
     return post_request_and_get_answer(requestURL, payload)
 
 
@@ -100,8 +102,8 @@ def routine_check(payload):
         It will register the Timestamp based on the Clock of the Odoo Server.
         serial is the serial of the input (not the serial of the device)
     """
-    requestURL  = get_iot_template() + str(params.get("serial_async")) + "/ras_routine"
+    requestURL  = get_iot_template() + str(params.get("serial_routine")) + "/action"
     payload.update({
-        'passphrase': str(params.get("passphrase_async")),
+        'passphrase': str(params.get("passphrase_routine")),
         })
     return post_request_and_get_answer(requestURL, payload)

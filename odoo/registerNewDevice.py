@@ -6,6 +6,8 @@ from common.keys import TxType, keys_by_Type
 from common.constants import PARAMS
 from common.params import Params
 
+from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
+
 params = Params(db=PARAMS)
 
 def parameters_to_send_on_registering():
@@ -17,13 +19,20 @@ def parameters_to_send_on_registering():
 
 def save_parameters_for_new_device(answer):
     try:
-        params.put("RASxxx", answer["name"])
+        params.put("RASxxx", answer["name"][:13]) # display only the first characters
+
         params.put("odooUrlTemplate",   answer["host"])
         extract_odoo_host_and_port()
+
         params.put("serial_sync",       answer["inputs"]["sync_clocking"]["serial"])
         params.put("passphrase_sync",   answer["inputs"]["sync_clocking"]["passphrase"])
+
         params.put("serial_async",      answer["inputs"]["async_clocking"]["serial"])
         params.put("passphrase_async",  answer["inputs"]["async_clocking"]["passphrase"])
+
+        params.put("serial_routine",      answer["inputs"]["get_options"]["serial"])
+        params.put("passphrase_routine",  answer["inputs"]["get_options"]["passphrase"])        
+
         params.put("odooConnectedAtLeastOnce", "1")
         return True
     except Exception as e:
