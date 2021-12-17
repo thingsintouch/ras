@@ -71,7 +71,7 @@ def main():
                 else:
                     two_lines_name = "\n" + full_name
             else:
-                two_lines_name = "NOT\nDEFINED"
+                two_lines_name = "new card\n"+card_id_as_string
 
             if enough_time_between_clockings():
                 how_to_handle_the_clocking = "card_registered"
