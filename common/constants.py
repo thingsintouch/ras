@@ -1,6 +1,6 @@
 from decouple import config
 
-RAS_VERSION = "3.0-OCA"
+RAS_VERSION = "3.1-OCA"
 WORKING_DIR = config("WORKING_DIR")
 # DIR_WIFI_CONNECTIONS = config("DIR_WIFI_CONNECTIONS")
 # SSID_WIFICONNECT = config("SSID_WIFICONNECT")
