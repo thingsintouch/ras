@@ -47,7 +47,7 @@ to_check = { # keys_to_check_min_max_on_change
     },
 
     "period_register_clockings": {
-      "Type": "string",
+      "Type": "int",
       "min_value": 14,
       "max_value": 3600,
       "default": 14
