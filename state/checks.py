@@ -60,7 +60,7 @@ class Status_Flags_To_Check():
                 sys.exit(0)
 
     def check_if_registered_once_after_every_launch(self):
-        if not self.acknowledged:
+        if not self.acknowledged and params.get("odooPortOpen") == "1":
             if check_if_registered():
                 params.put("acknowledged", "1")
                 self.acknowledged = True
