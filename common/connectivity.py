@@ -66,12 +66,12 @@ def isOdooPortOpen():
         #loggerDEBUG(f"odoo_host {odooHost}- odoo_port {odooPort}")
         if odooHost is None or odooPort is None:
             extract_odoo_host_and_port()
-            return False
+            odoo_port_open = False
         if odooPort.isnumeric():
             odooPort =  int(odooPort)
             odoo_port_open = isIpPortOpen((odooHost, odooPort))
         else:
-            return False
+            odoo_port_open = False
     except Exception as e:
         #extract_odoo_host_and_port()
         loggerDEBUG(f"common.connectivity - exception in method isOdooPortOpen: {e}")

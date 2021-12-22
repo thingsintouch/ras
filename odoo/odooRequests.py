@@ -14,17 +14,21 @@ def get_iot_template():
     return template + "/iot/"
 
 def post_request_and_get_answer(requestURL, payload):
+
     try:
-        posting     = requests.post(url=requestURL, data=payload)
-        
-        if params.get("odooPortOpen") != "0" and posting.status_code == 404:
-            loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
-            loggerINFO(f"odooConnectedAtLeastOnce set to 0")
-            params.put("odooConnectedAtLeastOnce", "0")
-            params.put("RASxxx", "ras2.eu")
-            answer = {"error": "404"}
+        if params.get("odooPortOpen") == "1":
+            posting     = requests.post(url=requestURL, data=payload)
+            
+            if params.get("odooPortOpen") != "0" and posting.status_code == 404:
+                loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
+                loggerINFO(f"odooConnectedAtLeastOnce set to 0")
+                params.put("odooConnectedAtLeastOnce", "0")
+                params.put("RASxxx", "ras2.eu")
+                answer = {"error": "404"}
+            else:
+                answer = posting.json()
         else:
-            answer = posting.json()
+            answer = {"error": "Odoo Port Closed"}
 
     except ConnectionRefusedError as e:
         loggerDEBUG(f"post_request_and_get_answer - ConnectionRefusedError - Request Exception : {e}")

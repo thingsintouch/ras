@@ -32,24 +32,24 @@ def store_name_for_a_rfid_code(code, name):
         params.put(code,name)                
 
 def registerClockings():
-    card_codes_to_not_process   = []
-
-    sorted_clocking_tuples = get_sorted_clockings_from_older_to_newer()
-    loggerDEBUG(f"sorted_clocking_tuples {sorted_clocking_tuples}")
-    for clocking_tuple in sorted_clocking_tuples:
-        loggerDEBUG(f"processing clocking {clocking_tuple}")
-        card_code = clocking_tuple[1]
-        if card_code not in card_codes_to_not_process:
-            try:
-                card_code_and_timestamp = clocking_tuple[2]
-                timestamp = clocking_tuple[0]
-                answer = register_async_clocking(card_code, timestamp)
-            except Exception as e:
-                loggerDEBUG(f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}")
-                answer = False
-            if answer:
-                if answer.get("logged", False):
-                    remove(join(CLOCKINGS,card_code_and_timestamp))
-                    store_name_for_a_rfid_code(card_code, answer.get("employee_name","-"))
-                else: # do not process all the older clockings if a clocking for a card has failed
-                    card_codes_to_not_process.append(card_code) 
+    if params.get("odooPortOpen") == "1":
+        card_codes_to_not_process   = []
+        sorted_clocking_tuples = get_sorted_clockings_from_older_to_newer()
+        loggerDEBUG(f"sorted_clocking_tuples {sorted_clocking_tuples}")
+        for clocking_tuple in sorted_clocking_tuples:
+            loggerDEBUG(f"processing clocking {clocking_tuple}")
+            card_code = clocking_tuple[1]
+            if card_code not in card_codes_to_not_process:
+                try:
+                    card_code_and_timestamp = clocking_tuple[2]
+                    timestamp = clocking_tuple[0]
+                    answer = register_async_clocking(card_code, timestamp)
+                except Exception as e:
+                    loggerDEBUG(f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}")
+                    answer = False
+                if answer:
+                    if answer.get("logged", False):
+                        remove(join(CLOCKINGS,card_code_and_timestamp))
+                        store_name_for_a_rfid_code(card_code, answer.get("employee_name","-"))
+                    else: # do not process all the older clockings if a clocking for a card has failed
+                        card_codes_to_not_process.append(card_code) 
