@@ -96,7 +96,14 @@ def register_new_device_in_Odoo(odooAddress, payload):
     payload['template'] = 'thingsintouch.ras'
     payload['ip']       = get_own_IP_address()
 
-    return post_request_and_get_answer(requestURL, payload)
+    try:
+        posting = requests.post(url=requestURL, data=payload)
+        answer = posting.json()
+    except Exception as e:
+        loggerDEBUG(f"REGISTER NEW DEVICE - answer not Available - Exception: {e}")
+        answer = False
+
+    return answer
 
 
 def routine_check(payload):
