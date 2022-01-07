@@ -3,16 +3,38 @@ import time
 from common import constants as co
 from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG
 from messaging.messaging import PublisherMultipart as Publisher
-from reader.MFRC522 import MFRC522
+
+from common.params import Params
+
+params = Params(db=co.PARAMS)
+
+
+def get_scan_reader_function():
+    scan_function = {}
+    scan_function
+    try:
+        hardware_card_reader = params.get("hardware_card_reader")
+    except Exception as e:
+        loggerDEBUG(f"did not found a card reader on the parameters: {e}")
+        hardware_card_reader = "MFRC522"
+    
+    if hardware_card_reader == "MFRC522":
+        from reader.MFRC522 import MFRC522
+        reader = MFRC522()
+        return reader.scan_card
+    
+    if hardware_card_reader == "RDM6300":
+        from reader.RDM6300 import scan_card
+        return scan_card
 
 def main():
 
     new_card_publisher = Publisher("5557")
 
-    reader = MFRC522()
+    scan_function = get_scan_reader_function()
 
     while True:
-        card = reader.scan_card()
+        card = scan_function()
 
         if card:
             loggerDEBUG(f"card read {card}")
