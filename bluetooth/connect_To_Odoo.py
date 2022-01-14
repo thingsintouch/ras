@@ -17,7 +17,7 @@ def main(odooAddress):
     params.put("displayClock", "no")
     text = f"CONNECTING\nWITH ODOO\n{odooAddress}"
     oled.three_lines_text_small(text)
-    
+    loggerINFO(f"connect_To_Odoo main - odooAddress:{odooAddress}")
     if registerNewDevice(odooAddress):
         extract_odoo_host_and_port()
         text = f"SUCCESSFULLY\nCONNECTED WITH ODOO\n{odooAddress}"

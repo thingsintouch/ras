@@ -31,6 +31,7 @@ def internetReachable():
 
 def extract_odoo_host_and_port():
     odooAddress = params.get("odooUrlTemplate")
+    loggerDEBUG(f"extract_odoo_host_and_port() - odooAddress {odooAddress}")
     if odooAddress is not None:
         odooAdressSplitted = odooAddress.split(":")
         length = len(odooAdressSplitted)
@@ -40,10 +41,13 @@ def extract_odoo_host_and_port():
             params.put("odoo_port", "443")
         if length == 2:
             zero = odooAdressSplitted[0]
-            one = odooAdressSplitted[1]
+            one = odooAdressSplitted[1].replace('/','')
             if zero == "https":
                 params.put("odoo_host", one)
                 params.put("odoo_port","443")
+            elif zero == "http":
+                params.put("odoo_host", one)
+                params.put("odoo_port","8069")
             else:
                 params.put("odoo_host", zero)
                 params.put("odoo_port", one)
@@ -57,7 +61,7 @@ def extract_odoo_host_and_port():
                 params.put("odoo_port", "0")
         odooHost = params.get("odoo_host")
         odooPort = params.get("odoo_port")
-        loggerINFO(f"odoo_host {odooHost}- odoo_port {odooPort}")
+        loggerINFO(f"extract_odoo_host_and_port() - odoo_host {odooHost}- odoo_port {odooPort}")
 
 def isOdooPortOpen():
     try:
