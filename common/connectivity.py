@@ -83,6 +83,7 @@ def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex f
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.settimeout(2)
+        loggerDEBUG(f"---------- ipPort: {ipPort}")
         canConnectResult = s.connect_ex(ipPort)
         if canConnectResult == 0:
             #print("Utils - IP Port OPEN ", ipPort)
