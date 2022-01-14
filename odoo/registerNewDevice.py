@@ -31,7 +31,7 @@ def save_parameters_for_new_device(answer):
         params.put("passphrase_async",  answer["inputs"]["async_clocking"]["passphrase"])
 
         params.put("serial_routine",      answer["inputs"]["get_options"]["serial"])
-        params.put("passphrase_routine",  answer["inputs"]["get_options"]["passphrase"])        
+        params.put("passphrase_routine",  answer["inputs"]["get_options"]["passphrase"])    
 
         params.put("odooConnectedAtLeastOnce", "1")
         return True
@@ -39,8 +39,17 @@ def save_parameters_for_new_device(answer):
         loggerDEBUG(f"save_parameters_for_new_device - Exception: {e}")
     return False
 
+def get_template_to_register_device():
+    try:
+        template = params.get("template_to_register_device")
+    except Exception as e:
+        loggerDEBUG(f"get_template_to_register_device() - Exception: {e}")
+        template = "thingsintouch.ras"
+    return template
+
 def registerNewDevice(odooAddress):
-    answer = register_new_device_in_Odoo(odooAddress, parameters_to_send_on_registering())
+    answer = register_new_device_in_Odoo(
+        odooAddress, get_template_to_register_device(), parameters_to_send_on_registering())
     if answer:
         result = save_parameters_for_new_device(answer)
         return result

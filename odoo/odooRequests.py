@@ -87,13 +87,13 @@ def check_if_registered():
     return answer.get("state", False)
 
 
-def register_new_device_in_Odoo(odooAddress, payload):
+def register_new_device_in_Odoo(odooAddress, template, payload):
     """ 
         Returns  x x if registered in Odoo
         
     """
-    requestURL  = odooAddress
-    payload['template'] = 'thingsintouch.ras'
+    requestURL          = odooAddress
+    payload['template'] = template
     payload['ip']       = get_own_IP_address()
 
     try:

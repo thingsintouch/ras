@@ -68,6 +68,7 @@ keys_by_Type[TxType.FACTORY_SETTINGS] = [
     "hardware_card_reader",
     "hardware_display",
     "hardware_sound",
+    "template_to_register_device"
 
   ]
 

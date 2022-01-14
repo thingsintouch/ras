@@ -15,17 +15,17 @@ def get_scan_reader_function():
     try:
         hardware_card_reader = params.get("hardware_card_reader")
     except Exception as e:
-        loggerDEBUG(f"did not found a card reader on the parameters: {e}")
-        hardware_card_reader = "MFRC522"
-    
-    if hardware_card_reader == "MFRC522":
-        from reader.MFRC522 import MFRC522
-        reader = MFRC522()
-        return reader.scan_card
-    
+        loggerDEBUG(f"did not found a 'hardware card reader' on the parameters: {e}")
+        hardware_card_reader = "MFRC522" # default
+       
     if hardware_card_reader == "RDM6300":
         from reader.RDM6300 import scan_card
         return scan_card
+
+    from reader.MFRC522 import MFRC522
+    reader = MFRC522()
+    return reader.scan_card # default option
+    
 
 def main():
 

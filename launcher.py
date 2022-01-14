@@ -55,7 +55,8 @@ managed_processes = {
     }
 
 def start_managed_process(name):
-    if name not in running and name in managed_processes:
+    running_alive = [p for p in running if running[p].is_alive()]
+    if name not in running_alive and name in managed_processes:
         preimport_managed_process(name)
         process = managed_processes[name]
         loggerINFO(f"starting python process {process}")
