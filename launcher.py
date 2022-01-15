@@ -97,7 +97,8 @@ def log_begin_manager_thread():
 def log_running_processes_list():
     running_alive = [p for p in running if running[p].is_alive()]
     running_dead = [p for p in running if p not in running_alive]
-    if running_dead:
+    #if running_dead:
+    if True:
         loggerINFO("alive processes: " + cf.GREEN + ' ; '.join(running_alive) + cf.RESET)    
         loggerINFO("dead processes: " + cf.RED + ' ; '.join(running_dead) + cf.RESET) 
 
