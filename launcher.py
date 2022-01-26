@@ -41,7 +41,7 @@ managed_essential_processes = { # key(=process name) : (pythonmodule where the p
     "bluetooth_d": "bluetooth.server",
     "odoo_d": "odoo.manager",
     "state_d": "state.manager",
-    #"buzzer_d": "buzzer.manager",
+    "buzzer_d": "buzzer.manager",
     "odoo_register_clockings_d": "odooRegisterClockings.manager"
 }
 
