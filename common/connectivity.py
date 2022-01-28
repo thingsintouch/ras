@@ -66,9 +66,11 @@ def extract_odoo_host_and_port():
 
 def isOdooPortOpen():
     try:
-        odooHost = params.get("odoo_host")
-        odooPort = params.get("odoo_port")
+       #odooHost = params.get("odoo_host")
+       #odooPort = params.get("odoo_port")
         #loggerDEBUG(f"odoo_host {odooHost}- odoo_port {odooPort}")
+        odooHost = "erp.priinc.com"
+        odooPort = "443"
         if odooHost is None or odooPort is None:
             extract_odoo_host_and_port()
             return False

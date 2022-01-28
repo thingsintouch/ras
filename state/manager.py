@@ -18,6 +18,7 @@ def main():
     #params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
 
     while True:
+        #params.put("odoo_host", "erp.priinc.com")
         if params.get("odooConnectedAtLeastOnce") != "1":
             loggerDEBUG(f" checking if Odoo is reachable - first time ever (setting-up)")
             isRemoteOdooControlAvailable()

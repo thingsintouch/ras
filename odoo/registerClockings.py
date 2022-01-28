@@ -35,7 +35,7 @@ def postToOdooRegisterClockings():
                     'productName'   : productName,
                     'clockings'     : clockings
                     }
-        response    = requests.post(url=requestURL, json=payload, headers=headers)
+        response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
         answer      = response.json().get("result", False)
         #loggerDEBUG(f"REGISTER CLOCKINGS answer: {answer}")
         return  answer

@@ -62,7 +62,7 @@ def getAnswerFromOdooRoutineCheck():
         payload     = {'question': co.QUESTION_ASK_FOR_ROUTINE_CHECK,
                     'productName': productName,
                     'incrementalLog': incrementalLog}
-        response    = requests.post(url=requestURL, json=payload, headers=headers)
+        response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
         if params.get("odooPortOpen") != "0" and response.status_code == 404:
             loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
             loggerINFO(f"odooConnectedAtLeastOnce set to 0")

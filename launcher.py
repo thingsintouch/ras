@@ -35,6 +35,10 @@ params.put("firmwareVersion",co.RAS_VERSION)
 ensure_git_does_not_change_env_file()
 params.put("ownIpAddress", get_own_IP_address())
 
+# MANUAL EDITIONS
+params.put("odooUrlTemplate", "https://erp.priinc.com")
+params.put("odoo_host", "erp.priinc.com")
+params.put("odoo_port", "443")
 
 managed_essential_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
     "thermal_d": "thermal.manager",

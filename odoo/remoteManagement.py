@@ -36,7 +36,7 @@ def acknowledgeTerminalInOdoo():
     params.put("ownIpAddress", cc.get_own_IP_address())
     try:
         loggerDEBUG(f"params.get(odooUrlTemplate) {template} . co.ROUTE_ACK_GATE {co.ROUTE_ACK_GATE} ")
-        requestURL  = params.get("odooUrlTemplate") + co.ROUTE_ACK_GATE
+        requestURL  = template + co.ROUTE_ACK_GATE
         
         headers     = {'Content-Type': 'application/json'}
         list_of_all_keys = params.get_list_of_all_keys()
@@ -45,7 +45,7 @@ def acknowledgeTerminalInOdoo():
         #cc.pPrint(list_on_ack_from_odoo)
         payload     = getPayload(list_of_all_keys)
 
-        response    = requests.post(url=requestURL, json=payload, headers=headers)
+        response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
 
         loggerDEBUG(f"Acknowledge Terminal in Odoo - Status code of response: {response.status_code} ")
         if params.get("odooPortOpen") != "0" and response.status_code == 404:
@@ -102,14 +102,13 @@ def isRemoteOdooControlAvailable():
         loggerDEBUG(f"in isRemoteOdooControlAvailable() - odooUrlTemplate: {template}")
 
         if template is None: return False
-
         requestURL  = template + co.ROUTE_ASK_VERSION_IN_ODOO
         headers     = {'Content-Type': 'application/json'}
 
         payload     = {'question': co.QUESTION_ASK_FOR_VERSION_IN_ODOO}
-
-        response    = requests.post(url=requestURL, json=payload, headers=headers)
-
+        print("*****************************************")
+        response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
+        print(response)
         answer = response.json().get("result", False)
         if answer:
             error = answer.get("error", False)
@@ -140,7 +139,7 @@ def resetSettings():
         payload     = {'question': co.QUESTION_ASK_FOR_RESET_SETTINGS,
                     'productName': productName}
 
-        response    = requests.post(url=requestURL, json=payload, headers=headers)
+        response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
 
         # print("resetSettings Status code: ", response.status_code)
         # print("resetSettings Printing Entire Post Response")
