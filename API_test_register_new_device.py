@@ -1,6 +1,17 @@
 from odoo.registerNewDevice import registerNewDevice
 
-odooAddress    = "http://lu:9132/iot/ef480b39-804a-4f95-9354-999be48b368e/configure"
+from common.common import store_factory_settings_in_database
+from common.params import Params
+import common.constants as co
+
+params = Params(db=co.PARAMS)
+params.put("odooConnectedAtLeastOnce","0")
+
+store_factory_settings_in_database()
+
+uuid_ = "22c8b801-6b37-442d-9cd7-83d28fb2a44e"
+
+odooAddress    = "http://192.168.178.55:9135/iot/"+uuid_+"/configure"
 
 answer = registerNewDevice(odooAddress)
 

@@ -68,6 +68,7 @@ keys_by_Type[TxType.FACTORY_SETTINGS] = [
     "hardware_card_reader",
     "hardware_display",
     "hardware_sound",
+    "template_to_register_device",
 
   ]
 
@@ -87,7 +88,16 @@ keys_by_Type[TxType.ON_DEVICE_SETUP] = [
     "passphrase_async",
 
     "serial_routine",
-    "passphrase_routine"
+    "passphrase_routine",
+
+    "serial_call_lock_sync",
+    "passphrase_call_lock_sync",
+
+    "serial_call_lock_async",
+    "passphrase_call_lock_async",
+
+    "serial_get_iot_keys",
+    "passphrase_get_iot_keys",
   ]
 
 keys_by_Type[TxType.ON_ACK_FROM_ODOO] = [
@@ -104,10 +114,10 @@ keys_by_Type[TxType.ON_ACK_FROM_ODOO] = [
   ]
 
 keys_by_Type[TxType.ON_REGISTERING_FROM_DEVICE] = [
-    "ownIpAddress",
-    "lastFirmwareUpdateTime",
-    "lastTimeTerminalStarted",
-    "updateFailedCount",
+    "ip",
+    #"lastFirmwareUpdateTime",
+    #"lastTimeTerminalStarted",
+    #"updateFailedCount",
     "hashed_machine_id",
     "setup_password",
   ]

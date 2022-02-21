@@ -14,7 +14,8 @@ def test_results(odooAddress):
     extract()
     odooHost = params.get("odoo_host")
     odooPort = params.get("odoo_port")
-    print(f"template: {odooAddress}   -----   odoo_host: {odooHost}   -----    odoo_port: {odooPort}")
+    template = params.get("odooUrlTemplate")
+    print(f"template: {template}   -----   odoo_host: {odooHost}   -----    odoo_port: {odooPort}")
     print("_"*110)
     print()
 
@@ -26,5 +27,7 @@ test_results("https://example.com")
 test_results("http://example.com")
 test_results("http://example.com:8072")
 test_results("example.com")
+test_results("http://localhost:9135/iot/8c284667-624d-447b-b226-85e38c196ac0/action")
+test_results("localhost.com/iot/8c284667-624d-447b-b226-85e38c196ac0/action")
 
 test_results(template_original)

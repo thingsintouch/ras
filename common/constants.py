@@ -2,6 +2,7 @@ from decouple import config
 
 RAS_VERSION = "3.4-OCA"
 WORKING_DIR = config("WORKING_DIR")
+# print(f"working dir {WORKING_DIR}")
 # DIR_WIFI_CONNECTIONS = config("DIR_WIFI_CONNECTIONS")
 # SSID_WIFICONNECT = config("SSID_WIFICONNECT")
 # ETH0_OPERSTATE_FILE = config("ETH0_OPERSTATE_FILE")

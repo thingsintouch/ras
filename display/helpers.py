@@ -428,9 +428,13 @@ class Oled():
         self.tz = params.get("tz")
         # cc.setTimeZone() # timezone is set at the beginning of ~/ras/launcher.py
         try:
+            if "rotated" in params.get("hardware_display"):
+                rotation = 2
+            else:
+                rotation = 0
             self.device_display = sh1106(
                 serial_interface = i2c(port=1, address='0x3C'),
-                rotate = 0)
+                rotate = rotation)
         except Exception as e:
             loggerERROR(f"exception while getting device {e}")
 
