@@ -9,9 +9,11 @@ params.put("odooConnectedAtLeastOnce","0")
 
 store_factory_settings_in_database()
 
-uuid_ = "22c8b801-6b37-442d-9cd7-83d28fb2a44e"
+uuid_ = "8b2a626b-8fc9-4401-9f8d-66000c7464dc"
 
-odooAddress    = "http://192.168.178.55:9135/iot/"+uuid_+"/configure"
+# odooAddress    = "http://192.168.178.55:8113/iot/"+uuid_+"/configure"
+
+odooAddress = "https://donantes.freedoo.es/iot/96728bfa-0041-44aa-963c-df54786c675d/configure"
 
 answer = registerNewDevice(odooAddress)
 

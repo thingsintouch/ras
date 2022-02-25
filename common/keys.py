@@ -32,6 +32,7 @@ keys_by_Type[TxType.ON_ROUTINE_CALLS] =     \
 
     "period_odoo_routine_check",
     "period_register_clockings",
+    "period_odoo_get_iot_keys",
     
     "timeToDisplayResultAfterClocking",
 

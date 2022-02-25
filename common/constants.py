@@ -50,6 +50,7 @@ HASH_PERSON_REGISTER_TERMINAL = bytes(config("HASH_PERSON_REGISTER_TERMINAL"), e
 PARAMS = WORKING_DIR + "/data/params"
 CLOCKINGS = WORKING_DIR + "/data/clockings"
 LOG = WORKING_DIR + "/data/log"
+KEYS = WORKING_DIR + "/data/keys"
 
 MAX_NUMBER_OF_LOG_ENTRIES = 100
 

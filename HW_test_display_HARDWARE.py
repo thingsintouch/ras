@@ -3,4 +3,4 @@ import time
 
 oled = Oled()
 oled.display_time()
-time.sleep(3)
+time.sleep(10)

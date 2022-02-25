@@ -18,7 +18,7 @@ def post_request_and_get_answer(requestURL, payload):
 
     try:
         if params.get("odooPortOpen") == "1":
-            posting     = requests.post(url=requestURL, data=payload)
+            posting     = requests.post(url=requestURL, data=payload, timeout=15)
             
             if params.get("odooPortOpen") != "0" and posting.status_code == 404:
                 loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
@@ -108,7 +108,7 @@ def register_new_device_in_Odoo(requestURL, payload):
     pPrint(payload)
 
     try:
-        posting = requests.post(url=requestURL, data=payload)
+        posting = requests.post(url=requestURL, data=payload, verify=False)
         answer = posting.json()
         print("answer to a request to register a new device")
         pPrint(answer)

@@ -437,6 +437,7 @@ class Oled():
                 rotate = rotation)
         except Exception as e:
             loggerERROR(f"exception while getting device {e}")
+        self.display_time()
 
     def draw_text_centered(self, draw, origin, font, text):
         # available methods in :
