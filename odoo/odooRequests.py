@@ -18,7 +18,7 @@ def post_request_and_get_answer(requestURL, payload):
 
     try:
         if params.get("odooPortOpen") == "1":
-            posting     = requests.post(url=requestURL, data=payload, timeout=15)
+            posting     = requests.post(url=requestURL, data=payload, verify= False, timeout=15)
             
             if params.get("odooPortOpen") != "0" and posting.status_code == 404:
                 loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
