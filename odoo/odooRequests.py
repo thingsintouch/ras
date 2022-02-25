@@ -97,7 +97,7 @@ def register_new_device_in_Odoo(odooAddress, payload):
     payload['ip']       = get_own_IP_address()
 
     try:
-        posting = requests.post(url=requestURL, data=payload)
+        posting = requests.post(url=requestURL, data=payload, verify=False)
         answer = posting.json()
     except Exception as e:
         loggerDEBUG(f"REGISTER NEW DEVICE - answer not Available - Exception: {e}")
