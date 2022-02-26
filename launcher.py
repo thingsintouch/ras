@@ -26,9 +26,7 @@ store_factory_settings_in_database()
 setTimeZone()
 
 loggerINFO("###################### RAS launched ###################")
-# loggerINFO(f'running on python version: {sys.version}')
 
-# store_hashed_machine_id()
 set_bluetooth_device_name()
 params.put("firmwareVersion",co.RAS_VERSION)
 ensure_git_does_not_change_env_file()

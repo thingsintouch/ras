@@ -11,9 +11,7 @@ store_factory_settings_in_database()
 
 uuid_ = "8b2a626b-8fc9-4401-9f8d-66000c7464dc"
 
-# odooAddress    = "http://192.168.178.55:8113/iot/"+uuid_+"/configure"
-
-odooAddress = "https://donantes.freedoo.es/iot/96728bfa-0041-44aa-963c-df54786c675d/configure"
+odooAddress    = "http://192.168.178.55:8113/iot/"+uuid_+"/configure"
 
 answer = registerNewDevice(odooAddress)
 
