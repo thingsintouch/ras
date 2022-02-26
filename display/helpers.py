@@ -14,14 +14,14 @@ from PIL import Image, ImageFont, ImageDraw
 import types
 
 from common.params import Params
-import common.constants as co
+from common.constants import PARAMS
 
 #import lib.Utils as ut
 
 import common.common as cc
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
-params = Params(db=co.PARAMS)
+params = Params(db=PARAMS)
 
 fontRoboto = "/home/pi/ras/fonts/Roboto-Medium.ttf"
 fontClockTime = ImageFont.truetype(fontRoboto, 42)

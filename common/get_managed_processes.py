@@ -14,6 +14,8 @@ def get_managed_essential_processes(template):
     }
 
     if template == "thingsintouch.ras_plus":
-        managed_essential_processes["odoo_get_iot_keys"] = "odooGetIotKeys.manager"
+        managed_essential_processes["odoo_get_iot_keys_d"] = "odooGetIotKeys.manager"
+        managed_essential_processes["relay_d"] = "relay.manager"
+        managed_essential_processes["relay_output_d"] = "relay_state.manager"
 
     return managed_essential_processes

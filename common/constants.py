@@ -17,9 +17,10 @@ DEFAULT_MINIMUM_PERIOD = 14 # in seconds
 WAIT_PERIOD_FOR_PROCESS_GRACEFUL_TERMINATION = 10 # in seconds
 PERIOD_MAIN_THREAD = 10 # in seconds
 
-# DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS = 300  # in seconds
+DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS = 60  # in seconds
 DEFAULT_DISPLAY_TIME = 1.2 # in seconds
 DISPLAY_TIME_OFFSET = 0.7 # in seconds
+MINIMUM_TIME_BETWEEN_RELAY_SWITCHINGS = 5 # in seconds
 
 MACHINE_ID_FILE = config("MACHINE_ID_FILE")
 HASH_KEY = bytes(config("HASH_KEY"), encoding='utf8')
@@ -31,5 +32,8 @@ PARAMS = WORKING_DIR + "/data/params"
 CLOCKINGS = WORKING_DIR + "/data/clockings"
 LOG = WORKING_DIR + "/data/log"
 KEYS = WORKING_DIR + "/data/keys"
+KEY_ACTIONS = WORKING_DIR + "/data/key_actions"
 
 MAX_NUMBER_OF_LOG_ENTRIES = 100
+
+PIN_RELAY = 29

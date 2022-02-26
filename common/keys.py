@@ -132,7 +132,9 @@ keys_by_Type.update({
       "internetReachable",
       "odooPortOpen",
       "thermalMessageCounter",
-      'lastLogMessage'
+      'lastLogMessage',
+      "relay_status",
+      "last_relay_action"
     ]
   })
 
