@@ -34,7 +34,7 @@ class Relay():
 
 
     def send_output_to_GPIO(self,status):
-        if status = 1:
+        if status == 1:
             output = 0
         else:
             output = 1    
