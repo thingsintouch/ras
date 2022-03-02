@@ -17,26 +17,30 @@ class Relay():
         GPIO.setmode(GPIO.BOARD)  # GPIOs Nr by physical location
         GPIO.setup(pin, GPIO.OUT)  # set pin as output
         self.pin = pin
-        params.put("relay_status", "1")
+        params.put("relay_status", "0")
         self.send_output_to_GPIO(1)
 
     def display_status(self):
         time.sleep(PERIOD_DISPLAY_MANAGER)
         params.put("displayClock", "no")
         if self.status == 1:
-            status_text = "OFF"
-        else:
             status_text = "ON"
+        else:
+            status_text = "OFF"
         message = f"\nRELAY\n{status_text}"
         oled.three_lines_text(message)
         time.sleep(get_display_time())
         params.put("displayClock", "yes")
 
 
-    def send_output_to_GPIO(self,output):    
+    def send_output_to_GPIO(self,status):
+        if status = 1:
+            output = 0
+        else:
+            output = 1    
         GPIO.output(self.pin, output)
-        self.status = output
-        loggerINFO(f"Relay Hardware: GPIO {self.pin} output set to {output}")
+        self.status = status
+        loggerINFO(f"Relay Hardware: status is {status} and GPIO {self.pin} output set to {output}")
         self.display_status()
 
     def relay_status_changed(self, current_status):
