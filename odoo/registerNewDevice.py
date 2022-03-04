@@ -19,19 +19,36 @@ def parameters_to_send_on_registering():
 
 def save_parameters_for_new_device(answer):
     try:
-        params.put("RASxxx", answer["name"][:13]) # display only the first characters
+        template_from_odoo = answer["host"]
+        if "localhost" not in template_from_odoo:
+            extract_odoo_host_and_port(template_from_odoo)
 
-        params.put("odooUrlTemplate",   answer["host"])
-        extract_odoo_host_and_port()
+        params.put("RASxxx", answer.get("name")[:13] or "no name") # display only the first characters
 
-        params.put("serial_sync",       answer["inputs"]["sync_clocking"]["serial"])
-        params.put("passphrase_sync",   answer["inputs"]["sync_clocking"]["passphrase"])
+        inputs_list = [
+            ("sync", "sync_clocking"),
+            ("async", "async_clocking"),
+            ("routine", "get_options"),
+            ("call_lock_sync", "call_lock_sync"),
+            ("call_lock_async", "call_lock_async"),
+            ("get_iot_keys", "get_iot_keys")
+            ]
 
-        params.put("serial_async",      answer["inputs"]["async_clocking"]["serial"])
-        params.put("passphrase_async",  answer["inputs"]["async_clocking"]["passphrase"])
+        for input_endpoint in inputs_list:
+            input_ras_suffix = input_endpoint[0]
+            input_db_name = input_endpoint[1]
+            loggerDEBUG(f"input_ras_suffix: {input_ras_suffix}, input_db_name: {input_db_name}")
+            input_data =  answer["inputs"].get(input_db_name) or False
+            if input_data:
+                params.put("serial_"+input_endpoint[0], input_data.get("serial"))
+                params.put("passphrase_"+input_endpoint[0], input_data.get("passphrase"))
+                loggerDEBUG(f"serial_{input_endpoint[0]}: {input_data.get('serial')}")
+                loggerDEBUG(f"passphrase_{input_endpoint[0]}: {input_data.get('passphrase')}")
+        # params.put("serial_async",      answer["inputs"]["async_clocking"]["serial"])
+        # params.put("passphrase_async",  answer["inputs"]["async_clocking"]["passphrase"])
 
-        params.put("serial_routine",      answer["inputs"]["get_options"]["serial"])
-        params.put("passphrase_routine",  answer["inputs"]["get_options"]["passphrase"])        
+        # params.put("serial_routine",      answer["inputs"]["get_options"]["serial"])
+        # params.put("passphrase_routine",  answer["inputs"]["get_options"]["passphrase"])        
 
         params.put("odooConnectedAtLeastOnce", "1")
         return True

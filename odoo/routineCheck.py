@@ -46,6 +46,13 @@ to_check = { # keys_to_check_min_max_on_change
       "default": 14
     },
 
+    "period_odoo_get_iot_keys": {
+      "Type": "int",
+      "min_value": 14,
+      "max_value": 86400,
+      "default": 300
+    },
+
     "period_register_clockings": {
       "Type": "int",
       "min_value": 14,

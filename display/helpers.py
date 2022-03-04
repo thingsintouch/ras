@@ -14,14 +14,14 @@ from PIL import Image, ImageFont, ImageDraw
 import types
 
 from common.params import Params
-import common.constants as co
+from common.constants import PARAMS
 
 #import lib.Utils as ut
 
 import common.common as cc
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
-params = Params(db=co.PARAMS)
+params = Params(db=PARAMS)
 
 fontRoboto = "/home/pi/ras/fonts/Roboto-Medium.ttf"
 fontClockTime = ImageFont.truetype(fontRoboto, 42)
@@ -428,11 +428,16 @@ class Oled():
         self.tz = params.get("tz")
         # cc.setTimeZone() # timezone is set at the beginning of ~/ras/launcher.py
         try:
+            if "rotated" in params.get("hardware_display"):
+                rotation = 2
+            else:
+                rotation = 0
             self.device_display = sh1106(
                 serial_interface = i2c(port=1, address='0x3C'),
-                rotate = 0)
+                rotate = rotation)
         except Exception as e:
             loggerERROR(f"exception while getting device {e}")
+        self.display_time()
 
     def draw_text_centered(self, draw, origin, font, text):
         # available methods in :

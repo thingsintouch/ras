@@ -2,7 +2,8 @@ import requests
 import json
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
-from common.common import get_own_IP_address
+from common.common import get_own_IP_address, pPrint, get_hashed_machine_id
+from common.connectivity import extract_odoo_host_and_port
 
 from common.constants import PARAMS
 from common.params import Params
@@ -17,7 +18,8 @@ def post_request_and_get_answer(requestURL, payload):
 
     try:
         if params.get("odooPortOpen") == "1":
-            posting     = requests.post(url=requestURL, data=payload, verify=False)
+
+            posting     = requests.post(url=requestURL, data=payload, verify= False, timeout=15)
             
             if params.get("odooPortOpen") != "0" and posting.status_code == 404:
                 loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
@@ -86,19 +88,31 @@ def check_if_registered():
 
     return answer.get("state", False)
 
+def get_name_of_iot_template_to_register_new_device():
+    template_name = params.get_filtered("template_to_register_device")
+    if template_name == "not defined":
+        template_name = 'thingsintouch.ras'
+    return template_name
 
-def register_new_device_in_Odoo(odooAddress, payload):
+def register_new_device_in_Odoo(requestURL, payload):
     """ 
-        Returns  x x if registered in Odoo
-        
+    x
     """
-    requestURL  = odooAddress
-    payload['template'] = 'thingsintouch.ras'
+    
+    extract_odoo_host_and_port(requestURL)
+
+    payload['template'] = get_name_of_iot_template_to_register_new_device() #'thingsintouch.ras'
     payload['ip']       = get_own_IP_address()
+    payload['hashed_machine_id'] = get_hashed_machine_id()
+    print(f"template is {payload['template']}")
+    print("payload of request to register a new device")
+    pPrint(payload)
 
     try:
         posting = requests.post(url=requestURL, data=payload, verify=False)
         answer = posting.json()
+        print("answer to a request to register a new device")
+        pPrint(answer)
     except Exception as e:
         loggerDEBUG(f"REGISTER NEW DEVICE - answer not Available - Exception: {e}")
         answer = False
@@ -108,13 +122,21 @@ def register_new_device_in_Odoo(odooAddress, payload):
 
 def routine_check(payload):
     """ 
-        Returns answer from Odoo for Making aa ASYNC hronous Clocking
-        with rfid_card_code
-        It will register the Timestamp based on the Clock of the Odoo Server.
-        serial is the serial of the input (not the serial of the device)
+        Returns answer from Odoo 
     """
     requestURL  = get_iot_template() + str(params.get("serial_routine")) + "/action"
     payload.update({
         'passphrase': str(params.get("passphrase_routine")),
         })
     return post_request_and_get_answer(requestURL, payload)
+
+def request_get_iot_keys(payload):
+    """ 
+        Returns answer from Odoo 
+    """
+    requestURL  = get_iot_template() + str(params.get("serial_get_iot_keys")) + "/action"
+    payload.update({
+        'passphrase': str(params.get("passphrase_get_iot_keys")),
+        })
+    return post_request_and_get_answer(requestURL, payload)
+

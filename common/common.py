@@ -11,7 +11,7 @@ import secrets
 from hashlib import blake2b
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
-from . import constants as co
+# from . import constants as co
 #import lib.Utils as ut
 from dicts import tz_dic
 from common.params import Params
@@ -73,8 +73,8 @@ def getMachineID():
     loggerDEBUG(f"machine id (= cpuinfo serial number (or random when there was an Exception)) is {machine_id}")
     return machine_id 
 
-def getHashedMachineId():
-    machine_id = getMachineID()
+def computeHashedMachineId():
+    machine_id = bytes(getMachineID(), encoding='utf8')
 
     hashed_machine_id = blake2b( \
         machine_id,
@@ -86,10 +86,12 @@ def getHashedMachineId():
 
     return hashed_machine_id
 
-def store_hashed_machine_id():
-    if params.get('hashed_machine_id') is None:
-        hashed_machine_id = getHashedMachineId()
+def get_hashed_machine_id():
+    hashed_machine_id = params.get('hashed_machine_id')
+    if hashed_machine_id is None:
+        hashed_machine_id = computeHashedMachineId()
         params.put('hashed_machine_id', hashed_machine_id)
+    return hashed_machine_id
 
 def store_factory_settings_in_database():    
     if params.get("odooConnectedAtLeastOnce") != "1":
@@ -99,7 +101,9 @@ def store_factory_settings_in_database():
         # prettyPrint(keys_to_store)
         for k in keys_to_store:
             try:
-                loggerDEBUG(f"key: {k} - params get k {params.get(k)}")
+                loggerDEBUG("-"*80)
+                loggerDEBUG(f"key: {k} - stored value in params db: {params.get(k)}")
+                loggerDEBUG(f"key: {k} - storing value of factory_settings: {factory_settings[k]}")
                 params.put(k, factory_settings[k])
             except Exception as e:
                 loggerDEBUG(f"exception while storing factory setting {k}: {e}")
@@ -122,7 +126,7 @@ def get_own_IP_address():
         IP = '127.0.0.1'
     finally:
         st.close()
-    params.put("ownIpAddress", IP)
+    params.put("ip", IP)
     return IP
 
 def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex for ports

@@ -29,39 +29,58 @@ def internetReachable():
     params.put("internetReachable", internet_reachable)
     return internet_reachable
 
-def extract_odoo_host_and_port():
-    odooAddress = params.get("odooUrlTemplate")
+def clean_string_after_slash(to_clean):
+    return to_clean.split("/", 1)[0]
+
+def store_host_port_and_template(scheme,host,port):
+    if scheme:
+        template = scheme+"://"+host+":"+port
+    else:
+        template = host+":"+port
+    params.put("odoo_host", host)
+    params.put("odoo_port", port)
+    params.put("odooUrlTemplate", template)
+    loggerINFO(f"stored in db params - template: {template}, host: {host}, port: {port}")
+
+def extract_odoo_host_and_port(odooAddress = False):
+    if not odooAddress:
+        odooAddress = params.get("odooUrlTemplate")
     loggerDEBUG(f"extract_odoo_host_and_port() - odooAddress {odooAddress}")
     if odooAddress is not None:
         odooAdressSplitted = odooAddress.split(":")
         length = len(odooAdressSplitted)
         loggerINFO(f"odooAdressSplitted {odooAdressSplitted} - length {length}")
+        
         if length == 1:
-            params.put("odoo_host", odooAdressSplitted[0])
-            params.put("odoo_port", "443")
+            scheme  = ""
+            host    = clean_string_after_slash(odooAdressSplitted[0])
+            port    = "443"
         if length == 2:
             zero = odooAdressSplitted[0]
-            one = odooAdressSplitted[1].replace('/','')
+            one = odooAdressSplitted[1].replace('//','')
             if zero == "https":
-                params.put("odoo_host", one)
-                params.put("odoo_port","443")
+                scheme  = "https"
+                host    = clean_string_after_slash(one)
+                port    = "443"
             elif zero == "http":
-                params.put("odoo_host", one)
-                params.put("odoo_port","8069")
+                scheme  = "http"
+                host    = clean_string_after_slash(one)
+                port    = "8069"
             else:
-                params.put("odoo_host", zero)
-                params.put("odoo_port", one)
+                scheme  = "https"
+                host    = clean_string_after_slash(zero)
+                port    = clean_string_after_slash(one)
         if length == 3:
             if "//" in odooAdressSplitted[1]:
-                odoo_host = odooAdressSplitted[1].replace('/','')
-                params.put("odoo_host", odoo_host)
-                params.put("odoo_port", odooAdressSplitted[2])
+                scheme  = odooAdressSplitted[0]
+                host    = clean_string_after_slash(odooAdressSplitted[1].replace('//',''))
+                port    = clean_string_after_slash(odooAdressSplitted[2])
             else:
-                params.put("odoo_host", "0")
-                params.put("odoo_port", "0")
-        odooHost = params.get("odoo_host")
-        odooPort = params.get("odoo_port")
-        loggerINFO(f"extract_odoo_host_and_port() - odoo_host {odooHost}- odoo_port {odooPort}")
+                scheme  = ""
+                host    = "0"
+                port    = "0"
+        store_host_port_and_template(scheme, host, port)
+
 
 def isOdooPortOpen():
     try:

@@ -14,8 +14,9 @@ from common.params import Params
 from common.launcher import launcher
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from messaging.messaging import SubscriberMultipart as Subscriber
-from common.common import setTimeZone, store_hashed_machine_id, store_factory_settings_in_database
+from common.common import setTimeZone, store_factory_settings_in_database
 from common.common import set_bluetooth_device_name, ensure_git_does_not_change_env_file
+from common.get_managed_processes import get_managed_essential_processes
 
 
 params = Params(db=co.PARAMS)
@@ -25,28 +26,17 @@ store_factory_settings_in_database()
 setTimeZone()
 
 loggerINFO("###################### RAS launched ###################")
-# loggerINFO(f'running on python version: {sys.version}')
 
-# store_hashed_machine_id()
 set_bluetooth_device_name()
 params.put("firmwareVersion",co.RAS_VERSION)
 ensure_git_does_not_change_env_file()
 
-managed_essential_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
-    "thermal_d": "thermal.manager",
-    "display_d": "display.manager",
-    "clock_d": "clock.manager",
-    "reader_d": "reader.manager",
-    "odoo_routine_check_d": "odooRoutineCheck.manager",
-    "bluetooth_d": "bluetooth.server",
-    "odoo_d": "odoo.manager",
-    "state_d": "state.manager",
-    "buzzer_d": "buzzer.manager",
-    "odoo_register_clockings_d": "odooRegisterClockings.manager"
-    #"RAS_d": "oldLauncher"
-}
+managed_essential_processes = get_managed_essential_processes(
+    params.get("template_to_register_device")
+    )
 
 managed_NON_essential_processes = {}
+
 daemon_processes = {}
 running: Dict[str, Process] = {}
 
@@ -123,7 +113,6 @@ def manager_thread():
                 message.split()
             counter = log_info_when_needed(counter)
         return counter 
-
 
     ras_subscriber = Subscriber("5556")
     ras_subscriber.subscribe("thermal")

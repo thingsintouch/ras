@@ -2,7 +2,7 @@ import time
 import zmq
 import os
 
-from common import constants as co
+from common.constants import PARAMS, CLOCKINGS, DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS
 from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG, loggerERROR
 
 from messaging.messaging import SubscriberMultipart as Subscriber
@@ -11,15 +11,15 @@ from messaging.messaging import PublisherMultipart as Publisher
 
 from common.params import Params, mkdirs_exists_ok, read_db
 
-params = Params(db=co.PARAMS)
+params = Params(db=PARAMS)
 
-if not os.path.exists(co.CLOCKINGS):
-    mkdirs_exists_ok(co.CLOCKINGS)
+if not os.path.exists(CLOCKINGS):
+    mkdirs_exists_ok(CLOCKINGS)
 
 def main():
 
     def write_clocking(card_id_as_string, NOW_in_seconds):
-        file_name_of_the_clocking = co.CLOCKINGS + "/" + card_id_as_string + "-" + str(NOW_in_seconds)
+        file_name_of_the_clocking = CLOCKINGS + "/" + card_id_as_string + "-" + str(NOW_in_seconds)
         with open(file_name_of_the_clocking, 'w'): pass
 
     def enough_time_between_clockings():
@@ -28,11 +28,11 @@ def main():
             n = params.get("minimumTimeBetweenClockings")
             if n is None or n is "False": 
                 # loggerDEBUG(f"No parameter stored for minimumTimeBetweenClockings")
-                min_time_between_clockings = co.DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS
+                min_time_between_clockings = DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS
             elif n:
                 min_time_between_clockings = int(n)
             else:
-                min_time_between_clockings = co.DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS
+                min_time_between_clockings = DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS
             # loggerDEBUG(f"min_time_between_clockings {min_time_between_clockings} ")
             return min_time_between_clockings
 
@@ -64,8 +64,8 @@ def main():
             card_id_as_string = f"{card}"                
             text = f":{card_id_as_string} - time: NOW_in_seconds {NOW_in_seconds}"
             # loggerDEBUG(f"card {card} - params.keys {params.keys}")
-            if card in os.listdir(co.PARAMS+'/d'):
-                full_name = read_db(co.PARAMS, card).decode('utf-8')
+            if card in os.listdir(PARAMS+'/d'):
+                full_name = read_db(PARAMS, card).decode('utf-8')
                 if " " in full_name:
                     two_lines_name = full_name.replace(" ", "\n", 1)
                 else:
