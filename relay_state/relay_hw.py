@@ -18,7 +18,7 @@ class Relay():
         GPIO.setup(pin, GPIO.OUT)  # set pin as output
         self.pin = pin
         params.put("relay_status", "0")
-        self.send_output_to_GPIO(1)
+        self.send_output_to_GPIO(0)
 
     def display_status(self):
         time.sleep(PERIOD_DISPLAY_MANAGER)
