@@ -17,5 +17,6 @@ def get_managed_essential_processes(template):
         managed_essential_processes["odoo_get_iot_keys_d"] = "odooGetIotKeys.manager"
         managed_essential_processes["relay_d"] = "relay.manager"
         managed_essential_processes["relay_output_d"] = "relay_state.manager"
+        managed_essential_processes["odoo_register_actions_d"] = "odooRegisterActions.manager"
 
     return managed_essential_processes

@@ -19,7 +19,7 @@ def post_request_and_get_answer(requestURL, payload):
     try:
         if params.get("odooPortOpen") == "1":
 
-            posting     = requests.post(url=requestURL, data=payload, verify= False, timeout=15)
+            posting     = requests.post(url=requestURL, data=payload, verify= False, timeout=150000)
             
             if params.get("odooPortOpen") != "0" and posting.status_code == 404:
                 loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
@@ -59,6 +59,35 @@ def register_async_clocking(card_code, timestamp):
         }
     return post_request_and_get_answer(requestURL, payload)
 
+def call_lock_async(card_code, timestamp, state):
+    """ 
+        Returns answer from Odoo for Making aa ASYNC hronous CALL to open a lock
+        with an rfid_card_code acting as a key.
+        It will register the Timestamp based on the Clock of the Odoo Server.
+        serial is the serial of the input (not the serial of the device)
+    """
+    requestURL  = get_iot_template() + str(params.get("serial_call_lock_async")) + "/action"
+    payload     = {
+        'passphrase'    : str(params.get("passphrase_call_lock_async")),
+        "value"         : str(card_code),
+        "timestamp"     : int(timestamp),
+        "state"         : str(state)
+        }
+    return post_request_and_get_answer(requestURL, payload)
+
+def call_lock_sync(card_code):
+    """ 
+        Returns answer from Odoo for Making a synchronous CALL to open a lock
+        with an rfid_card_code acting as a key.
+        It will register the Timestamp based on the Clock of the Odoo Server.
+        serial is the serial of the input (not the serial of the device)
+    """
+    requestURL  = get_iot_template() + str(params.get("serial_call_lock_sync")) + "/action"
+    payload     = {
+        'passphrase'    : str(params.get("passphrase_call_lock_sync")),
+        "value"     : str(card_code)
+        }
+    return post_request_and_get_answer(requestURL, payload)
 
 def register_sync_clocking(rfid_card_code):
     """ 
