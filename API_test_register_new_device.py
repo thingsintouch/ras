@@ -9,7 +9,7 @@ params.put("odooConnectedAtLeastOnce","0")
 
 store_factory_settings_in_database()
 
-uuid_ = "ce99ffbd-597d-43ba-a4c5-791fc1885f2a"
+uuid_ = "436d7f4e-fccf-42c7-906d-5aa4db2026fa"
 
 odooAddress    = "http://192.168.178.55:8113/iot/"+uuid_+"/configure"
 
