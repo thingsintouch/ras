@@ -13,7 +13,7 @@ from common.common import pPrint
 params = Params(db=PARAMS)
 
 def update_stored_keys(stored_keys):
-    serial_of_input = str(params.get("serial_call_lock_sync"))
+    serial_of_input = str(params.get("serial_call_lock_async"))
     type_of_key = "RFID"
     keys_in_odoo = get_iot_keys_from_odoo(serial_of_input, type_of_key)
     if keys_in_odoo:
