@@ -6,28 +6,9 @@
 *.db
 *.swp
 __pycache__
-dicts/credentials.json
-dicts/data.json
-attendances.*
-sync_flag.*
-test.py
-src/pip-delete-this-directory.txt
-dicts/deviceCustomization.json
-dicts/deviceCustomizationPrior.json
-dicts/dataEtRH.json
-dicts/dataLuiS.json
-dicts/deviceCustomizationLuis.json
+
 *.code-workspace
-
-reallyOldLauncher.py
-
-killme.txt
-
-dicts/deviceCustomization.sample.json
-
-killme_settings.py
 
 data
 factory_settings/custom_params.py
 
-factory_settings/custom_params copy.py

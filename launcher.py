@@ -26,18 +26,12 @@ store_factory_settings_in_database()
 setTimeZone()
 
 loggerINFO("###################### RAS launched ###################")
-# loggerINFO(f'running on python version: {sys.version}')
 
 store_hashed_machine_id()
 # set_bluetooth_device_name()
 params.put("firmwareVersion",co.RAS_VERSION)
 ensure_git_does_not_change_env_file()
 params.put("ownIpAddress", get_own_IP_address())
-
-# MANUAL EDITIONS
-# params.put("odooUrlTemplate", "http://192.168.178.55:9100")
-# params.put("odoo_host", "192.168.178.55")
-# params.put("odoo_port", "9100")
 
 managed_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
     "thermal_d": "thermal.manager",
