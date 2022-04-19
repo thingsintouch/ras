@@ -37,6 +37,7 @@ def main():
             return min_time_between_clockings
 
         min_time_between_clockings = get_minimum_time()
+
         if not last_clockings.get(card_id_as_string, False):
             last_clockings[card_id_as_string]= NOW_in_seconds
             enough_time = True
