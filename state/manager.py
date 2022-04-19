@@ -8,25 +8,21 @@ from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG
 from messaging.messaging import PublisherMultipart as Publisher
 from common.connectivity import internetReachable, isOdooPortOpen
 from common.params import Params
-from odoo.remoteManagement import acknowledgeTerminalInOdoo, isRemoteOdooControlAvailable
+from odoo.remoteManagement import acknowledgeTerminalInOdoo
 
 
 params = Params(db=co.PARAMS)
 
 def main():
 
-    #params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
+    params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
 
     while True:
-        #params.put("odoo_host", "erp.priinc.com")
-        if params.get("odooConnectedAtLeastOnce") != "1":
-            loggerDEBUG(f" checking if Odoo is reachable - first time ever (setting-up)")
-            isRemoteOdooControlAvailable()
-        elif params.get("acknowledged") != "1":
+        if params.get("acknowledged") != "1":
             loggerDEBUG(f" checking if the terminal is acknowlegeable by Odoo - once after every launch")
             acknowledgeTerminalInOdoo()
 
-        internet_reachable  = internetReachable()
+        internet_reachable  = True 
         odoo_port_open      = isOdooPortOpen()
         loggerDEBUG(f"internet pingable {internet_reachable} - odoo port open {odoo_port_open}")
         time.sleep(co.PERIOD_STATE_MANAGER)

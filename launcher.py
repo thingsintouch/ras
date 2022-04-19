@@ -5,7 +5,7 @@ import importlib
 from multiprocessing import Process, Manager
 
 from typing import Dict, List
-#import flask
+
 import zmq
 from colorama import Fore as cf
 
@@ -18,7 +18,6 @@ from common.common import setTimeZone, store_hashed_machine_id, store_factory_se
 from common.common import set_bluetooth_device_name, ensure_git_does_not_change_env_file, get_own_IP_address
 from common.common import runShellCommand_and_returnOutput as rs
 
-#import lib.Utils as ut
 
 params = Params(db=co.PARAMS)
 
@@ -36,11 +35,11 @@ ensure_git_does_not_change_env_file()
 params.put("ownIpAddress", get_own_IP_address())
 
 # MANUAL EDITIONS
-params.put("odooUrlTemplate", "https://erp.priinc.com")
-params.put("odoo_host", "erp.priinc.com")
-params.put("odoo_port", "443")
+# params.put("odooUrlTemplate", "http://192.168.178.55:9100")
+# params.put("odoo_host", "192.168.178.55")
+# params.put("odoo_port", "9100")
 
-managed_essential_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
+managed_processes = { # key(=process name) : (pythonmodule where the process is defined (= process name))
     "thermal_d": "thermal.manager",
     "display_d": "display.manager",
     "clock_d": "clock.manager",
@@ -54,15 +53,7 @@ managed_essential_processes = { # key(=process name) : (pythonmodule where the p
     #"RAS_d": "oldLauncher"
 }
 
-managed_NON_essential_processes = {}
-daemon_processes = {}
 running: Dict[str, Process] = {}
-to_resuscitate = []
-
-managed_processes = {
-    **managed_essential_processes,
-    **managed_NON_essential_processes
-    }
 
 def start_managed_process(name):
     if name not in running and name in managed_processes:
@@ -72,15 +63,6 @@ def start_managed_process(name):
         running[name] = Process(name=name, target=launcher, args=(process,))
         running[name].start()
 
-def start_daemon_process(name):
-    pass
-
-def start_all_daemon_processes():
-    pass
-
-def terminate_managed_process(name):
-    loggerINFO(f"terminating python process {process}")
-    pass
 
 def preimport_managed_process(name):
     module = managed_processes[name]
@@ -91,36 +73,12 @@ def start_all_managed_processes():
     for name in managed_processes:
         start_managed_process(name)
 
-def start_all_daemon_processes():
-    for name in daemon_processes:
-        start_daemon_process(name)
-
-def terminate_non_essential_managed_processes():
-    for p in managed_NON_essential_processes:
-        terminate_managed_process(p)
-
-def log_begin_manager_thread():
-    loggerINFO(f"starting manager thread") 
-    #loggerDEBUG({"environ": os.environ})
-
 def log_running_processes_list():
     running_alive = [p for p in running if running[p].is_alive()]
     running_dead = [p for p in running if p not in running_alive]
     if running_dead:
         loggerINFO("alive processes: " + cf.GREEN + ' ; '.join(running_alive) + cf.RESET)    
         loggerINFO("dead processes: " + cf.RED + ' ; '.join(running_dead) + cf.RESET)
-        # for p in running_dead:
-        #     if p not in to_resuscitate:
-        #         to_resuscitate.append(p)
-        #     try:
-        #         start_managed_process(p)
-        #         if running[p].is_alive():
-        #             to_resuscitate.remove(p)
-        #             loggerINFO("process successfuly restarted: "+p)
-        #         else:
-        #             loggerDEBUG(f"could no restart {p}, but I keep trying :)")
-        #     except Exception as e:
-        #         loggerERROR(f'failed to re-start dead process {p} - with exception {e}')
 
 def manager_thread():
     def get_thermal_status(counter):
@@ -148,18 +106,15 @@ def manager_thread():
 
     ras_subscriber = Subscriber("5556")
     ras_subscriber.subscribe("thermal")
-    log_begin_manager_thread()
-    start_all_daemon_processes()
+
     start_all_managed_processes()
-    #thermal = ThermalStatus() # instance of class ThermalStatus
+
     counter = 0
     while 1:
         counter = get_thermal_status(counter) # BLOCKING
 
-        if False: #thermal.isCritical()
-            terminate_non_essential_managed_processes()
-        else:
-            start_all_managed_processes()
+        start_all_managed_processes()
+
         log_running_processes_list()
         time.sleep(co.PERIOD_MAIN_THREAD)
         counter += 1

@@ -84,51 +84,6 @@ def acknowledgeTerminalInOdoo():
 
     return terminal_ID_in_Odoo
 
-# def getTerminalIDinOdoo():
-#     hashed_machine_id = params.get("hashed_machine_id")
-#     if not hashed_machine_id:
-#         hashed_machine_id = cc.getHashedMachineId()
-#         params.put("hashed_machine_id", hashed_machine_id)
-#     acknowledgeTerminalInOdoo()
-
-# def ensureFirstOdooConnection_RemoteManagement():
-#     loggerINFO("Terminal REMOTELY managed: ensure get Terminal ID in Odoo - initiated")
-#     getTerminalIDinOdoo()
-
-def isRemoteOdooControlAvailable():
-    version_things_module_in_Odoo = None
-    try:
-        template    = params.get("odooUrlTemplate")
-        loggerDEBUG(f"in isRemoteOdooControlAvailable() - odooUrlTemplate: {template}")
-
-        if template is None: return False
-        requestURL  = template + co.ROUTE_ASK_VERSION_IN_ODOO
-        headers     = {'Content-Type': 'application/json'}
-
-        payload     = {'question': co.QUESTION_ASK_FOR_VERSION_IN_ODOO}
-        print("*****************************************")
-        response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
-        print(response)
-        answer = response.json().get("result", False)
-        if answer:
-            error = answer.get("error", False)
-            if error:
-                loggerINFO(f"Remote Odoo Control not Available - Could not get the Version of Odoo- error: {error}")
-            else:
-                version_things_module_in_Odoo     = answer['version']
-                loggerINFO(f"Version_things_module_in_Odoo: {version_things_module_in_Odoo}")
-                loggerINFO(f"Remote Odoo Control Available") 
-                params.put("version_things_module_in_Odoo",version_things_module_in_Odoo)
-                params.put("odooConnectedAtLeastOnce",True)
-                return True
-        else:
-            loggerINFO(f"Remote Odoo Control not Available - Answer from Odoo did not contain an answer")
-    except ConnectionRefusedError as e:
-        loggerDEBUG(f"Remote Odoo Control not Available - ConnectionRefusedError - Request Exception : {e}")
-    except Exception as e:
-        loggerDEBUG(f"Remote Odoo Control not Available - Exception: {e}")
-    
-    return False
 
 def resetSettings():
     try:
