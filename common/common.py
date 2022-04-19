@@ -12,8 +12,8 @@ from hashlib import blake2b
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from . import constants as co
-# import lib.Utils as ut
-from dicts import tz_dic
+
+
 from common.params import Params
 import common.constants as co
 from common.keys import keys_by_Type, TxType
