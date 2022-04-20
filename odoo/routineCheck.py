@@ -13,6 +13,7 @@ from common.keys import TxType, keys_by_Type
 
 from display.helpers import sh1106
 from common.connectivity import isPingable
+from odoo.odooRequests import getAnswerFromOdooRoutineCheck
 
 params = Params(db=PARAMS)
 log_db =  Log()
@@ -51,33 +52,33 @@ def firmwareUpdateAndReboot():
     else:
         loggerINFO("Firmware Update not possible: GitHub is down")        
 
-def getAnswerFromOdooRoutineCheck():
-    try:
-        incrementalLog = log_db.get_inc_log()
-        requestURL  = params.get("odooUrlTemplate") + \
-            co.ROUTE_OUTGOING_IN_ODOO + "/" + params.get("routefromOdooToDevice")
-        headers     = {'Content-Type': 'application/json'}
-        #print("+#+_"*50)
-        #cc.pPrint(incrementalLog)
-        payload     = {'question': co.QUESTION_ASK_FOR_ROUTINE_CHECK,
-                    'productName': productName,
-                    'incrementalLog': incrementalLog}
-        response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
-        if params.get("odooPortOpen") != "0" and response.status_code == 404:
-            loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
-            loggerINFO(f"odooConnectedAtLeastOnce set to 0")
-            params.put("odooConnectedAtLeastOnce", "0")
-            params.put("RASxxx", "RASxxx")
-            return False
-        else:
-            answer      = response.json().get("result", False)
-            return  answer
-    except ConnectionRefusedError as e:
-        loggerDEBUG(f"Routine Check not Available - ConnectionRefusedError - Request Exception : {e}")
-        return False
-    except Exception as e:
-        loggerDEBUG(f"Routine Check not Available - Exception: {e}")
-        return False
+# def getAnswerFromOdooRoutineCheck():
+#     try:
+#         incrementalLog = log_db.get_inc_log()
+#         requestURL  = params.get("odooUrlTemplate") + \
+#             co.ROUTE_OUTGOING_IN_ODOO + "/" + params.get("routefromOdooToDevice")
+#         headers     = {'Content-Type': 'application/json'}
+#         #print("+#+_"*50)
+#         #cc.pPrint(incrementalLog)
+#         payload     = {'question': co.QUESTION_ASK_FOR_ROUTINE_CHECK,
+#                     'productName': productName,
+#                     'incrementalLog': incrementalLog}
+#         response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
+#         if params.get("odooPortOpen") != "0" and response.status_code == 404:
+#             loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
+#             loggerINFO(f"odooConnectedAtLeastOnce set to 0")
+#             params.put("odooConnectedAtLeastOnce", "0")
+#             params.put("RASxxx", "RASxxx")
+#             return False
+#         else:
+#             answer      = response.json().get("result", False)
+#             return  answer
+#     except ConnectionRefusedError as e:
+#         loggerDEBUG(f"Routine Check not Available - ConnectionRefusedError - Request Exception : {e}")
+#         return False
+#     except Exception as e:
+#         loggerDEBUG(f"Routine Check not Available - Exception: {e}")
+#         return False
 
 def saveChangesToParams(answer):
     for k in answer:
@@ -111,7 +112,8 @@ def synchronize_Terminal_timestamp_with_Odoo_UTC_timestamp(answer):
         cc.set_device_time(utc_now_on_odoo_server)
 
 def routineCheck():
-    answer = getAnswerFromOdooRoutineCheck()
+    incrementalLog = log_db.get_inc_log()
+    answer = getAnswerFromOdooRoutineCheck(incrementalLog)
 
     if answer:
         error = answer.get("error", False)

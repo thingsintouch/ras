@@ -5,7 +5,7 @@ from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, l
 from common.common import get_own_IP_address, pPrint
 from common.connectivity import extract_odoo_host_and_port
 
-from common.constants import PARAMS, ROUTE_INCOMING_IN_ODOO, QUESTION_ASK_FOR_REGISTER_CLOCKINGS
+from common.constants import PARAMS, ROUTE_INCOMING_IN_ODOO, QUESTION_ASK_FOR_REGISTER_CLOCKINGS, ROUTE_OUTGOING_IN_ODOO, QUESTION_ASK_FOR_ROUTINE_CHECK
 from common.params import Params
 
 params = Params(db=PARAMS)
@@ -54,7 +54,14 @@ def postToOdooRegisterClockings(clockings):
                 }
     return post_request_and_get_answer(requestURL, payload)
 
+def getAnswerFromOdooRoutineCheck(incrementalLog):
+    requestURL  = params.get("odooUrlTemplate") + \
+        ROUTE_OUTGOING_IN_ODOO + "/" + params.get("routefromOdooToDevice")
 
+    payload     = {'question': QUESTION_ASK_FOR_ROUTINE_CHECK,
+                'productName': productName,
+                'incrementalLog': incrementalLog}
+    return post_request_and_get_answer(requestURL, payload)
 
 
 
