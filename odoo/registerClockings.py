@@ -13,6 +13,8 @@ from common.constants import PARAMS, CLOCKINGS, SECONDS_UNTIL_CLOCKINGS_DELETED_
 from common.params import Params
 from common.keys import TxType, keys_by_Type
 
+from odoo.odooRequests import postToOdooRegisterClockings
+
 
 
 params              = Params(db=PARAMS)
@@ -33,29 +35,29 @@ def getClockings():
                 clockings.append(f) 
     return clockings
 
-def postToOdooRegisterClockings(clockings):
-    try:
-        requestURL  = params.get("odooUrlTemplate") +  co.ROUTE_INCOMING_IN_ODOO + \
-                      "/" + params.get("routefromDeviceToOdoo")
-        headers     = {'Content-Type': 'application/json'}
-        # loggerDEBUG(f"#####################--------------##############")
-        # cc.pPrint(clockings)
-        # loggerDEBUG(f"#####################--------------##############")
-        payload     = {
-                    'question'      : co.QUESTION_ASK_FOR_REGISTER_CLOCKINGS,
-                    'productName'   : productName,
-                    'clockings'     : clockings
-                    }
-        response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
-        answer      = response.json().get("result", False)
-        #loggerDEBUG(f"REGISTER CLOCKINGS answer: {answer}")
-        return  answer
-    except ConnectionRefusedError as e:
-        loggerDEBUG(f"Register Clockings not Available - ConnectionRefusedError - Request Exception : {e}")
-        return False
-    except Exception as e:
-        loggerDEBUG(f"Register Clockings not Available - Exception: {e}")
-        return False
+# def postToOdooRegisterClockings(clockings):
+#     try:
+#         requestURL  = params.get("odooUrlTemplate") +  co.ROUTE_INCOMING_IN_ODOO + \
+#                       "/" + params.get("routefromDeviceToOdoo")
+#         headers     = {'Content-Type': 'application/json'}
+#         # loggerDEBUG(f"#####################--------------##############")
+#         # cc.pPrint(clockings)
+#         # loggerDEBUG(f"#####################--------------##############")
+#         payload     = {
+#                     'question'      : co.QUESTION_ASK_FOR_REGISTER_CLOCKINGS,
+#                     'productName'   : productName,
+#                     'clockings'     : clockings
+#                     }
+#         response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
+#         answer      = response.json().get("result", False)
+#         #loggerDEBUG(f"REGISTER CLOCKINGS answer: {answer}")
+#         return  answer
+#     except ConnectionRefusedError as e:
+#         loggerDEBUG(f"Register Clockings not Available - ConnectionRefusedError - Request Exception : {e}")
+#         return False
+#     except Exception as e:
+#         loggerDEBUG(f"Register Clockings not Available - Exception: {e}")
+#         return False
 
 def process_answer_from_register_clockings(answer):
     if not answer:
@@ -78,12 +80,9 @@ def once_at_a_time_register_clockings():
         answer = postToOdooRegisterClockings(clockings)
         process_answer_from_register_clockings(answer)
 
-# def all_at_once_register_clockings():
-#     answer = postToOdooRegisterClockings(getClockings())
-#     process_answer_from_register_clockings(answer)
-
 def registerClockings():
-    once_at_a_time_register_clockings() # alternatively all_at_once_register_clockings
+    if params.get("odooPortOpen") == "1":
+        once_at_a_time_register_clockings()
     
 
 

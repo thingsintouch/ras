@@ -54,3 +54,4 @@ LOG = WORKING_DIR + "/data/log"
 
 MAX_NUMBER_OF_LOG_ENTRIES = 100
 
+

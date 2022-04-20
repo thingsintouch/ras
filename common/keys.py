@@ -40,6 +40,7 @@ keys_by_Type[TxType.FACTORY_SETTINGS] = [
     "hardware_display",
     "hardware_sound",
     "time_format",
+    "RAS_runs_locally"
   ]
 
 keys_by_Type[TxType.ON_DEVICE_SETUP] = [
