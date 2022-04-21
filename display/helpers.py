@@ -396,7 +396,7 @@ def multiline_text_lu(
 
 def getInternetQualityMessage():
     try:
-        if params.get("internetReachable") == "1":
+        if params.get("internetReachable") == "1" or params.get("RAS_runs_locally") == "1":
             return " "
     except Exception as e:
         loggerDEBUG(f"Exception @ Get Internet Quality Message (display.helpers) {e}")

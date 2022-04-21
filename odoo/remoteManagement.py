@@ -38,7 +38,7 @@ def acknowledgeTerminalInOdoo():
     if answer:
         error = answer.get("error", None)
         if error:
-            loggerINFO(f"Could not acknowledge the terminal in Odoo- error: {error}")
+            loggerDEBUG(f"Could not acknowledge the terminal in Odoo- error: {error}")
         else:
             list_on_ack_from_odoo = params.get_list_of_keys_with_type(TxType.ON_ACK_FROM_ODOO)
             for o in list_on_ack_from_odoo:
