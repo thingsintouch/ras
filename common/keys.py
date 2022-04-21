@@ -132,7 +132,7 @@ keys = {}
 for e in TxType:
   if e in keys_by_Type.keys():
     for k in keys_by_Type[e]:
-      print(f"key: {k} and value: {e} - {e.value}")
+      # print(f"key: {k} and value: {e} - {e.value}")
       if keys.get(k, None) is None:
         keys[k]=[e.value]
       else:
