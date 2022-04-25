@@ -1,5 +1,4 @@
 import time
-import zmq
 import os
 
 from common import constants as co
