@@ -5,7 +5,7 @@ import os
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 import common.constants as co
 import common.common as cc
-import lib.Utils as ut
+
 import common.logger as lo
 from common.constants import PARAMS
 from common.params import Params, Log
@@ -130,37 +130,4 @@ def isRemoteOdooControlAvailable():
         loggerDEBUG(f"Remote Odoo Control not Available - Exception: {e}")
     
     return False
-
-def resetSettings():
-    try:
-        requestURL  = params.get("odooUrlTemplate") + \
-            co.ROUTE_INCOMING_IN_ODOO + "/" + params.get("routefromDeviceToOdoo")
-        headers     = {'Content-Type': 'application/json'}
-        productName = params.get('productName')
-        payload     = {'question': co.QUESTION_ASK_FOR_RESET_SETTINGS,
-                    'productName': productName}
-
-        response    = requests.post(url=requestURL, json=payload, headers=headers)
-
-        # print("resetSettings Status code: ", response.status_code)
-        # print("resetSettings Printing Entire Post Response")
-        # print(response.json())
-        answer = response.json().get("result", None)
-        if answer:
-            error = answer.get("error", None)
-            ut.storeOptionInDeviceCustomization("isRemoteOdooControlAvailable", True)
-            if error:
-                loggerINFO(f"resetSettings not Available - error in answer from Odoo: {error}")
-                return False
-            else:
-                loggerINFO(f"resetSettings was successful - {answer}")
-                return True
-        else:
-            loggerINFO(f"resetSettings not Available - Answer from Odoo did not contain an answer")        
-    except ConnectionRefusedError as e:
-        loggerERROR(f"resetSettings not Available - ConnectionRefusedError - Request Exception : {e}")
-    except Exception as e:
-        loggerERROR(f"resetSettings not Available - Exception: {e}")
-
-    ut.storeOptionInDeviceCustomization("isRemoteOdooControlAvailable", False)
-    return False     
+  

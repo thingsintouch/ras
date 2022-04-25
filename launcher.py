@@ -20,7 +20,6 @@ from messaging.messaging import SubscriberMultipart as Subscriber
 from common.common import setTimeZone, store_hashed_machine_id, store_factory_settings_in_database
 from common.common import set_bluetooth_device_name, ensure_git_does_not_change_env_file
 
-import lib.Utils as ut
 
 params = Params(db=co.PARAMS)
 
