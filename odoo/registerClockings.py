@@ -1,11 +1,9 @@
-import requests
-import json
 import time
 
 from os import listdir, remove
 from os.path import isfile, join
 
-from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
+from common.logger import loggerDEBUG, loggerINFO
 import common.constants as co
 import common.common as cc
 
@@ -35,30 +33,6 @@ def getClockings():
                 clockings.append(f) 
     return clockings
 
-# def postToOdooRegisterClockings(clockings):
-#     try:
-#         requestURL  = params.get("odooUrlTemplate") +  co.ROUTE_INCOMING_IN_ODOO + \
-#                       "/" + params.get("routefromDeviceToOdoo")
-#         headers     = {'Content-Type': 'application/json'}
-#         # loggerDEBUG(f"#####################--------------##############")
-#         # cc.pPrint(clockings)
-#         # loggerDEBUG(f"#####################--------------##############")
-#         payload     = {
-#                     'question'      : co.QUESTION_ASK_FOR_REGISTER_CLOCKINGS,
-#                     'productName'   : productName,
-#                     'clockings'     : clockings
-#                     }
-#         response    = requests.post(url=requestURL, json=payload, headers=headers, verify=False)
-#         answer      = response.json().get("result", False)
-#         #loggerDEBUG(f"REGISTER CLOCKINGS answer: {answer}")
-#         return  answer
-#     except ConnectionRefusedError as e:
-#         loggerDEBUG(f"Register Clockings not Available - ConnectionRefusedError - Request Exception : {e}")
-#         return False
-#     except Exception as e:
-#         loggerDEBUG(f"Register Clockings not Available - Exception: {e}")
-#         return False
-
 def process_answer_from_register_clockings(answer):
     if not answer:
         loggerDEBUG(f"Register Clockings not Available - No Answer from Odoo") 
@@ -84,5 +58,3 @@ def registerClockings():
     if params.get("odooPortOpen") == "1":
         once_at_a_time_register_clockings()
     
-
-

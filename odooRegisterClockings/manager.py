@@ -1,7 +1,6 @@
 from time import sleep
 
 from common.constants import PERIOD_ODOO_REGISTER_CLOCKINGS, PARAMS
-#from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG
 from odoo.registerClockings import registerClockings
 from common.params import Params
 

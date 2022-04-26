@@ -1,7 +1,3 @@
-import requests
-import json
-import os
-
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from common.common import pPrint, setTimeZone
 
@@ -53,4 +49,3 @@ def acknowledgeTerminalInOdoo():
             params.put("acknowledged", True)
     else:
         loggerINFO(f"Answer from Odoo did not contain an answer")
-

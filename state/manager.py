@@ -1,6 +1,4 @@
 import time
-import psutil
-import zmq
 
 from common import constants as co
 # from connectivity import helpers as ch   # connectivity helpers
