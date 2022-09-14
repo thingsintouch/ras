@@ -1,3 +1,5 @@
+import time
+
 from os import listdir, remove
 from os.path import isfile, join
 
@@ -12,12 +14,20 @@ params              = Params(db=PARAMS)
 
 def get_sorted_clockings_from_older_to_newer():
     clocking_tuples = []
+    now_in_seconds = int(time.time())
+    expiration_period_in_weeks = params.get("clockings_expiration_period_in_weeks") or "2"
+    seconds_until_clockings_deleted_locally = int(expiration_period_in_weeks)*7*24*60*60
+    limit_for_clockings_to_remain = now_in_seconds - seconds_until_clockings_deleted_locally
     for f in listdir(CLOCKINGS):
         if isfile(join(CLOCKINGS, f)):
             splitted  = f.split("-")
             card_code = splitted[0]
             timestamp = splitted[1]
-            clocking_tuples.append((timestamp, card_code, f))
+            if int(timestamp) < limit_for_clockings_to_remain:
+                remove(join(CLOCKINGS,f))
+                loggerINFO(f"removed old clocking stored locally: {f}")
+            else:
+                clocking_tuples.append((timestamp, card_code, f))
     return sorted(clocking_tuples, key=lambda clocking: clocking[0])
 
 def store_name_for_a_rfid_code(code, name):
@@ -48,8 +58,13 @@ def registerClockings():
                     loggerDEBUG(f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}")
                     answer = False
                 if answer:
+                    loggerDEBUG(f"processing clocking - answer from Odoo {answer} ")
                     if answer.get("logged", False):
+                        params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
                         remove(join(CLOCKINGS,card_code_and_timestamp))
                         store_name_for_a_rfid_code(card_code, answer.get("employee_name","-"))
+                    elif answer.get('error') or False:
+                        loggerDEBUG(f"Clocking {card_code_and_timestamp} produced error answer from Odoo and has been deleted")
+                        remove(join(CLOCKINGS,card_code_and_timestamp))
                     else: # do not process all the older clockings if a clocking for a card has failed
                         card_codes_to_not_process.append(card_code) 

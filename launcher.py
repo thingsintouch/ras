@@ -14,7 +14,7 @@ from common.params import Params
 from common.launcher import launcher
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from messaging.messaging import SubscriberMultipart as Subscriber
-from common.common import setTimeZone, store_factory_settings_in_database
+from common.common import setTimeZone, store_factory_settings_in_database, ensure_python_dependencies
 from common.common import set_bluetooth_device_name, ensure_git_does_not_change_env_file
 from common.get_managed_processes import get_managed_essential_processes
 
@@ -34,6 +34,8 @@ ensure_git_does_not_change_env_file()
 managed_essential_processes = get_managed_essential_processes(
     params.get("template_to_register_device")
     )
+
+ensure_python_dependencies()
 
 managed_NON_essential_processes = {}
 

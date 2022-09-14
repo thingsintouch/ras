@@ -11,13 +11,12 @@ import secrets
 from hashlib import blake2b
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
-# from . import constants as co
-#import lib.Utils as ut
-from dicts import tz_dic
+
 from common.params import Params
 import common.constants as co
 from common.keys import keys_by_Type, TxType
 from factory_settings.custom_params import factory_settings
+from os.path import isfile
 
 
 params = Params(db=co.PARAMS)
@@ -94,19 +93,20 @@ def get_hashed_machine_id():
     return hashed_machine_id
 
 def store_factory_settings_in_database():    
-    if params.get("odooConnectedAtLeastOnce") != "1":
-        keys_to_store = keys_by_Type[TxType.FACTORY_SETTINGS] + \
-                        keys_by_Type[TxType.FACTORY_DEFAULT_VALUES]
-        # loggerDEBUG(f"keys to store {keys_to_store}")
-        # prettyPrint(keys_to_store)
-        for k in keys_to_store:
-            try:
+    #if params.get("odooConnectedAtLeastOnce") != "1":
+    keys_to_store = keys_by_Type[TxType.FACTORY_SETTINGS] + \
+                    keys_by_Type[TxType.FACTORY_DEFAULT_VALUES]
+    # loggerDEBUG(f"keys to store {keys_to_store}")
+    # prettyPrint(keys_to_store)
+    for k in keys_to_store:
+        try:
+            if params.get(k) is None:
                 loggerDEBUG("-"*80)
                 loggerDEBUG(f"key: {k} - stored value in params db: {params.get(k)}")
                 loggerDEBUG(f"key: {k} - storing value of factory_settings: {factory_settings[k]}")
                 params.put(k, factory_settings[k])
-            except Exception as e:
-                loggerDEBUG(f"exception while storing factory setting {k}: {e}")
+        except Exception as e:
+            loggerDEBUG(f"exception while storing factory setting {k}: {e}")
 
 def set_bluetooth_device_name():
     # RASxxx = params.get('RASxxx')
@@ -174,3 +174,30 @@ def get_period(period_name):
 def BLOCKING_waiting_until_RAS_acknowledged_from_Odoo():
     while params.get("acknowledged") != "1":
         time.sleep(16) # waiting_to_be_acknowledged
+
+def ensure_python_dependencies():
+    def check_dependencies_for_3_7():
+        #if params.get("dependencies_v3_7") != "1":
+        files_for_dependencies = [
+            ('/usr/local/lib/python3.7/dist-packages/werkzeug/__init__.py', "2.0.3"),
+            ('/usr/local/lib/python3.7/dist-packages/flask_wtf/__init__.py', "1.0.1"),
+            ('/usr/local/lib/python3.7/dist-packages/flask_login/__about__.py', '("0", "6", "1")'),
+            ('/usr/local/lib/python3.7/dist-packages/pytz/__init__.py','2022.2.1')
+            ]
+        for f in files_for_dependencies:
+            if not isfile(f[0]):
+                return False
+        for f in files_for_dependencies:
+            with open(f[0]) as myfile:
+                if not f[1] in myfile.read():
+                    return False
+        params.put("dependencies_v3_7", "1")
+        return True
+
+    if not check_dependencies_for_3_7():
+        loggerINFO("-----############### install python dependencies for v3.7 ##########------")
+        os.system("sudo sh /home/pi/ras/common/dependencies_for_3_7.sh")
+        time.sleep(40)
+        sys.exit(0) 
+    else:
+        loggerINFO("-----############### python dependencies for v3.7 already installed ##########------")

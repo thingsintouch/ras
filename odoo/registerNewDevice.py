@@ -19,9 +19,9 @@ def parameters_to_send_on_registering():
 
 def save_parameters_for_new_device(answer):
     try:
-        template_from_odoo = answer["host"]
-        if "localhost" not in template_from_odoo:
-            extract_odoo_host_and_port(template_from_odoo)
+        # template_from_odoo = answer["host"]
+        # if "localhost" not in template_from_odoo:
+        #     extract_odoo_host_and_port(template_from_odoo)
 
         params.put("RASxxx", answer.get("name")[:13] or "no name") # display only the first characters
 

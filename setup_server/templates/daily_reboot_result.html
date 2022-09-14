@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1>Daily Reboot</h1>
+  <br>
+  <p style="font-size:1.5vw;"></p>
+  <br>  
+  <form method="POST" style="font-size:1.5vw;" >
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    <br>
+    <br>
+    The Device will reboot @ {{ hour_reboot }}:{{ minute_reboot }} every day.
+    <br>
+    <br>
+    {% if should_update_firmware_too == "1" %}
+    The Firmware will be also updated.
+    {% else %}
+    The Firmware will not be updated.
+    {% endif %}
+    <br>
+    <br>
+    {{ form.submit() }}
+  </form>
+
+</div>
+
+{% endblock %}

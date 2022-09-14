@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1>Stored clockings in the device (locally)</h1>
+  <br>
+  {% for c in clockings %}
+  <p style="font-size:1.5vw;">{{ c[0] }}: {{ c[1] }}</p>   
+  {% endfor %}
+  <br>
+</div>
+{% endblock %}

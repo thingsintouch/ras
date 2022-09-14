@@ -5,10 +5,13 @@ from odoo.odooRequests import routine_check
 from common.constants import PARAMS
 from common.params import Params, Log
 from common.keys import TxType, keys_by_Type
+import time
 
-params              = Params(db=PARAMS)
+params = Params(db=PARAMS)
 
-keys_to_be_saved =  keys_by_Type[TxType.ON_ROUTINE_CALLS] + keys_by_Type[TxType.DISPLAY_MESSAGE]
+keys_to_be_saved =  keys_by_Type[TxType.ON_ROUTINE_CALLS] + \
+                    keys_by_Type[TxType.DISPLAY_MESSAGE] + \
+                    keys_by_Type[TxType.ON_SETUP_SERVER]
 
 list_of_boolean_flags = [
     "shouldGetFirmwareUpdate",
@@ -19,6 +22,12 @@ list_of_boolean_flags = [
     ]
 
 to_check = { # keys_to_check_min_max_on_change
+    "clockings_expiration_period_in_weeks": {
+      "Type": "int",
+      "min_value": 2,
+      "max_value": 12,
+      "default": 2
+    },
 
     "card_registered": {
       "Type": "string",
@@ -164,6 +173,7 @@ def check_value_on_change(key,value):
 def routineCheck():
     to_send = {
         }
+    params.put("isRemoteOdooControlAvailable", "0")
 
     answer = routine_check(to_send)
 
@@ -174,12 +184,13 @@ def routineCheck():
         else:
             loggerDEBUG(f"Routine Check done - no error - {answer}") # {answer}
             params.put("isRemoteOdooControlAvailable", "1")
+            params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
             saveChangesToParams(answer)
             return True
     else:
         loggerDEBUG(f"Routine Check not Available - No Answer from Odoo")        
 
-    params.put("isRemoteOdooControlAvailable", False)
+
     return False
 
 def saveChangesToParams(answer):

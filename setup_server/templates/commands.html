@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+
+  <form method="POST" style="font-size:1.5vw;" >
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    <h1>Select your command</h1>
+    <br>
+    Update Firmware and Reboot {{ form.command_update() }}
+    <br>
+    <br>
+    Delete all locally stored clockings (in the device) {{ form.command_delete_clockings() }}
+    <br>
+    <br>    
+    Reboot the Device {{ form.command_reboot() }}
+    <br>
+    <br>
+    Partial Reset: set the parameters to their factory values except for the Odoo link and the clockings  {{ form.command_partial_reset() }}
+    <br>
+    <br>
+    Full Factory Reset: set the parameters to their factory values {{ form.command_full_reset() }}
+    <br>
+    <br>
+    Shutdown the Device {{ form.command_shutdown() }}
+    <br>
+  </form>
+
+</div>
+
+{% endblock %}

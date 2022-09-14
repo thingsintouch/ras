@@ -18,7 +18,7 @@ from common.constants import PARAMS
 
 #import lib.Utils as ut
 
-import common.common as cc
+from common.common import setTimeZone, get_own_IP_address
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
 params = Params(db=PARAMS)
@@ -409,7 +409,7 @@ def getOdooReachabilityMessage():
             if RASxxx is None: RASxxx = "RASxxx" 
             return RASxxx 
         if params.get("odooUrlTemplate") is None:
-            return "ras2.eu"
+            return "no Odoo link"
     except Exception as e:
         loggerDEBUG(f"Exception @ Odoo Reachability Message (display.helpers) {e}")
         return "< ! >"     
@@ -422,11 +422,11 @@ class Oled():
         self.x =10
         self.x_am_pm = 108
         self.internetQualityMessage = "< !! >"
-        self.odooReachabilityMessage = "ras2.eu"
+        self.odooReachabilityMessage = "no Odoo link"
         self.displayClock = "yes"
         self.store_status_of_now()
         self.tz = params.get("tz")
-        # cc.setTimeZone() # timezone is set at the beginning of ~/ras/launcher.py
+        # setTimeZone() # timezone is set at the beginning of ~/ras/launcher.py
         try:
             if "rotated" in params.get("hardware_display"):
                 rotation = 2
@@ -497,7 +497,7 @@ class Oled():
 
         def updateTZifNecessary():
             if params.get("tz")!=self.tz:
-                cc.setTimeZone()
+                setTimeZone()
                 self.tz = params.get("tz")
 
         def update_time_related_variables():
@@ -551,11 +551,15 @@ class Oled():
             update_time_related_variables()
             if self.somethingChanged():
                 #loggerINFO(f"self.hour {self.hour}")
+                ip_address = get_own_IP_address()
                 self.device_display.command(self.device_display._const.INVERTDISPLAY)
                 with canvas(self.device_display) as draw:
                     display_hours_and_minutes(draw)
-                    if self.internetQualityMessage is None: self.internetQualityMessage = "< !! >"
-                    if self.odooReachabilityMessage is None: self. odooReachabilityMessage = "ras2.eu"
+                    if self.internetQualityMessage is None:
+                        self.internetQualityMessage = "< !! >"
+                    else:
+                        self.internetQualityMessage = ip_address[8:]                   
+                    if self.odooReachabilityMessage is None: self. odooReachabilityMessage = "no Odoo link"
                     self.draw_text_centered(draw, [0, 0], fontClockInfos, self.internetQualityMessage)
                     self.draw_text_centered(draw, [0, 49], fontClockInfos, self.odooReachabilityMessage)
         else:

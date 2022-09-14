@@ -23,14 +23,17 @@ def main(odooAddress):
         text = f"SUCCESSFULLY\nCONNECTED WITH ODOO\n{odooAddress}"
         loggerINFO(f"Connected with Odoo: {odooAddress}")
         buzz("success_odoo_connection")
+        registration_result = True
     else:
         text = f"NO CONNECTION\nPOSSIBLE\n{odooAddress}"
         loggerINFO(f"NO CONNECTION WITH ADDRESS {odooAddress}")
         buzz("failed_odoo_connection")
+        registration_result = False
       
     oled.three_lines_text_small(text)
     time.sleep(4)
     params.put("displayClock", "yes")
+    return registration_result
 
 if __name__ == "__main__":
     main()

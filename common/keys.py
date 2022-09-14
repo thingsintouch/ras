@@ -11,7 +11,8 @@ class TxType(Enum):
     FLAG                        = auto()  # used as flag in the firmware
     LOG                         = auto()  # key to store the logs
     DISPLAY_MESSAGE             = auto()  # which message will be displayed
-    RFID_CARD_CODE              = auto() 
+    RFID_CARD_CODE              = auto()
+    ON_SETUP_SERVER             = auto()
 
 keys_by_Type = {}
 
@@ -43,6 +44,7 @@ keys_by_Type[TxType.ON_ROUTINE_CALLS] =     \
     "partialFactoryReset", # do not delete locally stored clocking data
     "fullFactoryReset",    # will delete locally stored clocking data
     "RASxxx",
+    
     ] 
 
 
@@ -52,6 +54,9 @@ keys_by_Type[TxType.FACTORY_DEFAULT_VALUES]  = \
     "odooUrlTemplate",
     "odoo_host",
     "odoo_port",
+    "dailyRebootHour",
+    "dailyRebootMinute",
+    "automaticUpdate"
     ]
 
 keys_by_Type[TxType.FACTORY_SETTINGS] = [
@@ -123,6 +128,15 @@ keys_by_Type[TxType.ON_REGISTERING_FROM_DEVICE] = [
     "setup_password",
   ]
 
+keys_by_Type[TxType.ON_SETUP_SERVER] = [
+    "odooUrlTemplate",
+    "odoo_host",
+    "odoo_port",
+    "template_to_register_device",
+    "RAS_runs_locally",
+    "clockings_expiration_period_in_weeks"
+    ]
+
 keys_by_Type.update({
   TxType.FLAG:
     [
@@ -134,7 +148,17 @@ keys_by_Type.update({
       "thermalMessageCounter",
       'lastLogMessage',
       "relay_status",
-      "last_relay_action"
+      "last_relay_action",
+      "dependencies_v3_7",
+      "automaticUpdate",
+      "lastConnectionWithOdoo",
+      "counter_wifi_disconnected",
+      "wifi_network",
+      "wifi_password",
+      "wifi_connection_counter_successful",
+      "wifi_connection_counter_unsuccessful",
+      "RAS_runs_locally",
+      "deleteClockings"
     ]
   })
 

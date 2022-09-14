@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1>Connection with Odoo - Result</h1>
+  <br>
+  <p style="font-size:1.5vw;">{{result}}</p>
+  <br>  
+  <form method="POST" style="font-size:1.5vw;" >
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    <br>
+    {{ form.submit() }}
+  </form>
+
+</div>
+
+{% endblock %}

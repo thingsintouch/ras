@@ -1,4 +1,5 @@
 import os
+from os.path import isfile, join
 import time
 import sys
 
@@ -6,7 +7,7 @@ from display.helpers import sh1106
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
-from common import constants as co
+from common.constants import WORKING_DIR, PARAMS, CLOCKINGS
 
 from common.params import Params
 from odoo.odooRequests import check_if_registered
@@ -14,7 +15,7 @@ from common.connectivity import isPingable
 from common.common import setTimeZone
 
 
-params = Params(db=co.PARAMS)
+params = Params(db=PARAMS)
 
 list_of_boolean_flags = [
     "shouldGetFirmwareUpdate",
@@ -22,6 +23,7 @@ list_of_boolean_flags = [
     "partialFactoryReset",
     "fullFactoryReset",
     "shutdownTerminal",
+    "deleteClockings"
 ]
 
 def display_off():
@@ -46,6 +48,7 @@ class Status_Flags_To_Check():
             "rebootTerminal"            : self.rebootTerminal,
             "partialFactoryReset"       : self.partialFactoryReset,
             "fullFactoryReset"          : self.fullFactoryReset,
+            "deleteClockings"           : self.deleteClockings
         }
 
     def check_and_execute(self):
@@ -53,11 +56,10 @@ class Status_Flags_To_Check():
         for boolean_flag in list_of_boolean_flags:
             if params.get(boolean_flag) == "1":
                 set_all_boolean_flags_to_false()
-                display_off()
+                # display_off()
                 loggerINFO("-"*20 + boolean_flag + "#"*20)
                 self.action_for_boolean_flag[boolean_flag]()
-                time.sleep(20)
-                sys.exit(0)
+                time.sleep(2)
 
     def check_if_registered_once_after_every_launch(self):
         if not self.acknowledged and params.get("odooPortOpen") == "1":
@@ -68,20 +70,24 @@ class Status_Flags_To_Check():
     def shouldGetFirmwareUpdate(self):
         if isPingable("github.com"):
             loggerINFO("<<<<++++++++ Firmware Update +++++++>>>>>>")
-            os.chdir(co.WORKING_DIR)
-            os.system("sudo git pull")
+            os.chdir(WORKING_DIR)
+            os.system("sudo git fetch origin ras_oca")
+            os.system("sudo git reset --hard origin/ras_oca")
+            os.system("sudo git fetch -f --all --tags")
             time.sleep(1)
             self.rebootTerminal()
         else:
             loggerINFO("Firmware Update not possible: GitHub is down")   
 
     def shutdownTerminal(self):
+        display_off()
         loggerINFO("-----############### shutdownTerminal ###############------")
         os.system("sudo shutdown now")
         time.sleep(60)
         sys.exit(0)
 
     def rebootTerminal(self):
+        display_off()
         loggerINFO("-----############### rebootTerminal ###############------")
         os.system("sudo reboot")
         time.sleep(60)
@@ -97,7 +103,28 @@ class Status_Flags_To_Check():
         params.delete_all_keys()
         os.system("sudo sh /home/pi/ras/state/fullFactoryReset.sh")
         time.sleep(60)
-        sys.exit(0) 
+        sys.exit(0)
+
+    def deleteClockings(self):
+        loggerINFO("-----############### deleteClockings stored in the device (locally) ###############------")
+        try:
+            for f in os.listdir(CLOCKINGS):
+                if isfile(join(CLOCKINGS, f)):
+                    os.remove(join(CLOCKINGS,f))
+        except:
+            pass
+        time.sleep(1)
+
+    def check_daily_reboot(self):
+        current_time =  time.localtime()
+        current_minute = time.strftime("%M", current_time)
+        # print(f" check_daily_reboot - current_minute {current_minute} ")
+        if current_minute == params.get("dailyRebootMinute"):
+            current_hour = time.strftime("%H", current_time) 
+            if current_hour == params.get("dailyRebootHour"):
+                if params.get("automaticUpdate") == "1":
+                    self.shouldGetFirmwareUpdate()
+                self.rebootTerminal()
 
 class Timezone_Checker():
 
@@ -111,4 +138,4 @@ class Timezone_Checker():
            self.timezone_current = timezone_now
 
    
-    
+

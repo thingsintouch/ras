@@ -1,12 +1,18 @@
 import subprocess
 import socket
+from os.path import exists
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from common.params import Params
-from common import constants as co
+from common.constants import PARAMS, ETHERNET_FLAG_FILE, \
+        CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT
+from common.connect_To_SSID import main as connect_to_wifi_network
+from common.connect_To_SSID import manage_wifi_network_name_with_spaces
+from common.common import runShellCommand_and_returnOutput as rs
+from common.common import pPrint
+from common.counter_ops import reset_counter, get_counter, increase_counter
 
-
-params = Params(db=co.PARAMS)
+params = Params(db=PARAMS)
 
 def isSuccesRunningSubprocess(command):
     try:
@@ -100,6 +106,8 @@ def isOdooPortOpen():
         loggerDEBUG(f"common.connectivity - exception in method isOdooPortOpen: {e}")
         odoo_port_open = False
     params.put("odooPortOpen", odoo_port_open)
+    if not odoo_port_open:
+        params.put("isRemoteOdooControlAvailable", "0")
     return odoo_port_open
 
 def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex for ports
@@ -120,3 +128,61 @@ def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex f
     finally:
         s.close()
     return isOpen
+
+def on_ethernet():
+    if exists(ETHERNET_FLAG_FILE):
+        with open(ETHERNET_FLAG_FILE, encoding="utf-8") as f:
+            ethernet_status = f.read(1)
+        if ethernet_status == "1":
+            return True
+    return False
+
+def get_available_networks():
+    answer = (rs("nmcli --get-values SSID d wifi list --rescan yes"))
+    #pPrint(answer)
+    if answer and answer is not None:
+        networks = answer.split('\n')
+    choices = []
+    for n in networks:
+        if n:
+            choices.append((n,n))
+    return choices
+
+def wifi_network_available(wifi_network):
+    choices = get_available_networks()
+    if (wifi_network,wifi_network) in choices:
+        loggerDEBUG(f"wifi network available:{wifi_network} ")
+        return True
+    else:
+        loggerDEBUG(f"#### wifi network NOT available:{wifi_network} ")
+        return False
+
+def reconnect_to_wifi(wifi_network):
+    answer = (rs('sudo nmcli c up "RAS"'))
+    if "successfully activated" in answer:
+        loggerINFO(f"RE-Connected to WiFi Network: {wifi_network}")
+        increase_counter("wifi_connection_counter_successful")
+    else:
+        loggerINFO(f"COULD NOT RE-Connect to WiFi Network: {wifi_network}")
+        increase_counter("wifi_connection_counter_unsuccessful")
+
+def check_reconnect_to_wifi():
+    def is_it_time_to_reconnect():
+        counter = increase_counter("counter_wifi_disconnected")
+        if counter>CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT:
+            reset_counter("counter_wifi_disconnected")
+            return True
+        else:
+            return False
+
+    if params.get("internetReachable")=="0":
+        if is_it_time_to_reconnect():
+            if not on_ethernet():
+                wifi_network = params.get("wifi_network") or False
+                loggerDEBUG(f"wifi network:{wifi_network}")
+                if wifi_network:
+                    if wifi_network_available(wifi_network):
+                        reconnect_to_wifi(wifi_network)
+    else:
+        reset_counter("counter_wifi_disconnected")
+

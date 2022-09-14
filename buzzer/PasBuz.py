@@ -3,7 +3,7 @@
 import time
 import RPi.GPIO as GPIO
 
-from dicts.buzzer_dic import dic  # dic with melodies
+from common.buzzer_dic import dic  # dic with melodies
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 

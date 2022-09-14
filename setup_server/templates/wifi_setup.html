@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1>Create a WiFi connection</h1>
+  <br>
+  <form method="POST" style="font-size:1.5vw;" >
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    <br>
+    <br>
+    {{ form.wifi_network.label }} {{ form.wifi_network() }}
+    <br>
+    <br>
+    {{ form.password.label }} {{ form.password() }}
+    <br>
+    <br>
+    {{ form.submit() }}
+  </form>
+
+</div>
+
+{% endblock %}

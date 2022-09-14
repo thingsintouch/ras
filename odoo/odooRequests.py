@@ -25,7 +25,8 @@ def post_request_and_get_answer(requestURL, payload):
                 loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
                 loggerINFO(f"odooConnectedAtLeastOnce set to 0")
                 params.put("odooConnectedAtLeastOnce", "0")
-                params.put("RASxxx", "ras2.eu")
+                params.put("isRemoteOdooControlAvailable", "0")
+                # params.put("RASxxx", "ras2.eu")
                 answer = {"error": "404"}
             else:
                 answer = posting.json()

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <!-- <link rel="icon" href="/home/pi/ras/static/faviconThings.ico"> -->
+    <title></title>
+  </head>
+  <body>
+    <br>
+    <br>
+    <ul class="nav justify-content-center" style="font-size:1.5vw;">
+      <!-- <img src="/static/thingsLogo05_333.png" class="img-fluid logoSize" alt="ThingsInTouch Logo 05"> -->
+      <img src="{{ url_for('static', filename='thingsLogo05_100.png') }}"/>
+      {% if current_user.is_authenticated %}
+      <li class="nav-link"><a href="{{ url_for('wifi_setup.define_wifi') }}">WiFi</a></li>
+      <!-- <li class="nav-link"><a href="{{ url_for('wifi_delete.delete_wifi') }}">Delete WiFi</a></li> -->
+      <li class="nav-link"><a href="{{ url_for('odoo_setup.odoo_link') }}">Odoo</a></li>
+      <li class="nav-link"><a href="{{ url_for('ras_info.show_info') }}">Info</a></li>
+      <!-- <li class="nav-link"><a href="{{ url_for('daily_reboot.daily_reboot_time') }}">Daily Reboot</a></li> -->
+      <li class="nav-link"><a href="{{ url_for('parameters.take_parameter') }}">Parameters</a></li>
+      <li class="nav-link"><a href="{{ url_for('commands.take_command') }}">Commands</a></li>
+      <!-- <li class="nav-link"><a href="{{ url_for('factory.show_factory_settings') }}">Factory Settings</a></li> -->
+      <li class="nav-link"><a href="{{ url_for('users.logout') }}">Log Out</a></li>
+      {% else %}
+      <li class="nav-link"><a href="{{ url_for('users.login') }}">Log In</a></li>
+      {% endif %}
+
+    </ul>
+    <br>
+    <div class="container">
+      {% block content %}
+    
+      {% endblock %}
+    </div>
+    
+  </body>
+
+</html>

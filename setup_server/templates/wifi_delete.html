@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1>Delete an existing WiFi connection</h1>
+  <br>
+  <form method="POST" style="font-size:1.5vw;">
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    <br>
+    <br>
+    {{ form.connection_to_delete.label }} {{ form.connection_to_delete() }}
+    <br>
+    <br>
+    {{ form.submit() }}
+  </form>
+  <script>
+    var conn_select = document.getElementById("connection_to_delete");
+    // var refresh_select = document.getElementById("refresh_list");
+
+    window.onload = function()  {
+        
+        fetch('/connections').then(function(response) {
+
+            response.json().then(function(data) {
+                var optionHTML = '';
+
+                for (var c of data.connections) {
+                    optionHTML += '<option value="' + c.id + '">' + c.name + '</option>';
+                }
+
+                conn_select.innerHTML = optionHTML;
+            })
+            
+        });
+    }
+</script>
+</div>
+
+{% endblock %}

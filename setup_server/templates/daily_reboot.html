@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1>Daily Reboot (and Update)</h1>
+  <br>
+  <form method="POST" style="font-size:1.5vw;" >
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    <br>
+    <br>
+    The Device reboots now @ {{ hour_saved }}:{{ min_saved }} every day.
+    <br>
+    <br>
+    {% if update_saved == "1" %}
+    The Firmware is updated before rebooting.
+    {% else %}
+    The Firmware is not updated before rebooting.
+    {% endif %}
+    <br>
+    <br><br>
+    <br>
+    Do you want to define a different reboot time (in 24 hour format)?
+    <br>
+    <br>
+    {{ form.hour_reboot.label }} {{ form.hour_reboot() }}
+    <br>
+    <br>
+    {{ form.minute_reboot.label }} {{ form.minute_reboot() }}
+    <br>
+    <br>
+    {{ form.should_update_firmware_too.label }}    {{ form.should_update_firmware_too() }}
+    <br>
+    <br>
+    {{ form.submit() }}
+  </form>
+
+</div>
+
+{% endblock %}

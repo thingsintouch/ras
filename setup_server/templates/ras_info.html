@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1>Device Name: {{ device_name }}</h1>
+  <br>
+  <br>
+  <a style="font-size:1.5vw;" class='btn btn-primary' href="{{ url_for('ras_info.show_stored_clockings') }}">Show stored clockings</a>
+  <br>
+  <br>
+  <br>
+  <br>
+  <h1>Firmware</h1>
+  <br> 
+  <p style="font-size:1.5vw;">git hash: {{ git_version_hash }}</p>
+  <br>
+  <p style="font-size:1.5vw;">git repository: {{ git_repository }}</p>
+  <br>
+  <br>
+  <h1>Odoo Connectivity Status</h1>
+  <br>
+  <p style="font-size:1.5vw;">Odoo server: {{ template }}</p>  
+  {% if odoo_port_open == "1" %}
+  <p style="font-size:1.5vw;">Odoo port is open.</p>
+  {% else %}
+  <p style="font-size:1.5vw;">Odoo port is not reachable.</p>
+  {% endif %}
+  <p style="font-size:1.5vw;">Last communication with Odoo: {{ last_conn }}</p>
+  <br>
+  <br>
+  <h1>Hardware Status</h1>
+  <br>
+  <p style="font-size:1.5vw;">CPU Temperature: {{temperatureCurrent}}°C</p>  
+  <p style="font-size:1.5vw;">CPU load (5 minutes average): {{loadAvgPerc_5min}}%</p>
+  <p style="font-size:1.5vw;">RAM used: {{memUsedPercent}}%</p>
+  <br>
+  <br>
+  <h1>WiFi Info</h1>
+  <br>
+  <p style="font-size:1.5vw;">WiFi network(SSID): {{ wifi_SSID }}</p>  
+  <p style="font-size:1.5vw;">Counter - WiFi succesfully connected or reconnected: {{ wifi_success }}</p>
+  <p style="font-size:1.5vw;">Counter - WiFi unsuccesfully connected or reconnected: {{ wifi_NO_success }}</p>
+  <br>
+  <br>
+  <br>
+  <a style="font-size:1.5vw;" class='btn btn-primary' href="{{ url_for('factory.show_factory_settings') }}">Show factory settings</a>
+  <br>  
+
+</div>
+
+{% endblock %}

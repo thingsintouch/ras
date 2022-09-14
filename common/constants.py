@@ -1,16 +1,18 @@
 from decouple import config
 
-RAS_VERSION = "3.4-OCA"
+RAS_VERSION = "3.7"
 WORKING_DIR = config("WORKING_DIR")
 
 PERIOD_CONNECTIVITY_MANAGER = 10 # in seconds
-PERIOD_THERMAL_MANAGER = 10 # in seconds
-PERIOD_DISPLAY_MANAGER = 0.1 # in seconds
+PERIOD_THERMAL_MANAGER = 360 # in seconds
+PERIOD_DISPLAY_MANAGER = 0.2 # in seconds
 PERIOD_CLOCK_MANAGER = 0.7 # in seconds
 PERIOD_READER_MANAGER = 0.7 # in seconds
-PERIOD_STATE_MANAGER = 1 # in seconds
+PERIOD_STATE_MANAGER = 3 # in seconds
 PERIOD_ACK_STATE_MANAGER = 1 # in seconds
 PERIOD_BUZZER_MANAGER = 0.2 # in seconds
+
+CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT = 60 
 
 DEFAULT_MINIMUM_PERIOD = 14 # in seconds
 # PERIOD_ODOO_REGISTER_CLOCKINGS = 10 # in seconds
@@ -33,7 +35,10 @@ CLOCKINGS = WORKING_DIR + "/data/clockings"
 LOG = WORKING_DIR + "/data/log"
 KEYS = WORKING_DIR + "/data/keys"
 KEY_ACTIONS = WORKING_DIR + "/data/key_actions"
+ETHERNET_FLAG_FILE = "/sys/class/net/eth0/carrier" # if 1, ethernet is up
+
 
 MAX_NUMBER_OF_LOG_ENTRIES = 100
 
 PIN_RELAY = 29
+

@@ -12,12 +12,13 @@ from common.connectivity import internetReachable
 from odoo.odooRequests import check_if_registered
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from multiprocessing import Process #, Manager
-from bluetooth import connect_To_Odoo, connect_To_SSID
+from bluetooth import connect_To_Odoo
+from common import connect_To_SSID
+from common.connectivity import reset_counter as reset_counter_for_wifi_reconnection_attempt
 
 from common.params import Params
-from common import constants as co
-
-params = Params(db=co.PARAMS)
+from common.constants import PARAMS
+params = Params(db=PARAMS)
 
 prettyPrint = PrettyPrinter(indent=1).pprint
 
@@ -138,6 +139,7 @@ class ConnectToSSIDCharacteristic(Characteristic):
         return self.value
 
     def WriteValue(self, value, options):
+        reset_counter_for_wifi_reconnection_attempt()
         valueString =""
         for i in range(0,len(value)):
             valueString+= str(value[i])
