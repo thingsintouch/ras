@@ -78,4 +78,5 @@ def scan_card():
     print(f"read card {card}")
     return card
 
-scan_card()
+while True:
+    scan_card()
