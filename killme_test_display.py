@@ -400,4 +400,4 @@ with canvas(device_display) as draw:
     draw.multiline_text = types.MethodType(multiline_text_lu, draw) # substitute with own method
     draw.multiline_text(origin, text, fill="white", font=font, align="center")
 
-time.sleep(4)
+time.sleep(100)
