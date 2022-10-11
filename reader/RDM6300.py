@@ -4,6 +4,10 @@
 from serial import Serial, EIGHTBITS
 from itertools import chain
 
+import time
+
+from common.constants import PERIOD_READER_MANAGER
+
 RFID_STARTCODE  = 0x02
 RFID_ENDCODE    = 0x03
 SERIAL_PORT     = '/dev/ttyS0'
@@ -71,6 +75,7 @@ def wait_for_card():
 
 def scan_card():
     # print("Waiting for 125kHz RFID card")
+    time.sleep(PERIOD_READER_MANAGER)
     card = False
     while not card:
         card = wait_for_card() # Blocking
