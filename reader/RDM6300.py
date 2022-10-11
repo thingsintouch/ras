@@ -75,7 +75,7 @@ def wait_for_card():
 
 def scan_card():
     # print("Waiting for 125kHz RFID card")
-    time.sleep(PERIOD_READER_MANAGER)
+    serial_port.reset_input_buffer()
     card = False
     while not card:
         card = wait_for_card() # Blocking
