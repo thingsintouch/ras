@@ -6,7 +6,7 @@ from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, l
 from common.params import Params
 from common.constants import PARAMS, ETHERNET_FLAG_FILE, \
         CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT
-from common.connect_To_SSID import connect_to_new_wifi_network
+from common.connect_To_SSID import connect_to_new_wifi_network, disconnect_ethernet
 from common.common import runShellCommand_and_returnOutput as rs
 from common.common import pPrint
 from common.counter_ops import reset_counter, get_counter, increase_counter
@@ -50,7 +50,7 @@ def store_host_port_and_template(scheme,host,port):
 def extract_odoo_host_and_port(odooAddress = False):
     if not odooAddress:
         odooAddress = params.get("odooUrlTemplate")
-    loggerDEBUG(f"extract_odoo_host_and_port() - odooAddress {odooAddress}")
+    # loggerDEBUG(f"extract_odoo_host_and_port() - odooAddress {odooAddress}")
     if odooAddress is not None:
         odooAdressSplitted = odooAddress.split(":")
         length = len(odooAdressSplitted)
@@ -102,7 +102,7 @@ def isOdooPortOpen():
             odoo_port_open = False
     except Exception as e:
         #extract_odoo_host_and_port()
-        loggerDEBUG(f"common.connectivity - exception in method isOdooPortOpen: {e}")
+        #loggerDEBUG(f"common.connectivity - exception in method isOdooPortOpen: {e}")
         odoo_port_open = False
     params.put("odooPortOpen", odoo_port_open)
     if not odoo_port_open:
@@ -188,6 +188,7 @@ def check_reconnect_to_wifi():
                 if wifi_network:
                     if wifi_network_available(wifi_network):
                         wifi_password= params.get("wifi_password") or False
+                        disconnect_ethernet()
                         connect_to_new_wifi_network(wifi_network, wifi_password)
     else:
         reset_counter("counter_wifi_disconnected")

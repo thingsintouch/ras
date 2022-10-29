@@ -76,12 +76,19 @@ def wifi_connection_successful(wifi_network, wifi_password):
     delete_RAS_temp_WiFi_connection()
     increase_counter("wifi_connection_counter_successful")
 
-# def disconnect_ethernet(): # nmcli dev disconnect eth0 - nmcli c down eth0
-#     answer = (rs('sudo nmcli c down "Wired connection 1"'))
-#     time.sleep(2) 
+def disconnect_ethernet(): # nmcli dev disconnect eth0 - nmcli c down eth0
+    try:
+        answer = (rs('sudo nmcli c down "Wired connection 1"'))
+        time.sleep(2)
+    except Exception as e:
+        loggerDEBUG(f"disconnect_ethernet- Exception: {e}")
 
-# def reconnect_ethernet():
-#     answer = (rs('sudo nmcli c up "Wired connection 1"'))
+def reconnect_ethernet():
+    try:
+        answer = (rs('sudo nmcli c up "Wired connection 1"'))
+        time.sleep(2)
+    except Exception as e:
+        loggerDEBUG(f"reconnect_ethernet- Exception: {e}")
 
 def connect_to_new_wifi_network(wifi_network, wifi_password):
     connecting_with_wifi___visual_and_acoustic_signals(wifi_network)
