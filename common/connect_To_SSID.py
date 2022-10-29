@@ -65,11 +65,11 @@ def wifi_connection_successful(wifi_network, wifi_password):
     increase_counter("wifi_connection_counter_successful")
 
 def disconnect_ethernet(): # nmcli dev disconnect eth0 - nmcli c down eth0
-    answer = (rs('sudo nmcli dev disconnect eth0'))
-    time.sleep(1) 
+    answer = (rs('sudo nmcli c down "Wired connection 1"'))
+    time.sleep(2) 
 
 def reconnect_ethernet():
-    answer = (rs('sudo nmcli c up eth0'))
+    answer = (rs('sudo nmcli c up "Wired connection 1"'))
 
 def connect_to_new_wifi_network(wifi_network, wifi_password):
     connecting_with_wifi___visual_and_acoustic_signals(wifi_network)
