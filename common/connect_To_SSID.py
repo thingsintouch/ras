@@ -46,37 +46,64 @@ def would_be_duplicated_connection(wifi_network, wifi_password):
             return True     
     return False
 
-def main(wifi_network, wifi_password):
-    if not would_be_duplicated_connection(wifi_network, wifi_password):
-        params.put("displayClock", "no")
-        connecting_with_wifi___visual_and_acoustic_signals(wifi_network)
-        store_RAS_WiFi_connection_as_RAS_temp() # if the new WiFi connection does not work we have the old one still
-        wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
-        answer = (rs('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
+def wifi_connection_failed():
+    buzz("failed_odoo_connection")
+    text = f"NO CONNECTION\nWITH THE\nWiFi"
+    oled.three_lines_text_small(text)
+    delete_RAS_WiFi_connection()
+    retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection()
+    increase_counter("wifi_connection_counter_unsuccessful")
+
+def wifi_connection_successful(wifi_network, wifi_password):
+    buzz("success_odoo_connection")
+    text = f"CONNECTED\nWITH WiFi\nSUCCESSFULLY"
+    loggerINFO(f"Connected to Internet - WiFi Network: {wifi_network}")   
+    params.put("wifi_network", wifi_network)
+    params.put("wifi_password", wifi_password)
+    oled.three_lines_text_small(text)
+    delete_RAS_temp_WiFi_connection()
+    increase_counter("wifi_connection_counter_successful")
+
+def disconnect_ethernet(): # nmcli dev disconnect eth0 - nmcli c down eth0
+    answer = (rs('sudo nmcli c down eth0'))
+
+def reconnect_ethernet():
+    answer = (rs('sudo nmcli c up eth0'))
+
+def connect_to_new_wifi_network(wifi_network, wifi_password):
+    connecting_with_wifi___visual_and_acoustic_signals(wifi_network)
+    store_RAS_WiFi_connection_as_RAS_temp() # if the new WiFi connection does not work we have the old one still
+    wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
+    answer = (rs('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
+    connection_successful= False
+    try:
         if "successfully activated" in answer:
-            buzz("success_odoo_connection")
-            text = f"CONNECTED\nWITH WiFi\nSUCCESSFULLY"
-            loggerINFO(f"Connected to Internet - WiFi Network: {wifi_network}")
             connection_successful= True
-            params.put("wifi_network", wifi_network)
-            params.put("wifi_password", wifi_password)
-            oled.three_lines_text_small(text)
-            delete_RAS_temp_WiFi_connection()
-            increase_counter("wifi_connection_counter_successful")
+    except Exception as e:
+        loggerDEBUG(f"Exception while connecting to WiFi network: {e}")
+    return connection_successful
+
+def connect_process_to_wifi(wifi_network, wifi_password):
+    disconnect_ethernet()
+    connection_successful= connect_to_new_wifi_network(wifi_network, wifi_password) 
+    reconnect_ethernet()
+    return connection_successful
+
+def main(wifi_network, wifi_password):
+
+    if would_be_duplicated_connection(wifi_network, wifi_password):
+        return True
+    else:
+        params.put("displayClock", "no")
+        connection_successful= connect_process_to_wifi(wifi_network, wifi_password)
+        if connection_successful:
+            wifi_connection_successful(wifi_network, wifi_password)
         else:
-            buzz("failed_odoo_connection")
-            text = f"NO CONNECTION\nWITH THE\nWiFi"
-            oled.three_lines_text_small(text)
-            delete_RAS_WiFi_connection()
-            retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection()
-            increase_counter("wifi_connection_counter_unsuccessful")
-            connection_successful= False
+            wifi_connection_failed()
         time.sleep(1) 
         params.put("displayClock", "yes")
-    else:
-        connection_successful= True
-    return connection_successful or False
 
+    return connection_successful or False
 
 if __name__ == "__main__":
     main()
