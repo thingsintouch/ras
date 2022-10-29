@@ -15,6 +15,13 @@ def get_managed_essential_processes(template):
 
     if template == "thingsintouch.ras_simplified":
         return managed_essential_processes
+    
+    if template == "thingsintouch.ras_plus_simplified":
+        managed_essential_processes["odoo_get_iot_keys_d"] = "odooGetIotKeys.manager"
+        managed_essential_processes["relay_d"] = "relay.manager"
+        managed_essential_processes["relay_output_d"] = "relay_state.manager"
+        managed_essential_processes["odoo_register_actions_d"] = "odooRegisterActions.manager"
+        return managed_essential_processes
 
     if template == "thingsintouch.ras_plus":
         managed_essential_processes["odoo_get_iot_keys_d"] = "odooGetIotKeys.manager"
