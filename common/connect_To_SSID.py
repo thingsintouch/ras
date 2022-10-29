@@ -85,7 +85,8 @@ def wifi_connection_successful(wifi_network, wifi_password):
 
 def connect_to_new_wifi_network(wifi_network, wifi_password):
     connecting_with_wifi___visual_and_acoustic_signals(wifi_network)
-    store_RAS_WiFi_connection_as_RAS_temp() # if the new WiFi connection does not work we have the old one still
+    #store_RAS_WiFi_connection_as_RAS_temp() # if the new WiFi connection does not work we have the old one still
+    delete_RAS_WiFi_connection()
     wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
     answer = (rs('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
     connection_successful= False
@@ -106,9 +107,9 @@ def main(wifi_network, wifi_password):
     #store_RAS_WiFi_connection_as_RAS_temp()
     params.put("wifi_network", wifi_network)
     params.put("wifi_password", wifi_password)
-    delete_RAS_WiFi_connection()    
-    wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
-    answer = (rs('sudo nmcli c add type wifi ssid '+wifi_network_for_cli_command+' ifname wlan0 con-name "RAS" wifi-sec.psk '+wifi_password))
+    # delete_RAS_WiFi_connection()    
+    # wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
+    # answer = (rs('sudo nmcli c add type wifi ssid '+wifi_network_for_cli_command+' ifname wlan0 con-name "RAS" wifi-sec.psk '+wifi_password))
     return True
 
 if __name__ == "__main__":
