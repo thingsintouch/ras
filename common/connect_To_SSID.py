@@ -14,17 +14,29 @@ params = Params(db=PARAMS)
 oled = Oled()
 
 def store_RAS_WiFi_connection_as_RAS_temp():
-    rs('sudo nmcli c modify "RAS" connection.id "RAS_temp"')
+    try:
+        rs('sudo nmcli c modify "RAS" connection.id "RAS_temp"')
+    except Exception as e:
+        loggerDEBUG(f"store_RAS____WiFi_connection_as____RAS_temp - Exception: {e}")
 
 def delete_RAS_temp_WiFi_connection():
-    rs('sudo nmcli c delete "RAS_temp"')
+    try:
+        rs('sudo nmcli c delete "RAS_temp"')
+    except Exception as e:
+        loggerDEBUG(f"delete_RAS_temp____WiFi_connection- Exception: {e}")
 
 def delete_RAS_WiFi_connection():
-    rs('sudo nmcli c delete "RAS"')
+    try:
+        rs('sudo nmcli c delete "RAS"')
+    except Exception as e:
+        loggerDEBUG(f"delete_RAS_____WiFi_connection- Exception: {e}")
 
 def retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection():
-    rs('sudo nmcli c modify "RAS_temp" connection.id "RAS"')
-    rs('sudo nmcli c up "RAS"')
+    try:
+        rs('sudo nmcli c modify "RAS_temp" connection.id "RAS"')
+        rs('sudo nmcli c up "RAS"')
+    except Exception as e:
+        loggerDEBUG(f"retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection- Exception: {e}")
 
 def manage_wifi_network_name_with_spaces(wifi_network):
     if " " in wifi_network:
@@ -64,12 +76,12 @@ def wifi_connection_successful(wifi_network, wifi_password):
     delete_RAS_temp_WiFi_connection()
     increase_counter("wifi_connection_counter_successful")
 
-def disconnect_ethernet(): # nmcli dev disconnect eth0 - nmcli c down eth0
-    answer = (rs('sudo nmcli c down "Wired connection 1"'))
-    time.sleep(2) 
+# def disconnect_ethernet(): # nmcli dev disconnect eth0 - nmcli c down eth0
+#     answer = (rs('sudo nmcli c down "Wired connection 1"'))
+#     time.sleep(2) 
 
-def reconnect_ethernet():
-    answer = (rs('sudo nmcli c up "Wired connection 1"'))
+# def reconnect_ethernet():
+#     answer = (rs('sudo nmcli c up "Wired connection 1"'))
 
 def connect_to_new_wifi_network(wifi_network, wifi_password):
     connecting_with_wifi___visual_and_acoustic_signals(wifi_network)
@@ -85,26 +97,19 @@ def connect_to_new_wifi_network(wifi_network, wifi_password):
     return connection_successful
 
 def connect_process_to_wifi(wifi_network, wifi_password):
-    disconnect_ethernet()
+    #disconnect_ethernet()
     connection_successful= connect_to_new_wifi_network(wifi_network, wifi_password) 
-    reconnect_ethernet()
+    #reconnect_ethernet()
     return connection_successful
 
 def main(wifi_network, wifi_password):
-
-    if would_be_duplicated_connection(wifi_network, wifi_password):
-        return True
-    else:
-        params.put("displayClock", "no")
-        connection_successful= connect_process_to_wifi(wifi_network, wifi_password)
-        if connection_successful:
-            wifi_connection_successful(wifi_network, wifi_password)
-        else:
-            wifi_connection_failed()
-        time.sleep(1) 
-        params.put("displayClock", "yes")
-
-    return connection_successful or False
+    #store_RAS_WiFi_connection_as_RAS_temp()
+    params.put("wifi_network", wifi_network)
+    params.put("wifi_password", wifi_password)
+    delete_RAS_WiFi_connection()    
+    wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
+    answer = (rs('sudo nmcli c add type wifi ssid '+wifi_network_for_cli_command+' ifname wlan0 con-name "RAS" wifi-sec.psk '+wifi_password))
+    return True
 
 if __name__ == "__main__":
     main()

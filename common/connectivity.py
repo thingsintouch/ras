@@ -158,22 +158,28 @@ def wifi_network_available(wifi_network):
         return False
 
 def reconnect_to_wifi(wifi_network):
-    answer = (rs('sudo nmcli c up "RAS"'))
-    if "successfully activated" in answer:
-        loggerINFO(f"RE-Connected to WiFi Network: {wifi_network}")
-        increase_counter("wifi_connection_counter_successful")
-    else:
-        loggerINFO(f"COULD NOT RE-Connect to WiFi Network: {wifi_network}")
-        increase_counter("wifi_connection_counter_unsuccessful")
+    try:
+        answer = (rs('sudo nmcli c up "RAS"'))
+        if "successfully activated" in answer:
+            loggerINFO(f"RE-Connected to WiFi Network: {wifi_network}")
+            increase_counter("wifi_connection_counter_successful")
+        else:
+            loggerINFO(f"COULD NOT RE-Connect to WiFi Network: {wifi_network}")
+            increase_counter("wifi_connection_counter_unsuccessful")
+    except Exception as e:
+        loggerDEBUG(f"reconnect_to_wifi - Exception: {e}")
 
 def check_reconnect_to_wifi():
     def is_it_time_to_reconnect():
-        counter = increase_counter("counter_wifi_disconnected")
-        if counter>CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT:
-            reset_counter("counter_wifi_disconnected")
-            return True
-        else:
-            return False
+        return True
+        # counter = increase_counter("counter_wifi_disconnected")
+        # if counter == 0:
+        #     return True
+        # if counter > CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT:
+        #     reset_counter("counter_wifi_disconnected")
+        #     return True
+        # else:
+        #     return False
 
     if params.get("internetReachable")=="0":
         if is_it_time_to_reconnect():
