@@ -76,9 +76,8 @@ def wifi_connection_successful(wifi_network, wifi_password):
     delete_RAS_temp_WiFi_connection()
     increase_counter("wifi_connection_counter_successful")
 
-def disconnect_ethernet(): # nmcli dev disconnect eth0 - nmcli c down eth0
+def disconnect_ethernet(): #  nmcli c down eth0
     try:
-        rs('sudo nmcli c modify "Wired connection 1" connection.autoconnect no')
         answer = (rs('sudo nmcli c down "Wired connection 1"'))
         time.sleep(2)
     except Exception as e:
