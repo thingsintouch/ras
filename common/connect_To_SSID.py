@@ -100,6 +100,7 @@ def connect_to_new_wifi_network(wifi_network, wifi_password):
     connection_successful= False
     try:
         if "successfully activated" in answer:
+            rs('sudo nmcli c modify "Wired connection 1" connection.autoconnect yes')
             connection_successful= True
     except Exception as e:
         loggerDEBUG(f"Exception while connecting to WiFi network: {e}")
