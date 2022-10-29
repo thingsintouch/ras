@@ -65,7 +65,8 @@ def wifi_connection_successful(wifi_network, wifi_password):
     increase_counter("wifi_connection_counter_successful")
 
 def disconnect_ethernet(): # nmcli dev disconnect eth0 - nmcli c down eth0
-    answer = (rs('sudo nmcli c down eth0'))
+    answer = (rs('sudo nmcli dev disconnect eth0'))
+    time.sleep(1) 
 
 def reconnect_ethernet():
     answer = (rs('sudo nmcli c up eth0'))
