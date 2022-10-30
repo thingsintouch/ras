@@ -6,7 +6,7 @@ from common.params import Params
 from display.helpers import Oled
 
 from common.common import runShellCommand_and_returnOutput as rs
-from common.comon import store_wifi_network_and_password, get_wifi_network_and_password, \
+from common.common import store_wifi_network_and_password, get_wifi_network_and_password, \
     delete_RAS_WiFi_connection, connect_to_new_wifi_network, manage_wifi_network_name_with_spaces
 from common.counter_ops import increase_counter
 
