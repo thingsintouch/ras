@@ -12,8 +12,7 @@ wifi_setup = Blueprint('wifi_setup',__name__)
 def define_wifi():
     form = WiFiForm()
     if form.validate_on_submit():
-        reset_counter("counter_wifi_connected")
-        reset_counter("counter_wifi_disconnected")
+        #reset_counter("counter_wifi_disconnected")
         wifi_network = form.wifi_network.data
         wifi_password = form.password.data
         if store_wifi_network_and_password(wifi_network, wifi_password):
