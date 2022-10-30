@@ -237,14 +237,15 @@ def manage_wifi_network_name_with_spaces(wifi_network):
     return wifi_network_for_cli_command
 
 def connect_to_new_wifi_network():
-    wifi_network, wifi_password = get_wifi_network_and_password()
-    delete_RAS_WiFi_connection()
-    wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
-    answer = (runShellCommand_and_returnOutput('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
     connection_successful= False
-    try:
-        if "successfully activated" in answer:
-            connection_successful= True
-    except Exception as e:
-        loggerDEBUG(f"Exception while connecting to WiFi network: {e}")
+    wifi_network, wifi_password = get_wifi_network_and_password()
+    if wifi_network:
+        try:
+            delete_RAS_WiFi_connection()
+            wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
+            answer = (runShellCommand_and_returnOutput('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
+            if "successfully activated" in answer:
+                connection_successful= True
+        except Exception as e:
+            loggerDEBUG(f"Exception while connecting to WiFi network: {e}")
     return connection_successful
