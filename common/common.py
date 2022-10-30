@@ -226,10 +226,14 @@ def delete_RAS_WiFi_connection():
         loggerDEBUG(f"delete_RAS_____WiFi_connection- Exception: {e}")
 
 def manage_wifi_network_name_with_spaces(wifi_network):
-    if " " in wifi_network:
-        wifi_network_for_cli_command = "'" + wifi_network + "'"
-    else:
-        wifi_network_for_cli_command = wifi_network
+    wifi_network_for_cli_command = False
+    try:
+        if " " in wifi_network:
+            wifi_network_for_cli_command = "'" + wifi_network + "'"
+        else:
+            wifi_network_for_cli_command = wifi_network
+    except Exception as e:
+        loggerDEBUG(f"manage_wifi_network_name_with_spaces- Exception: {e}")   
     return wifi_network_for_cli_command
 
 def connect_to_new_wifi_network():
