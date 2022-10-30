@@ -6,7 +6,7 @@ from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, l
 from common.params import Params
 from common.constants import PARAMS, ETHERNET_FLAG_FILE, \
         CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT
-from common.connect_To_SSID import connect_to_new_wifi_network, disconnect_ethernet
+from common.connect_To_SSID import connect_process_to_wifi
 from common.common import runShellCommand_and_returnOutput as rs
 from common.common import pPrint
 from common.counter_ops import reset_counter, get_counter, increase_counter
@@ -188,8 +188,16 @@ def check_reconnect_to_wifi():
                 if wifi_network:
                     if wifi_network_available(wifi_network):
                         wifi_password= params.get("wifi_password") or False
-                        disconnect_ethernet()
-                        connect_to_new_wifi_network(wifi_network, wifi_password)
+                        connect_process_to_wifi(wifi_network, wifi_password)
     else:
         reset_counter("counter_wifi_disconnected")
 
+def connect_wifi_during_launch():
+    if not internetReachable():
+        if not on_ethernet():
+            wifi_network = params.get("wifi_network") or False
+            loggerDEBUG(f"wifi network:{wifi_network}")
+            if wifi_network:
+                if wifi_network_available(wifi_network):
+                    wifi_password= params.get("wifi_password") or False
+                    connect_process_to_wifi(wifi_network, wifi_password)

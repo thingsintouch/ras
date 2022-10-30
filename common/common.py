@@ -21,6 +21,23 @@ from os.path import isfile
 
 params = Params(db=co.PARAMS)
 
+
+
+def store_wifi_network_and_password(wifi_network, wifi_password):
+    params.put("wifi_network", wifi_network)
+    params.put("wifi_password", wifi_password)
+    return True
+
+def get_wifi_network_and_password():
+    wifi_network=False
+    wifi_password=False
+    try:
+        wifi_network =params.get("wifi_network")
+        wifi_password =params.get("wifi_password")
+    except Exception as e:
+        loggerDEBUG(f"get_wifi_network_and_password - Exception: {e}")
+    return wifi_network, wifi_password 
+
 def prettyPrint(message):
     pPrint(message)
 
@@ -201,3 +218,29 @@ def ensure_python_dependencies():
         sys.exit(0) 
     else:
         loggerINFO("-----############### python dependencies for v3.7 already installed ##########------")
+
+def delete_RAS_WiFi_connection():
+    try:
+        runShellCommand_and_returnOutput('sudo nmcli c delete "RAS"')
+    except Exception as e:
+        loggerDEBUG(f"delete_RAS_____WiFi_connection- Exception: {e}")
+
+def manage_wifi_network_name_with_spaces(wifi_network):
+    if " " in wifi_network:
+        wifi_network_for_cli_command = "'" + wifi_network + "'"
+    else:
+        wifi_network_for_cli_command = wifi_network
+    return wifi_network_for_cli_command
+
+def connect_to_new_wifi_network():
+    wifi_network, wifi_password = get_wifi_network_and_password()
+    delete_RAS_WiFi_connection()
+    wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
+    answer = (runShellCommand_and_returnOutput('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
+    connection_successful= False
+    try:
+        if "successfully activated" in answer:
+            connection_successful= True
+    except Exception as e:
+        loggerDEBUG(f"Exception while connecting to WiFi network: {e}")
+    return connection_successful
