@@ -419,3 +419,17 @@ class GateSetupAdvertisement(Advertisement):
         self.include_tx_power = True
         self.setAdvertisementInterval("10")
 
+class HelloWorld(dbus.service.Object):
+    def __init__(self, conn=None, object_path=None, bus_name=None):
+        DBusGMainLoop(set_as_default=True)
+        bus = dbus.SystemBus()
+        conn = bus
+        object_path = "/HelloWorld"
+        bus_name = dbus.service.BusName("com.example.HelloWorld", bus)
+        #helloworld = HelloWorld(bus, "/HelloWorld")
+        dbus.service.Object.__init__(self, conn, object_path, bus_name)
+
+    @dbus.service.method(dbus_interface="com.example.HelloWorldInterface", in_signature="s", out_signature="s", sender_keyword="sender", connection_keyword="conn")
+    def SayHello(self, name, sender=None, conn=None):
+        return "Hello " + name
+

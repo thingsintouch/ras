@@ -3,53 +3,70 @@ import os
 from random import seed
 from random import randint
 
-from bluetooth.specificClassesBLE import GateSetupApplication, GateSetupAdvertisement
+from bluetooth.specificClassesBLE import GateSetupApplication, GateSetupAdvertisement, HelloWorld
+
+# import dbus, uuid
+
+# def connect_to_new_wifi_network(ssidName,ssidPassword):
+#     print(">"*100)
+#     print(">"*100)
+#     print(">"*100)
+#     print(f'ssidName : {ssidName}; ssidPassword : {ssidPassword};')
+#     s_con = dbus.Dictionary(
+#     {"type": "802-11-wireless", "uuid": str(uuid.uuid4()), "id": "RAS"}
+#     )
+
+#     s_wifi = dbus.Dictionary(
+#     {"ssid": dbus.ByteArray(ssidName.encode("utf-8")), "mode": "infrastructure"}
+#     )
+
+#     s_wsec = dbus.Dictionary(
+#         {"key-mgmt": "wpa-psk", "auth-alg": "open", "psk": ssidPassword}
+#     )
+
+#     s_ip4 = dbus.Dictionary({"method": "auto"})
+#     s_ip6 = dbus.Dictionary({"method": "ignore"})
+
+#     con = dbus.Dictionary(
+#     {
+#         "connection": s_con,
+#         "802-11-wireless": s_wifi,
+#         "802-11-wireless-security": s_wsec,
+#         "ipv4": s_ip4,
+#         "ipv6": s_ip6,
+#     }
+#     )
+#     print("Creating connection:", s_con["id"], "-", s_con["uuid"])
+
+#     bus = dbus.SystemBus()
+#     proxy = bus.get_object(
+#         "org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager/Settings"
+#     )
+#     settings = dbus.Interface(proxy, "org.freedesktop.NetworkManager.Settings")
+
+#     settings.AddConnection(con)
 
 
-def changeDeviceHostname(): # the bluetooth device listening reads the DeviceHostname instead of the Alias of the Advertisement
-    # https://wiki.debian.org/Hostname?action=show&redirect=HowTo%2FChangeHostname
-    # http://pitown.blogspot.com/2013/11/change-raspberry-pis-hostname-without.html
-    # https://thepihut.com/blogs/raspberry-pi-tutorials/19668676-renaming-your-raspberry-pi-the-hostname
-
-    DEVICE_NAME = 'RAS'
-    IP_HOSTNAME = '127.0.1.1'
-
-    # seed random number generator
-    seed(1)
-    DEVICE_NAME = DEVICE_NAME + str(randint(100, 999))
-    print(f"device name {DEVICE_NAME}")
-
-    file1='/etc/hostname' 
-    with open(file1, 'w') as f:
-        f.write(DEVICE_NAME)
-
-    file2='/etc/hosts'
-    with open(file2, "r") as f:
-        lines = f.readlines()
-    with open(file2, "w") as f:
-        for line in lines:
-            #print(repr(line))
-            if IP_HOSTNAME in line:
-                f.write(IP_HOSTNAME+'\t'+DEVICE_NAME+'\n')
-            elif repr(line) == "\n":
-                pass
-            else:
-                f.write(line)
-    
-    os.system("invoke-rc.d hostname.sh start")
-    os.system("invoke-rc.d networking force-reload")
-    os.system("invoke-rc.d dhcpcd force-reload")
-    os.system("systemctl daemon-reload")
-
+# def connect_to_new_wifi_network(ssidName,ssidPassword):
+#     print(">"*100)
+#     print(">"*100)
+#     print(">"*100)
+#     print(f'ssidName : {ssidName}; ssidPassword : {ssidPassword};')
+#     connectToSSIDProcess = Process(target=connect_To_SSID.main, args=(ssidName, ssidPassword, ))
+#     connectToSSIDProcess.start()
+#     print("<"*100)
+#     print("<"*100)
+#     print("<"*100)
 
 def server():
     #changeDeviceHostname()
     application     = GateSetupApplication()
     application.registerApplication()
-
     advertisement   = GateSetupAdvertisement()
     advertisement.makeDeviceDiscoverable()
     advertisement.registerAdvertisement()
+    helloworld = Helloworld()
+    #connect_to_new_wifi_network('FRITZ!Box 6490 Cable','522968262011056618')
     advertisement.infiniteLoop()
 
 def main():
@@ -57,3 +74,17 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# progname = "com.example.HelloWorld"
+# objpath  = "/HelloWorld"
+# intfname = "com.example.HelloWorldInterface"
+# methname = 'SayHello'
+
+# bus = dbus.SystemBus()
+
+# obj = bus.get_object(progname, objpath)
+# interface = dbus.Interface(obj, intfname)     # Get the interface to obj
+# method = interface.get_dbus_method(methname)  # The method on that interface
+
+# method("Luis")                                      # And finally calling the method
+
