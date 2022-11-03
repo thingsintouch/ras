@@ -15,6 +15,7 @@ from multiprocessing import Process #, Manager
 from bluetooth import connect_To_Odoo
 from common import connect_To_SSID
 from common.connectivity import reset_counter as reset_counter_for_wifi_reconnection_attempt
+from common.connectivity import connect_wifi_during_launch
 from common.common import create_conf_file
 
 
@@ -437,7 +438,9 @@ class HelloWorld(dbus.service.Object):
 
     @dbus.service.method(dbus_interface="com.example.HelloWorldInterface", in_signature="s", out_signature="s", sender_keyword="sender", connection_keyword="conn")
     def SayHello(self, name, sender=None, conn=None):
+        time.sleep(15)
         print(f"HELLO {name}")
         loggerDEBUG(f"hello {name}")
+        connect_wifi_during_launch()
         return "Hello " + name
 
