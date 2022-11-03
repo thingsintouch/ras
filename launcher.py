@@ -31,7 +31,7 @@ set_bluetooth_device_name()
 params.put("firmwareVersion",co.RAS_VERSION)
 ensure_git_does_not_change_env_file()
 
-connect_to_new_wifi_network()
+#connect_to_new_wifi_network()
 
 managed_essential_processes = get_managed_essential_processes(
     params.get("template_to_register_device")

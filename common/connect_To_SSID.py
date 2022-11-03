@@ -97,7 +97,7 @@ def connect_process_to_wifi(wifi_network, wifi_password):
     params.put("displayClock", "no")
     connecting_with_wifi___visual_and_acoustic_signals(wifi_network)
     store_wifi_network_and_password(wifi_network, wifi_password)
-    connection_successful= connect_to_new_wifi_network(wifi_network, wifi_password) 
+    connection_successful= connect_to_new_wifi_network() 
     time.sleep(1) 
     params.put("displayClock", "yes")
     return connection_successful
