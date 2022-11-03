@@ -15,6 +15,8 @@ from multiprocessing import Process #, Manager
 from bluetooth import connect_To_Odoo
 from common import connect_To_SSID
 from common.connectivity import reset_counter as reset_counter_for_wifi_reconnection_attempt
+from common.common import create_conf_file
+
 
 from common.params import Params
 from common.constants import PARAMS
@@ -420,4 +422,22 @@ class GateSetupAdvertisement(Advertisement):
         self.add_alias( DEVICE_NAME)
         self.include_tx_power = True
         self.setAdvertisementInterval("10")
+
+
+class HelloWorld(dbus.service.Object):
+    def __init__(self, conn=None, object_path=None, bus_name=None):
+        create_conf_file()
+        DBusGMainLoop(set_as_default=True)
+        bus = dbus.SystemBus()
+        conn = bus
+        object_path = "/HelloWorld"
+        bus_name = dbus.service.BusName("com.example.HelloWorld", bus)
+        #helloworld = HelloWorld(bus, "/HelloWorld")
+        dbus.service.Object.__init__(self, conn, object_path, bus_name)
+
+    @dbus.service.method(dbus_interface="com.example.HelloWorldInterface", in_signature="s", out_signature="s", sender_keyword="sender", connection_keyword="conn")
+    def SayHello(self, name, sender=None, conn=None):
+        print(f"HELLO {name}")
+        loggerDEBUG(f"hello {name}")
+        return "Hello " + name
 

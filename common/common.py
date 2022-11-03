@@ -17,15 +17,57 @@ import common.constants as co
 from common.keys import keys_by_Type, TxType
 from factory_settings.custom_params import factory_settings
 from os.path import isfile
+import dbus
+
+progname = "com.example.HelloWorld"
+objpath  = "/HelloWorld"
+intfname = "com.example.HelloWorldInterface"
+methname = 'SayHello'
+
 
 
 params = Params(db=co.PARAMS)
+conf_contents = '<?xml version="1.0" encoding="UTF-8"?> \n \
+<!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"\n \
+"http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">\n \
+<busconfig>\n \
+  <type>system</type>\n \
+  <!-- Only root can own the service -->\n \
+  <policy user="root">\n \
+    <allow own="com.example.HelloWorld"/>\n \
+    <allow send_destination="com.example.HelloWorld"/>\n \
+    <allow send_interface="com.example.HelloWorld"/>\n \
+  </policy><!-- Allow anyone to invoke methods on the interfaces -->\n \
+  <policy context="default">\n \
+    <allow send_destination="com.example.HelloWorld"/>\n \
+    <allow send_interface="com.example.HelloWorld"/>\n \
+  </policy>\n \
+</busconfig>\n '
 
+def create_conf_file():
+    try:
+        with open('/etc/dbus-1/system.d/com.example.HelloWorld.conf', 'w') as f:
+            f.write(conf_contents)
+        loggerDEBUG("inside create_conf_file ---------------------+---+-+-+-+")
+    except Exception as e:
+        loggerDEBUG(f"create_conf_file - Exception: {e}")    
+
+def hello_world():
+    try:
+        bus = dbus.SystemBus()
+        obj = bus.get_object(progname, objpath)
+        interface = dbus.Interface(obj, intfname)     # Get the interface to obj
+        method = interface.get_dbus_method(methname)
+        method("Luis")
+        loggerDEBUG("inside hello world ************************************")
+    except Exception as e:
+        loggerDEBUG(f"hello world - Exception: {e}")
 
 
 def store_wifi_network_and_password(wifi_network, wifi_password):
     params.put("wifi_network", wifi_network)
     params.put("wifi_password", wifi_password)
+    hello_world()
     return True
 
 def get_wifi_network_and_password():

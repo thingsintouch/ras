@@ -3,7 +3,7 @@ import os
 from random import seed
 from random import randint
 
-from bluetooth.specificClassesBLE import GateSetupApplication, GateSetupAdvertisement
+from bluetooth.specificClassesBLE import GateSetupApplication, GateSetupAdvertisement, HelloWorld
 
 
 def changeDeviceHostname(): # the bluetooth device listening reads the DeviceHostname instead of the Alias of the Advertisement
@@ -50,6 +50,7 @@ def server():
     advertisement   = GateSetupAdvertisement()
     advertisement.makeDeviceDiscoverable()
     advertisement.registerAdvertisement()
+    helloworld = HelloWorld()
     advertisement.infiniteLoop()
 
 def main():
