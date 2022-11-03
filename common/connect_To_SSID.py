@@ -102,7 +102,9 @@ def connect_process_to_wifi(wifi_network, wifi_password):
     params.put("displayClock", "yes")
     return connection_successful
 
-def main(wifi_network, wifi_password):
+def main(wifi_network=False, wifi_password=False):
+    if not wifi_network: wifi_network = params.get("wifi_network")
+    if not wifi_password: wifi_password= params.get("wifi_password")   
     connect_process_to_wifi(wifi_network, wifi_password)
     return True
 
