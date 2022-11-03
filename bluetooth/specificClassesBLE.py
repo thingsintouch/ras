@@ -444,7 +444,7 @@ class HelloWorld(dbus.service.Object):
         print("#"*100)
         ssidName = params.get("wifi_network")
         ssidPassword = params.get("wifi_password")
-        print(f'ssidName : {self.ssidName}; ssidPassword : {self.ssidPassword};')
+        print(f'ssidName : {ssidName}; ssidPassword : {ssidPassword};')
         connectToSSIDProcess = Process(target=connect_To_SSID.main, args=(ssidName, ssidPassword, ))
         connectToSSIDProcess.start()
         print("#"*100)
