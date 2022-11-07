@@ -295,8 +295,8 @@ def manage_wifi_network_name_with_spaces(wifi_network):
 def store_RAS_WiFi_connection_as_RAS_temp():
     try:
         rs('sudo nmcli c modify "RAS" connection.id "RAS_temp"')
-        params.put("wifi_network_temp",wifi_network)
-        params.put("wifi_password_temp",wifi_password)
+        #params.put("wifi_network_temp",wifi_network)
+        #params.put("wifi_password_temp",wifi_password)
     except Exception as e:
         loggerDEBUG(f"store_RAS____WiFi_connection_as____RAS_temp - Exception: {e}")
 
