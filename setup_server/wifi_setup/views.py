@@ -23,7 +23,7 @@ def define_wifi():
 
 @wifi_setup.route('/wifi_connect_confirm_page',methods=['GET','POST'])
 @login_required
-def wifi_connect_confirm_page(result):
+def wifi_connect_confirm_page():
     wifi_network, wifi_password = get_wifi()
     form = WiFiSetupResult()
     if form.validate_on_submit():
