@@ -18,10 +18,10 @@ def define_wifi():
 
         store_wifi(wifi_network, wifi_password)
         
-        return redirect(url_for('wifi_setup.wifi_connect_confirm_page'))
+        return redirect(url_for('wifi_setup.wifi_confirm_page'))
     return render_template('wifi_setup.html', form=form)
 
-@wifi_setup.route('/wifi_connect_confirm_page>',methods=['GET','POST'])
+@wifi_setup.route('/wifi_confirm_page>',methods=['GET','POST'])
 @login_required
 def wifi_connect_confirm_page(result):
     wifi_network, wifi_password = get_wifi()
