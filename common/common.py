@@ -333,7 +333,7 @@ def get_wifi_SSID_of_RAS():
     try:
         wifi_SSID = rs("nmcli -t -f 802-11-wireless.ssid c show RAS")
         if wifi_SSID and wifi_SSID != "N/A":
-            wifi_SSID = wifi_SSID[15:]
+            wifi_SSID = wifi_SSID[:15]
     except Exception as e:
         loggerDEBUG(f"get_wifi_SSID_of_RAS()- Exception: {e}")
     return wifi_SSID   
