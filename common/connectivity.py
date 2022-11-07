@@ -8,7 +8,7 @@ from common.constants import PARAMS, ETHERNET_FLAG_FILE, \
         CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT
 from common.connect_To_SSID import connect_process_to_wifi
 from common.common import runShellCommand_and_returnOutput as rs
-from common.common import pPrint
+from common.common import pPrint, on_ethernet
 from common.counter_ops import reset_counter, get_counter, increase_counter
 
 params = Params(db=PARAMS)
@@ -127,14 +127,6 @@ def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex f
     finally:
         s.close()
     return isOpen
-
-def on_ethernet():
-    if exists(ETHERNET_FLAG_FILE):
-        with open(ETHERNET_FLAG_FILE, encoding="utf-8") as f:
-            ethernet_status = f.read(1)
-        if ethernet_status == "1":
-            return True
-    return False
 
 def get_available_networks():
     answer = (rs("nmcli --get-values SSID d wifi list --rescan yes"))

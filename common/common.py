@@ -44,6 +44,14 @@ conf_contents = '<?xml version="1.0" encoding="UTF-8"?> \n \
   </policy>\n \
 </busconfig>\n '
 
+def on_ethernet():
+    if exists(co.ETHERNET_FLAG_FILE):
+        with open(co.ETHERNET_FLAG_FILE, encoding="utf-8") as f:
+            ethernet_status = f.read(1)
+        if ethernet_status == "1":
+            return True
+    return False
+
 def store_wifi(wifi_network, wifi_password):
     try:
         params.put("wifi_network", wifi_network)
@@ -72,6 +80,8 @@ def create_conf_file():
         loggerDEBUG(f"create_conf_file - Exception: {e}")    
 
 def connect_to_wifi_through_d_bus_method():
+    while on_ethernet():
+        time.sleep(co.PERIOD_CONNECTIVITY_MANAGER)
     try:
         bus = dbus.SystemBus()
         obj = bus.get_object(progname, objpath)
