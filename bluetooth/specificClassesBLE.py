@@ -443,7 +443,7 @@ class HelloWorld(dbus.service.Object):
         print("#"*100)
         print("#"*100)
         loggerDEBUG("inside dbus method to launch process to connect to wifi network")
-        connectToSSIDProcess = Process(target=connect_To_SSID.main, args=(,))
+        connectToSSIDProcess = Process(target=connect_To_SSID.main, args=())
         connectToSSIDProcess.start()
         print("#"*100)
         print("#"*100)
