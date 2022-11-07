@@ -87,7 +87,7 @@ def connect_to_wifi_through_d_bus_method():
         obj = bus.get_object(progname, objpath)
         interface = dbus.Interface(obj, intfname)     # Get the interface to obj
         method = interface.get_dbus_method(methname)
-        method("Luis")
+        method("some_string")
         loggerDEBUG("inside connect_to_wifi_through_d_bus_method ************************************")
     except Exception as e:
         loggerDEBUG(f"connect_to_wifi_through_d_bus_method - Exception: {e}")

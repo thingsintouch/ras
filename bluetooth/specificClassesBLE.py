@@ -437,7 +437,7 @@ class HelloWorld(dbus.service.Object):
         dbus.service.Object.__init__(self, conn, object_path, bus_name)
 
     @dbus.service.method(dbus_interface="com.example.HelloWorldInterface", in_signature="s", out_signature="s", sender_keyword="sender", connection_keyword="conn")
-    def SayHello(self, sender=None, conn=None):
+    def SayHello(self, name, sender=None, conn=None):
         #time.sleep(15)
         print("#"*100)
         print("#"*100)
