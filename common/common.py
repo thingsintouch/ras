@@ -16,7 +16,7 @@ from common.params import Params
 import common.constants as co
 from common.keys import keys_by_Type, TxType
 from factory_settings.custom_params import factory_settings
-from os.path import isfile
+from os.path import isfile, exists
 import dbus
 
 progname = "com.example.HelloWorld"
