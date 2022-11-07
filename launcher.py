@@ -17,7 +17,6 @@ from messaging.messaging import SubscriberMultipart as Subscriber
 from common.common import setTimeZone, store_factory_settings_in_database, ensure_python_dependencies
 from common.common import set_bluetooth_device_name, ensure_git_does_not_change_env_file
 from common.get_managed_processes import get_managed_essential_processes
-from common.common import connect_to_new_wifi_network
 
 params = Params(db=co.PARAMS)
 
@@ -30,8 +29,6 @@ loggerINFO("###################### RAS launched ###################")
 set_bluetooth_device_name()
 params.put("firmwareVersion",co.RAS_VERSION)
 ensure_git_does_not_change_env_file()
-
-#connect_to_new_wifi_network()
 
 managed_essential_processes = get_managed_essential_processes(
     params.get("template_to_register_device")

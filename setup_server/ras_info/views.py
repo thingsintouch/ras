@@ -6,6 +6,7 @@ from odoo.odooRequests import  get_iot_template
 from common.params import Params
 from common.constants import PARAMS
 from common.common import runShellCommand_and_returnOutput as rs
+from common.common import get_wifi_SSID_of_RAS
 
 from odoo.registerClockings import get_sorted_clockings_from_older_to_newer
 from odoo.manager import get_two_lines_name
@@ -28,7 +29,7 @@ def show_info():
     git_repository = (rs("git remote -v")) or "N/A"
     git_repository = git_repository.split("\n")[0]
     device_name = params.get("RASxxx") or "N/A"
-    wifi_SSID = params.get("wifi_network") or "N/A"
+    wifi_SSID = get_wifi_SSID_of_RAS()
     wifi_success =  params.get("wifi_connection_counter_successful") or "0"
     wifi_NO_success =  params.get("wifi_connection_counter_unsuccessful") or "0"
     return render_template('ras_info.html',

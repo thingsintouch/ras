@@ -44,6 +44,25 @@ conf_contents = '<?xml version="1.0" encoding="UTF-8"?> \n \
   </policy>\n \
 </busconfig>\n '
 
+def store_wifi(wifi_network, wifi_password):
+    try:
+        params.put("wifi_network", wifi_network)
+        params.put("wifi_password", wifi_password)
+        loggerDEBUG(f"store_wifi - {wifi_network} {wifi_password}") 
+    except Exception as e:
+        loggerDEBUG(f"store_wifi - Exception: {e}")
+
+def get_wifi():
+    wifi_network = False
+    wifi_password = False
+    try:
+        wifi_network = params.get("wifi_network")
+        wifi_password = params.get("wifi_password")
+        loggerDEBUG(f"get wifi - {wifi_network} {wifi_password}") 
+    except Exception as e:
+        loggerDEBUG(f"get wifi - Exception: {e}")
+    return wifi_network, wifi_password 
+
 def create_conf_file():
     try:
         with open('/etc/dbus-1/system.d/com.example.HelloWorld.conf', 'w') as f:
@@ -52,33 +71,16 @@ def create_conf_file():
     except Exception as e:
         loggerDEBUG(f"create_conf_file - Exception: {e}")    
 
-def hello_world():
+def connect_to_wifi_through_d_bus_method():
     try:
         bus = dbus.SystemBus()
         obj = bus.get_object(progname, objpath)
         interface = dbus.Interface(obj, intfname)     # Get the interface to obj
         method = interface.get_dbus_method(methname)
         method("Luis")
-        loggerDEBUG("inside hello world ************************************")
+        loggerDEBUG("inside connect_to_wifi_through_d_bus_method ************************************")
     except Exception as e:
-        loggerDEBUG(f"hello world - Exception: {e}")
-
-
-def store_wifi_network_and_password(wifi_network, wifi_password):
-    params.put("wifi_network", wifi_network)
-    params.put("wifi_password", wifi_password)
-    hello_world()
-    return True
-
-def get_wifi_network_and_password():
-    wifi_network=False
-    wifi_password=False
-    try:
-        wifi_network =params.get("wifi_network")
-        wifi_password =params.get("wifi_password")
-    except Exception as e:
-        loggerDEBUG(f"get_wifi_network_and_password - Exception: {e}")
-    return wifi_network, wifi_password 
+        loggerDEBUG(f"connect_to_wifi_through_d_bus_method - Exception: {e}")
 
 def prettyPrint(message):
     pPrint(message)
@@ -102,6 +104,8 @@ def runShellCommand_and_returnOutput(command):
     except:
         #loggerERROR(f"error on shell command: {command}")
         return False
+
+rs = runShellCommand_and_returnOutput
 
 def setTimeZone(tz = False):
     try:
@@ -263,7 +267,7 @@ def ensure_python_dependencies():
 
 def delete_RAS_WiFi_connection():
     try:
-        runShellCommand_and_returnOutput('sudo nmcli c delete "RAS"')
+        rs('sudo nmcli c delete "RAS"')
     except Exception as e:
         loggerDEBUG(f"delete_RAS_____WiFi_connection- Exception: {e}")
 
@@ -278,16 +282,58 @@ def manage_wifi_network_name_with_spaces(wifi_network):
         loggerDEBUG(f"manage_wifi_network_name_with_spaces- Exception: {e}")   
     return wifi_network_for_cli_command
 
+def store_RAS_WiFi_connection_as_RAS_temp():
+    try:
+        rs('sudo nmcli c modify "RAS" connection.id "RAS_temp"')
+        params.put("wifi_network_temp",wifi_network)
+        params.put("wifi_password_temp",wifi_password)
+    except Exception as e:
+        loggerDEBUG(f"store_RAS____WiFi_connection_as____RAS_temp - Exception: {e}")
+
+def delete_RAS_temp_WiFi_connection():
+    try:
+        rs('sudo nmcli c delete "RAS_temp"')
+    except Exception as e:
+        loggerDEBUG(f"delete_RAS_temp____WiFi_connection- Exception: {e}")
+
+def delete_RAS_WiFi_connection():
+    try:
+        rs('sudo nmcli c delete "RAS"')
+    except Exception as e:
+        loggerDEBUG(f"delete_RAS_____WiFi_connection- Exception: {e}")
+
+def retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection():
+    try:
+        rs('sudo nmcli c modify "RAS_temp" connection.id "RAS"')
+        rs('sudo nmcli c up "RAS"')
+    except Exception as e:
+        loggerDEBUG(f"retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection- Exception: {e}")
+
 def connect_to_new_wifi_network():
     connection_successful= False
-    wifi_network, wifi_password = get_wifi_network_and_password()
+    wifi_network, wifi_password = get_wifi()
     if wifi_network:
-        try:
-            delete_RAS_WiFi_connection()
+        store_RAS_WiFi_connection_as_RAS_temp()
+        try: 
             wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
-            answer = (runShellCommand_and_returnOutput('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
+            answer = (rs('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
             if "successfully activated" in answer:
                 connection_successful= True
         except Exception as e:
             loggerDEBUG(f"Exception while connecting to WiFi network: {e}")
+        if connection_successful:
+            delete_RAS_temp_WiFi_connection()
+        else:
+            delete_RAS_WiFi_connection()
+            retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection()
     return connection_successful
+
+def get_wifi_SSID_of_RAS():
+    wifi_SSID = "N/A"
+    try:
+        wifi_SSID = rs("nmcli -t -f 802-11-wireless.ssid c show RAS")
+        if wifi_SSID and wifi_SSID != "N/A":
+            wifi_SSID = wifi_SSID[15:]
+    except Exception as e:
+        loggerDEBUG(f"get_wifi_SSID_of_RAS()- Exception: {e}")
+    return wifi_SSID   
