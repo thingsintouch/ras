@@ -12,7 +12,7 @@ from common.constants import WORKING_DIR, PARAMS, CLOCKINGS
 from common.params import Params
 from odoo.odooRequests import check_if_registered
 from common.connectivity import isPingable
-from common.common import setTimeZone
+from common.common import setTimeZone, reboot
 
 
 params = Params(db=PARAMS)
@@ -89,9 +89,10 @@ class Status_Flags_To_Check():
     def rebootTerminal(self):
         display_off()
         loggerINFO("-----############### rebootTerminal ###############------")
-        os.system("sudo reboot")
-        time.sleep(60)
-        sys.exit(0)  
+        reboot()
+        # os.system("sudo reboot")
+        # time.sleep(60)
+        # sys.exit(0)  
 
     def partialFactoryReset(self):
         loggerINFO("-----############### partialFactoryReset ###############------")
