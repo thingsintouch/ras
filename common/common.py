@@ -45,6 +45,27 @@ conf_contents = '<?xml version="1.0" encoding="UTF-8"?> \n \
   </policy>\n \
 </busconfig>\n '
 
+wpa_conf_1 ='# /etc/wpa_supplicant/wpa_supplicant.conf \n \
+# /boot/wpa_supplicant.conf \n \
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev \n \
+update_config=1\n \
+\n \
+network={ \n \
+        scan_ssid=1 \n \
+        ssid="'
+
+wpa_conf_2 = '"\n \
+        psk="'
+
+wpa_conf_3 = '" \n \
+        priority=2 \n \
+        proto=RSN \n \
+        key_mgmt=WPA-PSK \n \
+        pairwise=CCMP \n \
+        auth_alg=OPEN \n \
+}\n \
+'
+
 def on_ethernet():
     if exists(co.ETHERNET_FLAG_FILE):
         with open(co.ETHERNET_FLAG_FILE, encoding="utf-8") as f:
@@ -80,18 +101,7 @@ def create_conf_file():
     except Exception as e:
         loggerDEBUG(f"create_conf_file - Exception: {e}")    
 
-def connect_to_wifi_through_d_bus_method():
-    while on_ethernet():
-        time.sleep(co.PERIOD_CONNECTIVITY_MANAGER)
-    try:
-        bus = dbus.SystemBus()
-        obj = bus.get_object(progname, objpath)
-        interface = dbus.Interface(obj, intfname)     # Get the interface to obj
-        method = interface.get_dbus_method(methname)
-        method("some_string")
-        loggerDEBUG("inside connect_to_wifi_through_d_bus_method ************************************")
-    except Exception as e:
-        loggerDEBUG(f"connect_to_wifi_through_d_bus_method - Exception: {e}")
+
 
 def prettyPrint(message):
     pPrint(message)
@@ -117,6 +127,40 @@ def runShellCommand_and_returnOutput(command):
         return False
 
 rs = runShellCommand_and_returnOutput
+
+def connect_to_wifi_through_d_bus_method():
+    while on_ethernet():
+        time.sleep(co.PERIOD_CONNECTIVITY_MANAGER)
+    try:
+        bus = dbus.SystemBus()
+        obj = bus.get_object(progname, objpath)
+        interface = dbus.Interface(obj, intfname)     # Get the interface to obj
+        method = interface.get_dbus_method(methname)
+        method("some_string")
+        loggerDEBUG("inside connect_to_wifi_through_d_bus_method ************************************")
+    except Exception as e:
+        loggerDEBUG(f"connect_to_wifi_through_d_bus_method - Exception: {e}")
+
+def prepare_wpa_supplicant_conf_file():
+    try:
+        wifi_network, wifi_password = get_wifi()
+        with open('/etc/wpa_supplicant/wpa_supplicant.conf', 'w') as f:
+            file_content = wpa_conf_1 + wifi_network + wpa_conf_2 + \
+                wifi_password + wpa_conf_3
+            f.write(file_content)
+        # rs("sudo cp /etc/wpa_supplicant/wpa_supplicant.conf /boot")
+        loggerDEBUG("inside prepare_wpa_supplicant_conf_file ---------------------+---+-+-+-+")
+    except Exception as e:
+        loggerDEBUG(f"prepare_wpa_supplicant_conf_file - Exception: {e}")
+ 
+def connect_to_wifi_using_wpa_cli():
+    try:
+        prepare_wpa_supplicant_conf_file()
+        rs("sudo wpa-cli -i wlan0 reconfigure")
+        loggerDEBUG("inside connect_to_wifi_using_wpa_cli ************************************")
+    except Exception as e:
+        loggerDEBUG(f"connect_to_wifi_using_wpa_cli - Exception: {e}")
+
 
 def setTimeZone(tz = False):
     try:
