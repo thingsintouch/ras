@@ -41,10 +41,10 @@ def wifi_connection_successful():
     oled.three_lines_text_small(text)
     increase_counter("wifi_connection_counter_successful")
   
-def connect_process_to_wifi():
+def connect_process_to_wifi(wifi_network, wifi_password):
     params.put("displayClock", "no")
     connecting_with_wifi___visual_and_acoustic_signals()
-    connection_successful = connect_to_new_wifi_network()
+    connection_successful = connect_to_new_wifi_network(wifi_network, wifi_password)
     if connection_successful:
         wifi_connection_successful()
     else:
@@ -53,8 +53,8 @@ def connect_process_to_wifi():
     params.put("displayClock", "yes")
     return connection_successful
 
-def main():   
-    connect_process_to_wifi()
+def main(wifi_network, wifi_password):   
+    connect_process_to_wifi(wifi_network, wifi_password)
     return True
 
 if __name__ == "__main__":

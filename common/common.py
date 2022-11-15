@@ -320,11 +320,11 @@ def retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection():
     except Exception as e:
         loggerDEBUG(f"retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection- Exception: {e}")
 
-def connect_to_new_wifi_network():
+def connect_to_new_wifi_network(wifi_network, wifi_password):
     connection_successful= False
-    wifi_network, wifi_password = get_wifi()
+   #wifi_network, wifi_password = get_wifi()
     if wifi_network:
-        store_RAS_WiFi_connection_as_RAS_temp()
+        #store_RAS_WiFi_connection_as_RAS_temp()
         try: 
             wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
             answer = (rs('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
@@ -332,11 +332,11 @@ def connect_to_new_wifi_network():
                 connection_successful= True
         except Exception as e:
             loggerDEBUG(f"Exception while connecting to WiFi network: {e}")
-        if connection_successful:
-            delete_RAS_temp_WiFi_connection()
-        else:
-            delete_RAS_WiFi_connection()
-            retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection()
+        # if connection_successful:
+        #     #delete_RAS_temp_WiFi_connection()
+        # else:
+        #     #delete_RAS_WiFi_connection()
+        #     #retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection()
     return connection_successful
 
 def get_wifi_SSID_of_RAS():
