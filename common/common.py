@@ -396,7 +396,7 @@ def get_wifi_SSID_of_RAS():
 def is_enabled(service):
     result = False
     try:
-        answer = rs("sudo qsystemctl is-enabled "+service)
+        answer = rs("sudo systemctl is-enabled "+service)
         loggerDEBUG(f"answer is_enabled({service}): {answer}")
         if answer=="enabled": result = True
     except Exception as e:
