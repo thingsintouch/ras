@@ -400,7 +400,8 @@ def is_enabled(service):
         loggerDEBUG(f"answer is_enabled({service}): {answer}")
         if answer=="enabled": result = True
     except Exception as e:
-        loggerDEBUG(f"is_enabled(service)- Exception: {e}")
+        loggerDEBUG(f"is_enabled({service})- Exception: {e}")
+    loggerDEBUG(f"is_enabled({service})- Function returns: {result}")
     return result
 
 def are_the_right_service_configurations_in_place():
