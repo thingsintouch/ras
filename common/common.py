@@ -320,11 +320,11 @@ def ensure_python_dependencies():
     else:
         loggerINFO("-----############### python dependencies for v3.7 already installed ##########------")
 
-def delete_RAS_WiFi_connection():
-    try:
-        rs('sudo nmcli c delete "RAS"')
-    except Exception as e:
-        loggerDEBUG(f"delete_RAS_____WiFi_connection- Exception: {e}")
+# def delete_RAS_WiFi_connection():
+#     try:
+#         rs('sudo nmcli c delete "RAS"')
+#     except Exception as e:
+#         loggerDEBUG(f"delete_RAS_____WiFi_connection- Exception: {e}")
 
 def manage_wifi_network_name_with_spaces(wifi_network):
     wifi_network_for_cli_command = False
@@ -337,71 +337,70 @@ def manage_wifi_network_name_with_spaces(wifi_network):
         loggerDEBUG(f"manage_wifi_network_name_with_spaces- Exception: {e}")   
     return wifi_network_for_cli_command
 
-def store_RAS_WiFi_connection_as_RAS_temp():
-    try:
-        rs('sudo nmcli c modify "RAS" connection.id "RAS_temp"')
-        #params.put("wifi_network_temp",wifi_network)
-        #params.put("wifi_password_temp",wifi_password)
-    except Exception as e:
-        loggerDEBUG(f"store_RAS____WiFi_connection_as____RAS_temp - Exception: {e}")
+# def store_RAS_WiFi_connection_as_RAS_temp():
+#     try:
+#         rs('sudo nmcli c modify "RAS" connection.id "RAS_temp"')
+#         #params.put("wifi_network_temp",wifi_network)
+#         #params.put("wifi_password_temp",wifi_password)
+#     except Exception as e:
+#         loggerDEBUG(f"store_RAS____WiFi_connection_as____RAS_temp - Exception: {e}")
 
-def delete_RAS_temp_WiFi_connection():
-    try:
-        rs('sudo nmcli c delete "RAS_temp"')
-    except Exception as e:
-        loggerDEBUG(f"delete_RAS_temp____WiFi_connection- Exception: {e}")
+# def delete_RAS_temp_WiFi_connection():
+#     try:
+#         rs('sudo nmcli c delete "RAS_temp"')
+#     except Exception as e:
+#         loggerDEBUG(f"delete_RAS_temp____WiFi_connection- Exception: {e}")
 
-def delete_RAS_WiFi_connection():
-    try:
-        rs('sudo nmcli c delete "RAS"')
-    except Exception as e:
-        loggerDEBUG(f"delete_RAS_____WiFi_connection- Exception: {e}")
+# def delete_RAS_WiFi_connection():
+#     try:
+#         rs('sudo nmcli c delete "RAS"')
+#     except Exception as e:
+#         loggerDEBUG(f"delete_RAS_____WiFi_connection- Exception: {e}")
 
-def retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection():
-    try:
-        rs('sudo nmcli c modify "RAS_temp" connection.id "RAS"')
-        rs('sudo nmcli c up "RAS"')
-    except Exception as e:
-        loggerDEBUG(f"retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection- Exception: {e}")
+# def retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection():
+#     try:
+#         rs('sudo nmcli c modify "RAS_temp" connection.id "RAS"')
+#         rs('sudo nmcli c up "RAS"')
+#     except Exception as e:
+#         loggerDEBUG(f"retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection- Exception: {e}")
 
-def connect_to_new_wifi_network(wifi_network, wifi_password):
-    connection_successful= False
-   #wifi_network, wifi_password = get_wifi()
-    if wifi_network:
-        #store_RAS_WiFi_connection_as_RAS_temp()
-        try: 
-            wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
-            answer = (rs('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
-            if "successfully activated" in answer:
-                connection_successful= True
-        except Exception as e:
-            loggerDEBUG(f"Exception while connecting to WiFi network: {e}")
-        # if connection_successful:
-        #     #delete_RAS_temp_WiFi_connection()
-        # else:
-        #     #delete_RAS_WiFi_connection()
-        #     #retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection()
-    return connection_successful
+# def connect_to_new_wifi_network(wifi_network, wifi_password):
+#     connection_successful= False
+#    #wifi_network, wifi_password = get_wifi()
+#     if wifi_network:
+#         #store_RAS_WiFi_connection_as_RAS_temp()
+#         try: 
+#             wifi_network_for_cli_command = manage_wifi_network_name_with_spaces(wifi_network)
+#             answer = (rs('sudo nmcli dev wifi con '+wifi_network_for_cli_command+' password '+wifi_password+' name "RAS"'))
+#             if "successfully activated" in answer:
+#                 connection_successful= True
+#         except Exception as e:
+#             loggerDEBUG(f"Exception while connecting to WiFi network: {e}")
+#         # if connection_successful:
+#         #     #delete_RAS_temp_WiFi_connection()
+#         # else:
+#         #     #delete_RAS_WiFi_connection()
+#         #     #retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection()
+#     return connection_successful
 
-def get_wifi_SSID_of_RAS():
-    wifi_SSID = "N/A"
-    try:
-        wifi_SSID = rs("nmcli -t -f 802-11-wireless.ssid c show RAS")
-        if wifi_SSID and wifi_SSID != "N/A":
-            wifi_SSID = wifi_SSID[:15]
-    except Exception as e:
-        loggerDEBUG(f"get_wifi_SSID_of_RAS()- Exception: {e}")
-    return wifi_SSID 
+# def get_wifi_SSID_of_RAS():
+#     wifi_SSID = "N/A"
+#     try:
+#         wifi_SSID = rs("nmcli -t -f 802-11-wireless.ssid c show RAS")
+#         if wifi_SSID and wifi_SSID != "N/A":
+#             wifi_SSID = wifi_SSID[:15]
+#     except Exception as e:
+#         loggerDEBUG(f"get_wifi_SSID_of_RAS()- Exception: {e}")
+#     return wifi_SSID 
 
 def is_enabled(service):
     result = False
     try:
         answer = rs("sudo systemctl is-enabled "+service)
         loggerDEBUG(f"answer is_enabled({service}): {answer}")
-        if "enabled" in str(answer): result = True
     except Exception as e:
         loggerDEBUG(f"is_enabled({service})- Exception: {e}")
-    loggerDEBUG(f"is_enabled({service})- Function returns: {result}")
+    loggerDEBUG(f"is_enabled({service})- result: {result}")
     return result
 
 def are_the_right_service_configurations_in_place():
@@ -434,12 +433,11 @@ def disable_service(service):
         loggerDEBUG(f"enable_service(service)- Exception: {e}")
 
 def setup_wpa_supplicant():
-    # copy_the_predefined_interfaces_file()
-    # enable_service("dhcpcd")
-    # disable_service("NetworkManager")
-    # time.sleep(5)
-    # reboot()
-    pass
+    copy_the_predefined_interfaces_file()
+    enable_service("dhcpcd")
+    disable_service("NetworkManager")
+    time.sleep(5)
+    reboot()
 
 def ensure_wpa_supplicant():   
     if not are_the_right_service_configurations_in_place():

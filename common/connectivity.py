@@ -142,16 +142,16 @@ def get_available_networks():
                 choices.append((clean_after,clean_after))
     return choices
 
-def get_available_networks_nmcli():
-    answer = (rs("nmcli --get-values SSID d wifi list --rescan yes"))
-    #pPrint(answer)
-    if answer and answer is not None:
-        networks = answer.split('\n')
-    choices = []
-    for n in networks:
-        if n:
-            choices.append((n,n))
-    return choices
+# def get_available_networks_nmcli():
+#     answer = (rs("nmcli --get-values SSID d wifi list --rescan yes"))
+#     #pPrint(answer)
+#     if answer and answer is not None:
+#         networks = answer.split('\n')
+#     choices = []
+#     for n in networks:
+#         if n:
+#             choices.append((n,n))
+#     return choices
 
 def wifi_network_available(wifi_network):
     choices = get_available_networks()
@@ -162,17 +162,17 @@ def wifi_network_available(wifi_network):
         loggerDEBUG(f"#### wifi network NOT available:{wifi_network} ")
         return False
 
-def reconnect_to_wifi(wifi_network):
-    try:
-        answer = (rs('sudo nmcli c up "RAS"'))
-        if "successfully activated" in answer:
-            loggerINFO(f"RE-Connected to WiFi Network: {wifi_network}")
-            increase_counter("wifi_connection_counter_successful")
-        else:
-            loggerINFO(f"COULD NOT RE-Connect to WiFi Network: {wifi_network}")
-            increase_counter("wifi_connection_counter_unsuccessful")
-    except Exception as e:
-        loggerDEBUG(f"reconnect_to_wifi - Exception: {e}")
+# def reconnect_to_wifi(wifi_network):
+#     try:
+#         answer = (rs('sudo nmcli c up "RAS"'))
+#         if "successfully activated" in answer:
+#             loggerINFO(f"RE-Connected to WiFi Network: {wifi_network}")
+#             increase_counter("wifi_connection_counter_successful")
+#         else:
+#             loggerINFO(f"COULD NOT RE-Connect to WiFi Network: {wifi_network}")
+#             increase_counter("wifi_connection_counter_unsuccessful")
+#     except Exception as e:
+#         loggerDEBUG(f"reconnect_to_wifi - Exception: {e}")
 
 def check_reconnect_to_wifi():
     def is_it_time_to_reconnect():
