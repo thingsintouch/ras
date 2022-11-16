@@ -398,6 +398,7 @@ def is_enabled(service):
     try:
         answer = rs("sudo systemctl is-enabled "+service)
         loggerDEBUG(f"answer is_enabled({service}): {answer}")
+        if "enabled" in str(answer): result=True
     except Exception as e:
         loggerDEBUG(f"is_enabled({service})- Exception: {e}")
     loggerDEBUG(f"is_enabled({service})- result: {result}")
