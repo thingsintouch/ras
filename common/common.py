@@ -156,7 +156,7 @@ def prepare_wpa_supplicant_conf_file():
 def connect_to_wifi_using_wpa_cli():
     try:
         prepare_wpa_supplicant_conf_file()
-        rs("sudo wpa-cli -i wlan0 reconfigure")
+        rs("sudo wpa_cli -i wlan0 reconfigure")
         loggerDEBUG("inside connect_to_wifi_using_wpa_cli ************************************")
     except Exception as e:
         loggerDEBUG(f"connect_to_wifi_using_wpa_cli - Exception: {e}")
