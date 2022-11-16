@@ -123,7 +123,7 @@ def runShellCommand_and_returnOutput(command):
         #loggerDEBUG(f'shell command {command} - returncode: {completed}')
         return str(completed, 'utf-8', 'ignore')
     except:
-        #loggerERROR(f"error on shell command: {command}")
+        loggerERROR(f"error on shell command: {command}")
         return False
 
 rs = runShellCommand_and_returnOutput
@@ -396,10 +396,11 @@ def get_wifi_SSID_of_RAS():
 def is_enabled(service):
     result = False
     try:
-        question = "systemctl is-enabled "
-        if "enabled" in rs(question+service): result = True
+        answer = rs("sudo qsystemctl is-enabled "+service)
+        loggerDEBUG(f"answer is_enabled({service}): {answer}")
+        if answer=="enabled": result = True
     except Exception as e:
-        loggerDEBUG(f"is_enabled() (service)- Exception: {e}")
+        loggerDEBUG(f"is_enabled(service)- Exception: {e}")
     return result
 
 def are_the_right_service_configurations_in_place():

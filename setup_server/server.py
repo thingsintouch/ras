@@ -36,13 +36,11 @@ from setup_server.factory.views import factory
 from setup_server.daily_reboot.views import daily_reboot
 from setup_server.wifi_setup.views import wifi_setup
 from setup_server.odoo_setup.views import odoo_setup
-from setup_server.wifi_delete.views import wifi_delete
 from setup_server.users.views import users
 from setup_server.error_pages.handlers import error_pages
 
 
 # Register the apps
-app.register_blueprint(wifi_delete)
 app.register_blueprint(wifi_setup)
 app.register_blueprint(odoo_setup)
 app.register_blueprint(ras_info)
