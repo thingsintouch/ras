@@ -433,11 +433,12 @@ def disable_service(service):
         loggerDEBUG(f"enable_service(service)- Exception: {e}")
 
 def setup_wpa_supplicant():
-    copy_the_predefined_interfaces_file()
-    enable_service("dhcpcd")
-    disable_service("NetworkManager")
-    time.sleep(5)
-    reboot()
+    # copy_the_predefined_interfaces_file()
+    # enable_service("dhcpcd")
+    # disable_service("NetworkManager")
+    # time.sleep(5)
+    # reboot()
+    pass
 
 def ensure_wpa_supplicant():   
     if not are_the_right_service_configurations_in_place():
