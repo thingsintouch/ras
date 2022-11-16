@@ -129,17 +129,22 @@ def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex f
     return isOpen
 
 def get_available_networks():
-    answer = (rs("sudo iwlist wlan0 scan|grep SSID"))
-    #pPrint(answer)
-    if answer and answer is not None:
-        networks = answer.split('\n')
     choices = []
-    for n in networks:
-        if n:
-            clean_before = n.split('SSID:"')[1]
-            clean_after = clean_before.replace('"',"")
-            if clean_after:
-                choices.append((clean_after,clean_after))
+    try:
+        answer = (rs("sudo iwlist wlan0 scan|grep SSID"))
+        #pPrint(answer)
+        if answer and answer is not None:
+            networks = answer.split('\n')
+        choices = []
+        for n in networks:
+            if n:
+                clean_before = n.split('SSID:"')[1]
+                clean_after = clean_before.replace('"',"")
+                if clean_after:
+                    choices.append((clean_after,clean_after))
+    except Exception as e:
+        loggerDEBUG(f"get_available_networks - Exception: {e}")
+    
     return choices
 
 # def get_available_networks_nmcli():
