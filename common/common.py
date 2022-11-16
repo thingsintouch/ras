@@ -364,7 +364,7 @@ def manage_wifi_network_name_with_spaces(wifi_network):
 #     except Exception as e:
 #         loggerDEBUG(f"retrieve_RAS_temp_and_make_it_to_main_RAS_WiFi_connection- Exception: {e}")
 
-# def connect_to_new_wifi_network(wifi_network, wifi_password):
+# def connect_to_new_wifi_network():
 #     connection_successful= False
 #    #wifi_network, wifi_password = get_wifi()
 #     if wifi_network:

@@ -6,7 +6,7 @@ from common.params import Params
 from display.helpers import Oled
 
 from common.common import runShellCommand_and_returnOutput as rs
-from common.common import get_wifi, store_wifi, connect_to_new_wifi_network
+from common.common import get_wifi, store_wifi, connect_to_wifi_using_wpa_cli
 from common.counter_ops import increase_counter
 
 from buzzer.helpers import buzz
@@ -41,10 +41,10 @@ def wifi_connection_successful():
     oled.three_lines_text_small(text)
     increase_counter("wifi_connection_counter_successful")
   
-def connect_process_to_wifi(wifi_network, wifi_password):
+def connect_process_to_wifi():
     params.put("displayClock", "no")
     connecting_with_wifi___visual_and_acoustic_signals()
-    connection_successful = connect_to_new_wifi_network(wifi_network, wifi_password)
+    connection_successful = connect_to_wifi_using_wpa_cli()
     if connection_successful:
         wifi_connection_successful()
     else:
@@ -53,8 +53,8 @@ def connect_process_to_wifi(wifi_network, wifi_password):
     params.put("displayClock", "yes")
     return connection_successful
 
-def main(wifi_network, wifi_password):   
-    connect_process_to_wifi(wifi_network, wifi_password)
+def main():   
+    connect_process_to_wifi()
     return True
 
 if __name__ == "__main__":
