@@ -156,7 +156,7 @@ def prepare_wpa_supplicant_conf_file():
 def connect_to_wifi_using_wpa_cli():
     try:
         prepare_wpa_supplicant_conf_file()
-        rs("sudo systemctl restart dhcpcd")
+        #rs("sudo systemctl restart dhcpcd")
         rs("sudo wpa_cli -i wlan0 reconfigure")
         #rs("sudo systemctl daemon-reload")
         loggerDEBUG("inside connect_to_wifi_using_wpa_cli ************************************")
@@ -427,18 +427,33 @@ def enable_service(service):
     try:
         rs("sudo systemctl enable "+service)
     except Exception as e:
-        loggerDEBUG(f"enable_service(service)- Exception: {e}")
+        loggerDEBUG(f"enable_service({service})- Exception: {e}")
 
 def disable_service(service):
     try:
         rs("sudo systemctl disable "+service)
     except Exception as e:
-        loggerDEBUG(f"enable_service(service)- Exception: {e}")
+        loggerDEBUG(f"enable_service({service})- Exception: {e}")
+
+def start_service(service):
+    try:
+        rs("sudo systemctl start "+service)
+    except Exception as e:
+        loggerDEBUG(f"start_service({service})- Exception: {e}")
+
+def stop_service(service):
+    try:
+        rs("sudo systemctl stop "+service)
+    except Exception as e:
+        loggerDEBUG(f"stop_service({service})- Exception: {e}")
 
 def setup_wpa_supplicant():
     copy_the_predefined_interfaces_file()
     enable_service("dhcpcd")
     disable_service("NetworkManager")
+    start_service("dhcpcd")
+    time.sleep(5)
+    stop_service("NetworkManager")
     time.sleep(5)
     reboot()
 
