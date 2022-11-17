@@ -154,6 +154,8 @@ def prepare_wpa_supplicant_conf_file():
         loggerDEBUG(f"prepare_wpa_supplicant_conf_file - Exception: {e}")
  
 def connect_to_wifi_using_wpa_cli():
+    while on_ethernet():
+        time.sleep(co.PERIOD_CONNECTIVITY_MANAGER)
     try:
         prepare_wpa_supplicant_conf_file()
         #rs("sudo systemctl restart dhcpcd")
