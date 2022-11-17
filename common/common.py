@@ -148,7 +148,7 @@ def prepare_wpa_supplicant_conf_file():
             file_content = wpa_conf_1 + wifi_network + wpa_conf_2 + \
                 wifi_password + wpa_conf_3
             f.write(file_content)
-        # rs("sudo cp /etc/wpa_supplicant/wpa_supplicant.conf /boot")
+        rs("sudo cp /etc/wpa_supplicant/wpa_supplicant.conf /boot")
         loggerDEBUG("inside prepare_wpa_supplicant_conf_file ---------------------+---+-+-+-+")
     except Exception as e:
         loggerDEBUG(f"prepare_wpa_supplicant_conf_file - Exception: {e}")
@@ -158,8 +158,9 @@ def connect_to_wifi_using_wpa_cli():
         time.sleep(co.PERIOD_CONNECTIVITY_MANAGER)
     try:
         prepare_wpa_supplicant_conf_file()
+        params.put("rebootTerminal","1")
         #rs("sudo systemctl restart dhcpcd")
-        rs("sudo wpa_cli -i wlan0 reconfigure")
+        #rs("sudo wpa_cli -i wlan0 reconfigure")
         #rs("sudo systemctl daemon-reload")
         loggerDEBUG("inside connect_to_wifi_using_wpa_cli ************************************")
     except Exception as e:
