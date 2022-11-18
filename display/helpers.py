@@ -552,14 +552,15 @@ class Oled():
             if self.somethingChanged():
                 #loggerINFO(f"self.hour {self.hour}")
                 ip_address = get_own_IP_address()
+                if ip_address[8:] == "1": ip_address="not connected"
                 self.device_display.command(self.device_display._const.INVERTDISPLAY)
                 with canvas(self.device_display) as draw:
                     display_hours_and_minutes(draw)
                     if self.internetQualityMessage is None:
                         self.internetQualityMessage = "< !! >"
                     else:
-                        self.internetQualityMessage = ip_address[8:]                   
-                    if self.odooReachabilityMessage is None: self. odooReachabilityMessage = "no Odoo link"
+                        self.internetQualityMessage = ip_address #[8:]                   
+                    if self.odooReachabilityMessage is None: self. odooReachabilityMessage = "no comm to db"
                     self.draw_text_centered(draw, [0, 0], fontClockInfos, self.internetQualityMessage)
                     self.draw_text_centered(draw, [0, 49], fontClockInfos, self.odooReachabilityMessage)
         else:
