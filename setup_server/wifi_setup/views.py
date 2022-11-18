@@ -4,6 +4,7 @@ from setup_server.wifi_setup.forms import WiFiForm, WiFiSetupResult
 from common.common import runShellCommand_and_returnOutput as rs
 from common.common import store_wifi, get_wifi, connect_to_wifi_using_wpa_cli 
 from common.counter_ops import reset_counter
+from multiprocessing import Process
 
 wifi_setup = Blueprint('wifi_setup',__name__)
 
@@ -27,8 +28,9 @@ def wifi_connect_confirm_page():
     wifi_network, wifi_password = get_wifi()
     form = WiFiSetupResult()
     if form.validate_on_submit():
-        connect_to_wifi_using_wpa_cli()
-        return redirect(url_for('odoo_setup.odoo_link'))
+        connectProcess = Process(target=connect_to_wifi_using_wpa_cli, args=())
+        connectProcess.start()
+        return redirect("https://thingsintouch.com/new-wifi-defined-ras-nov-2022")
 
     return render_template('wifi_setup_result.html', wifi_network=wifi_network, wifi_password=wifi_password, form=form)
     
