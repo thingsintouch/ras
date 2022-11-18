@@ -128,6 +128,64 @@ def runShellCommand_and_returnOutput(command):
 
 rs = runShellCommand_and_returnOutput
 
+def is_enabled(service):
+    result = False
+    try:
+        answer = rs("sudo systemctl is-enabled "+service)
+        loggerDEBUG(f"answer is_enabled({service}): {answer}")
+        if "enabled" in str(answer): result=True
+    except Exception as e:
+        loggerDEBUG(f"is_enabled({service})- Exception: {e}")
+    loggerDEBUG(f"is_enabled({service})- result: {result}")
+    return result
+
+def are_the_right_service_configurations_in_place():
+    if is_enabled("dhcpcd") and not is_enabled("NetworkManager"): 
+        return True
+    else:
+        return False
+
+def copy_the_predefined_interfaces_file():
+    try:
+        rs("sudo cp /home/pi/ras/common/interfaces /etc/network")
+    except Exception as e:
+        loggerDEBUG(f"copy_the_predefined_interfaces_file()- Exception: {e}")
+
+def copy_wpa_supp_conf_to_boot():
+    try:
+        rs("sudo cp /etc/wpa_supplicant/wpa_supplicant.conf /boot")
+    except Exception as e:
+        loggerDEBUG(f"copy_wpa_supp_conf_to_boot()- Exception: {e}")
+
+def reboot():
+    os.system("sudo reboot")
+    time.sleep(60)
+    sys.exit(0) 
+
+def enable_service(service):
+    try:
+        rs("sudo systemctl enable "+service)
+    except Exception as e:
+        loggerDEBUG(f"enable_service({service})- Exception: {e}")
+
+def disable_service(service):
+    try:
+        rs("sudo systemctl disable "+service)
+    except Exception as e:
+        loggerDEBUG(f"enable_service({service})- Exception: {e}")
+
+def start_service(service):
+    try:
+        rs("sudo systemctl start "+service)
+    except Exception as e:
+        loggerDEBUG(f"start_service({service})- Exception: {e}")
+
+def stop_service(service):
+    try:
+        rs("sudo systemctl stop "+service)
+    except Exception as e:
+        loggerDEBUG(f"stop_service({service})- Exception: {e}")
+
 def connect_to_wifi_through_d_bus_method():
     while on_ethernet():
         time.sleep(co.PERIOD_CONNECTIVITY_MANAGER)
@@ -148,7 +206,7 @@ def prepare_wpa_supplicant_conf_file():
             file_content = wpa_conf_1 + wifi_network + wpa_conf_2 + \
                 wifi_password + wpa_conf_3
             f.write(file_content)
-        rs("sudo cp /etc/wpa_supplicant/wpa_supplicant.conf /boot")
+        copy_wpa_supp_conf_to_boot()
         loggerDEBUG("inside prepare_wpa_supplicant_conf_file ---------------------+---+-+-+-+")
     except Exception as e:
         loggerDEBUG(f"prepare_wpa_supplicant_conf_file - Exception: {e}")
@@ -398,60 +456,11 @@ def manage_wifi_network_name_with_spaces(wifi_network):
 #         loggerDEBUG(f"get_wifi_SSID_of_RAS()- Exception: {e}")
 #     return wifi_SSID 
 
-def is_enabled(service):
-    result = False
-    try:
-        answer = rs("sudo systemctl is-enabled "+service)
-        loggerDEBUG(f"answer is_enabled({service}): {answer}")
-        if "enabled" in str(answer): result=True
-    except Exception as e:
-        loggerDEBUG(f"is_enabled({service})- Exception: {e}")
-    loggerDEBUG(f"is_enabled({service})- result: {result}")
-    return result
 
-def are_the_right_service_configurations_in_place():
-    if is_enabled("dhcpcd") and not is_enabled("NetworkManager"): 
-        return True
-    else:
-        return False
-
-def copy_the_predefined_interfaces_file():
-    try:
-        rs("sudo cp /home/pi/ras/common/interfaces /etc/network")
-    except Exception as e:
-        loggerDEBUG(f"copy_the_predefined_interfaces_file()- Exception: {e}")
-
-def reboot():
-    os.system("sudo reboot")
-    time.sleep(60)
-    sys.exit(0) 
-
-def enable_service(service):
-    try:
-        rs("sudo systemctl enable "+service)
-    except Exception as e:
-        loggerDEBUG(f"enable_service({service})- Exception: {e}")
-
-def disable_service(service):
-    try:
-        rs("sudo systemctl disable "+service)
-    except Exception as e:
-        loggerDEBUG(f"enable_service({service})- Exception: {e}")
-
-def start_service(service):
-    try:
-        rs("sudo systemctl start "+service)
-    except Exception as e:
-        loggerDEBUG(f"start_service({service})- Exception: {e}")
-
-def stop_service(service):
-    try:
-        rs("sudo systemctl stop "+service)
-    except Exception as e:
-        loggerDEBUG(f"stop_service({service})- Exception: {e}")
 
 def setup_wpa_supplicant():
     copy_the_predefined_interfaces_file()
+    copy_wpa_supp_conf_to_boot()
     enable_service("dhcpcd")
     disable_service("NetworkManager")
     start_service("dhcpcd")

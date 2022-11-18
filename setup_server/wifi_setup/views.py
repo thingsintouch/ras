@@ -28,8 +28,7 @@ def wifi_connect_confirm_page():
     wifi_network, wifi_password = get_wifi()
     form = WiFiSetupResult()
     if form.validate_on_submit():
-        connectProcess = Process(target=connect_to_wifi_using_wpa_cli, args=())
-        connectProcess.start()
+        connect_to_wifi_using_wpa_cli()
         return redirect("https://thingsintouch.com/new-wifi-defined-ras-nov-2022")
 
     return render_template('wifi_setup_result.html', wifi_network=wifi_network, wifi_password=wifi_password, form=form)
