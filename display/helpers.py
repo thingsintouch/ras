@@ -552,6 +552,7 @@ class Oled():
             if self.somethingChanged():
                 #loggerINFO(f"self.hour {self.hour}")
                 ip_address = get_own_IP_address()
+                if ip_address[:8] == "169.254.": ip_address ="no DHCP server"
                 if ip_address[8:] == "1": ip_address="not connected"
                 self.device_display.command(self.device_display._const.INVERTDISPLAY)
                 with canvas(self.device_display) as draw:

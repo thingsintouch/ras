@@ -157,6 +157,12 @@ def copy_wpa_supp_conf_to_boot():
     except Exception as e:
         loggerDEBUG(f"copy_wpa_supp_conf_to_boot()- Exception: {e}")
 
+def restart_dhcp_service():
+    try:
+        rs("sudo systemctl restart dhcpcd")
+    except Exception as e:
+        loggerDEBUG(f"restart_dhcp_service- Exception: {e}")
+
 def reboot():
     os.system("sudo reboot")
     time.sleep(60)
@@ -473,4 +479,6 @@ def ensure_wpa_supplicant():
     if on_ethernet():   
         if not are_the_right_service_configurations_in_place():
             setup_wpa_supplicant()
+    else:
+        restart_dhcp_service()
     
