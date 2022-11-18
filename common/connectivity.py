@@ -137,12 +137,12 @@ def get_available_networks():
             #pPrint(answer)
             if answer and answer is not None:
                 networks = answer.split('\n')
-            for n in networks:
-                if n:
-                    clean_before = n.split('SSID:"')[1]
-                    clean_after = clean_before.replace('"',"")
-                    if clean_after:
-                        choices.append((clean_after,clean_after))
+                for n in networks:
+                    if n:
+                        clean_before = n.split('SSID:"')[1]
+                        clean_after = clean_before.replace('"',"")
+                        if clean_after:
+                            choices.append((clean_after,clean_after))
         except Exception as e:
             loggerDEBUG(f"get_available_networks - Exception: {e}")
         trials = trials+1

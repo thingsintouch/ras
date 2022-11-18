@@ -460,7 +460,8 @@ def setup_wpa_supplicant():
     time.sleep(5)
     reboot()
 
-def ensure_wpa_supplicant():   
-    if not are_the_right_service_configurations_in_place():
-        setup_wpa_supplicant()
+def ensure_wpa_supplicant():
+    if on_ethernet():   
+        if not are_the_right_service_configurations_in_place():
+            setup_wpa_supplicant()
     
