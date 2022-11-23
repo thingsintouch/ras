@@ -6,10 +6,9 @@ from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, l
 from common.params import Params
 from common.constants import PARAMS, ETHERNET_FLAG_FILE, \
         CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT
-from common.connect_To_SSID import main as connect_to_wifi_network
-from common.connect_To_SSID import manage_wifi_network_name_with_spaces
+from common.connect_To_SSID import connect_process_to_wifi
 from common.common import runShellCommand_and_returnOutput as rs
-from common.common import pPrint
+from common.common import pPrint, on_ethernet
 from common.counter_ops import reset_counter, get_counter, increase_counter
 
 params = Params(db=PARAMS)
@@ -51,7 +50,7 @@ def store_host_port_and_template(scheme,host,port):
 def extract_odoo_host_and_port(odooAddress = False):
     if not odooAddress:
         odooAddress = params.get("odooUrlTemplate")
-    loggerDEBUG(f"extract_odoo_host_and_port() - odooAddress {odooAddress}")
+    # loggerDEBUG(f"extract_odoo_host_and_port() - odooAddress {odooAddress}")
     if odooAddress is not None:
         odooAdressSplitted = odooAddress.split(":")
         length = len(odooAdressSplitted)
@@ -103,7 +102,7 @@ def isOdooPortOpen():
             odoo_port_open = False
     except Exception as e:
         #extract_odoo_host_and_port()
-        loggerDEBUG(f"common.connectivity - exception in method isOdooPortOpen: {e}")
+        #loggerDEBUG(f"common.connectivity - exception in method isOdooPortOpen: {e}")
         odoo_port_open = False
     params.put("odooPortOpen", odoo_port_open)
     if not odoo_port_open:
@@ -129,24 +128,37 @@ def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex f
         s.close()
     return isOpen
 
-def on_ethernet():
-    if exists(ETHERNET_FLAG_FILE):
-        with open(ETHERNET_FLAG_FILE, encoding="utf-8") as f:
-            ethernet_status = f.read(1)
-        if ethernet_status == "1":
-            return True
-    return False
-
 def get_available_networks():
-    answer = (rs("nmcli --get-values SSID d wifi list --rescan yes"))
-    #pPrint(answer)
-    if answer and answer is not None:
-        networks = answer.split('\n')
     choices = []
-    for n in networks:
-        if n:
-            choices.append((n,n))
+    trials = 0
+    while choices == [] and trials<30:
+        try:
+            answer = (rs("sudo iwlist wlan0 scan|grep SSID"))
+            #pPrint(answer)
+            if answer and answer is not None:
+                networks = answer.split('\n')
+                for n in networks:
+                    if n:
+                        clean_before = n.split('SSID:"')[1]
+                        clean_after = clean_before.replace('"',"")
+                        if clean_after:
+                            choices.append((clean_after,clean_after))
+        except Exception as e:
+            loggerDEBUG(f"get_available_networks - Exception: {e}")
+        trials = trials+1
+    
     return choices
+
+# def get_available_networks_nmcli():
+#     answer = (rs("nmcli --get-values SSID d wifi list --rescan yes"))
+#     #pPrint(answer)
+#     if answer and answer is not None:
+#         networks = answer.split('\n')
+#     choices = []
+#     for n in networks:
+#         if n:
+#             choices.append((n,n))
+#     return choices
 
 def wifi_network_available(wifi_network):
     choices = get_available_networks()
@@ -157,23 +169,29 @@ def wifi_network_available(wifi_network):
         loggerDEBUG(f"#### wifi network NOT available:{wifi_network} ")
         return False
 
-def reconnect_to_wifi(wifi_network):
-    answer = (rs('sudo nmcli c up "RAS"'))
-    if "successfully activated" in answer:
-        loggerINFO(f"RE-Connected to WiFi Network: {wifi_network}")
-        increase_counter("wifi_connection_counter_successful")
-    else:
-        loggerINFO(f"COULD NOT RE-Connect to WiFi Network: {wifi_network}")
-        increase_counter("wifi_connection_counter_unsuccessful")
+# def reconnect_to_wifi(wifi_network):
+#     try:
+#         answer = (rs('sudo nmcli c up "RAS"'))
+#         if "successfully activated" in answer:
+#             loggerINFO(f"RE-Connected to WiFi Network: {wifi_network}")
+#             increase_counter("wifi_connection_counter_successful")
+#         else:
+#             loggerINFO(f"COULD NOT RE-Connect to WiFi Network: {wifi_network}")
+#             increase_counter("wifi_connection_counter_unsuccessful")
+#     except Exception as e:
+#         loggerDEBUG(f"reconnect_to_wifi - Exception: {e}")
 
 def check_reconnect_to_wifi():
     def is_it_time_to_reconnect():
-        counter = increase_counter("counter_wifi_disconnected")
-        if counter>CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT:
-            reset_counter("counter_wifi_disconnected")
-            return True
-        else:
-            return False
+        return True
+        # counter = increase_counter("counter_wifi_disconnected")
+        # if counter == 0:
+        #     return True
+        # if counter > CYCLES_OF_STATE_MANAGER_TO_WAIT_FOR_WIFI_RECONNECTION_ATTEMPT:
+        #     reset_counter("counter_wifi_disconnected")
+        #     return True
+        # else:
+        #     return False
 
     if params.get("internetReachable")=="0":
         if is_it_time_to_reconnect():
@@ -182,7 +200,17 @@ def check_reconnect_to_wifi():
                 loggerDEBUG(f"wifi network:{wifi_network}")
                 if wifi_network:
                     if wifi_network_available(wifi_network):
-                        reconnect_to_wifi(wifi_network)
+                        wifi_password= params.get("wifi_password") or False
+                        connect_process_to_wifi(wifi_network, wifi_password)
     else:
         reset_counter("counter_wifi_disconnected")
 
+def connect_wifi_during_launch():
+    if not internetReachable():
+        if not on_ethernet():
+            wifi_network = params.get("wifi_network") or False
+            loggerDEBUG(f"wifi network:{wifi_network}")
+            if wifi_network:
+                if wifi_network_available(wifi_network):
+                    wifi_password= params.get("wifi_password") or False
+                    connect_process_to_wifi(wifi_network, wifi_password)

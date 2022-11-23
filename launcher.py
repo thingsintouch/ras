@@ -14,15 +14,16 @@ from common.params import Params
 from common.launcher import launcher
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 from messaging.messaging import SubscriberMultipart as Subscriber
-from common.common import setTimeZone, store_factory_settings_in_database, ensure_python_dependencies
-from common.common import set_bluetooth_device_name, ensure_git_does_not_change_env_file
+from common.common import setTimeZone, store_factory_settings_in_database, \
+    ensure_python_dependencies,set_bluetooth_device_name, \
+    ensure_git_does_not_change_env_file, ensure_wpa_supplicant
 from common.get_managed_processes import get_managed_essential_processes
-
 
 params = Params(db=co.PARAMS)
 
 params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
 store_factory_settings_in_database()
+ensure_wpa_supplicant()
 setTimeZone()
 
 loggerINFO("###################### RAS launched ###################")

@@ -1,7 +1,6 @@
 from pprint import PrettyPrinter
 pPrint = PrettyPrinter(indent=1).pprint
 
-#import time
 import subprocess
 import os
 import time
@@ -16,10 +15,90 @@ from common.params import Params
 import common.constants as co
 from common.keys import keys_by_Type, TxType
 from factory_settings.custom_params import factory_settings
-from os.path import isfile
+from os.path import isfile, exists
+import dbus
+import sys
+
+progname = "com.example.HelloWorld"
+objpath  = "/HelloWorld"
+intfname = "com.example.HelloWorldInterface"
+methname = 'SayHello'
+
 
 
 params = Params(db=co.PARAMS)
+conf_contents = '<?xml version="1.0" encoding="UTF-8"?> \n \
+<!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"\n \
+"http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">\n \
+<busconfig>\n \
+  <type>system</type>\n \
+  <!-- Only root can own the service -->\n \
+  <policy user="root">\n \
+    <allow own="com.example.HelloWorld"/>\n \
+    <allow send_destination="com.example.HelloWorld"/>\n \
+    <allow send_interface="com.example.HelloWorld"/>\n \
+  </policy><!-- Allow anyone to invoke methods on the interfaces -->\n \
+  <policy context="default">\n \
+    <allow send_destination="com.example.HelloWorld"/>\n \
+    <allow send_interface="com.example.HelloWorld"/>\n \
+  </policy>\n \
+</busconfig>\n '
+
+wpa_conf_1 ='# /etc/wpa_supplicant/wpa_supplicant.conf \n \
+# /boot/wpa_supplicant.conf \n \
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev \n \
+update_config=1\n \
+\n \
+network={ \n \
+        scan_ssid=1 \n \
+        ssid="'
+
+wpa_conf_2 = '"\n \
+        psk="'
+
+wpa_conf_3 = '" \n \
+        priority=2 \n \
+        proto=RSN \n \
+        key_mgmt=WPA-PSK \n \
+        pairwise=CCMP \n \
+        auth_alg=OPEN \n \
+}\n \
+'
+
+def on_ethernet():
+    if exists(co.ETHERNET_FLAG_FILE):
+        with open(co.ETHERNET_FLAG_FILE, encoding="utf-8") as f:
+            ethernet_status = f.read(1)
+        if ethernet_status == "1":
+            return True
+    return False
+
+def store_wifi(wifi_network, wifi_password):
+    try:
+        params.put("wifi_network", wifi_network)
+        params.put("wifi_password", wifi_password)
+        loggerDEBUG(f"store_wifi - {wifi_network} {wifi_password}")
+    except Exception as e:
+        loggerDEBUG(f"store_wifi - Exception: {e}")
+
+def get_wifi():
+    wifi_network = False
+    wifi_password = False
+    try:
+        wifi_network = params.get("wifi_network")
+        wifi_password = params.get("wifi_password")
+        loggerDEBUG(f"get wifi - {wifi_network} {wifi_password}")
+    except Exception as e:
+        loggerDEBUG(f"get wifi - Exception: {e}")
+    return wifi_network, wifi_password
+
+def create_conf_file():
+    try:
+        with open('/etc/dbus-1/system.d/com.example.HelloWorld.conf', 'w') as f:
+            f.write(conf_contents)
+        loggerDEBUG("inside create_conf_file ---------------------+---+-+-+-+")
+    except Exception as e:
+        loggerDEBUG(f"create_conf_file - Exception: {e}")
 
 def prettyPrint(message):
     pPrint(message)
@@ -41,8 +120,110 @@ def runShellCommand_and_returnOutput(command):
         #loggerDEBUG(f'shell command {command} - returncode: {completed}')
         return str(completed, 'utf-8', 'ignore')
     except:
-        #loggerERROR(f"error on shell command: {command}")
+        loggerERROR(f"error on shell command: {command}")
         return False
+
+rs = runShellCommand_and_returnOutput
+
+def is_enabled(service):
+    result = False
+    try:
+        answer = rs("sudo systemctl is-enabled "+service)
+        loggerDEBUG(f"answer is_enabled({service}): {answer}")
+        if "enabled" in str(answer): result=True
+    except Exception as e:
+        loggerDEBUG(f"is_enabled({service})- Exception: {e}")
+    loggerDEBUG(f"is_enabled({service})- result: {result}")
+    return result
+
+def are_the_right_service_configurations_in_place():
+    if is_enabled("dhcpcd") and not is_enabled("NetworkManager"): 
+        return True
+    else:
+        return False
+
+def copy_the_predefined_interfaces_file():
+    try:
+        rs("sudo cp /home/pi/ras/common/interfaces /etc/network")
+    except Exception as e:
+        loggerDEBUG(f"copy_the_predefined_interfaces_file()- Exception: {e}")
+
+def copy_wpa_supp_conf_to_boot():
+    try:
+        rs("sudo cp /etc/wpa_supplicant/wpa_supplicant.conf /boot")
+    except Exception as e:
+        loggerDEBUG(f"copy_wpa_supp_conf_to_boot()- Exception: {e}")
+
+def restart_dhcp_service():
+    try:
+        rs("sudo systemctl restart dhcpcd")
+    except Exception as e:
+        loggerDEBUG(f"restart_dhcp_service- Exception: {e}")
+
+def reboot():
+    os.system("sudo reboot")
+    time.sleep(60)
+    sys.exit(0) 
+
+def enable_service(service):
+    try:
+        rs("sudo systemctl enable "+service)
+    except Exception as e:
+        loggerDEBUG(f"enable_service({service})- Exception: {e}")
+
+def disable_service(service):
+    try:
+        rs("sudo systemctl disable "+service)
+    except Exception as e:
+        loggerDEBUG(f"enable_service({service})- Exception: {e}")
+
+def start_service(service):
+    try:
+        rs("sudo systemctl start "+service)
+    except Exception as e:
+        loggerDEBUG(f"start_service({service})- Exception: {e}")
+
+def stop_service(service):
+    try:
+        rs("sudo systemctl stop "+service)
+    except Exception as e:
+        loggerDEBUG(f"stop_service({service})- Exception: {e}")
+
+def connect_to_wifi_through_d_bus_method():
+    while on_ethernet():
+        time.sleep(co.PERIOD_CONNECTIVITY_MANAGER)
+    try:
+        bus = dbus.SystemBus()
+        obj = bus.get_object(progname, objpath)
+        interface = dbus.Interface(obj, intfname)     # Get the interface to obj
+        method = interface.get_dbus_method(methname)
+        method("some_string")
+        loggerDEBUG("inside connect_to_wifi_through_d_bus_method ************************************")
+    except Exception as e:
+        loggerDEBUG(f"connect_to_wifi_through_d_bus_method - Exception: {e}")
+
+def prepare_wpa_supplicant_conf_file():
+    try:
+        wifi_network, wifi_password = get_wifi()
+        with open('/etc/wpa_supplicant/wpa_supplicant.conf', 'w') as f:
+            file_content = wpa_conf_1 + wifi_network + wpa_conf_2 + \
+                wifi_password + wpa_conf_3
+            f.write(file_content)
+        copy_wpa_supp_conf_to_boot()
+        loggerDEBUG("inside prepare_wpa_supplicant_conf_file ---------------------+---+-+-+-+")
+    except Exception as e:
+        loggerDEBUG(f"prepare_wpa_supplicant_conf_file - Exception: {e}")
+
+def connect_to_wifi_using_wpa_cli():
+    while on_ethernet():
+        time.sleep(co.PERIOD_CONNECTIVITY_MANAGER)
+    try:
+        prepare_wpa_supplicant_conf_file()
+        params.put("rebootTerminal","1")
+        loggerDEBUG("inside connect_to_wifi_using_wpa_cli ************************************")
+    except Exception as e:
+        loggerDEBUG(f"connect_to_wifi_using_wpa_cli - Exception: {e}")
+
 
 def setTimeZone(tz = False):
     try:
@@ -93,11 +274,8 @@ def get_hashed_machine_id():
     return hashed_machine_id
 
 def store_factory_settings_in_database():    
-    #if params.get("odooConnectedAtLeastOnce") != "1":
     keys_to_store = keys_by_Type[TxType.FACTORY_SETTINGS] + \
                     keys_by_Type[TxType.FACTORY_DEFAULT_VALUES]
-    # loggerDEBUG(f"keys to store {keys_to_store}")
-    # prettyPrint(keys_to_store)
     for k in keys_to_store:
         try:
             if params.get(k) is None:
@@ -109,17 +287,12 @@ def store_factory_settings_in_database():
             loggerDEBUG(f"exception while storing factory setting {k}: {e}")
 
 def set_bluetooth_device_name():
-    # RASxxx = params.get('RASxxx')
-    # if RASxxx is None or RASxxx == "not defined":
-    #     bluetooth_device_name = "RAS - thingsintouch.com"
-    # else:
-    #     bluetooth_device_name = RASxxx
     bluetooth_device_name = "RAS - thingsintouch.com" # have to change ionic app
     params.put("bluetooth_device_name", bluetooth_device_name)
 
 def get_own_IP_address():
     st = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:       
+    try:
         st.connect(('10.255.255.255', 1))
         IP = st.getsockname()[0]
     except Exception:
@@ -168,7 +341,7 @@ def get_period(period_name):
             period = default
     except Exception as e:
         loggerDEBUG(f"exception in  get_period for {period_name}: {e} - period set to 14s")
-        period = 14     
+        period = 14
     return period
 
 def BLOCKING_waiting_until_RAS_acknowledged_from_Odoo():
@@ -201,3 +374,30 @@ def ensure_python_dependencies():
         sys.exit(0) 
     else:
         loggerINFO("-----############### python dependencies for v3.7 already installed ##########------")
+
+def manage_wifi_network_name_with_spaces(wifi_network):
+    wifi_network_for_cli_command = False
+    try:
+        if " " in wifi_network:
+            wifi_network_for_cli_command = "'" + wifi_network + "'"
+        else:
+            wifi_network_for_cli_command = wifi_network
+    except Exception as e:
+        loggerDEBUG(f"manage_wifi_network_name_with_spaces- Exception: {e}")
+    return wifi_network_for_cli_command
+
+def setup_wpa_supplicant():
+    copy_the_predefined_interfaces_file()
+    copy_wpa_supp_conf_to_boot()
+    enable_service("dhcpcd")
+    disable_service("NetworkManager")
+    start_service("dhcpcd")
+    time.sleep(5)
+    stop_service("NetworkManager")
+    time.sleep(5)
+    reboot()
+
+def ensure_wpa_supplicant():
+    if on_ethernet():
+        if not are_the_right_service_configurations_in_place():
+            setup_wpa_supplicant()

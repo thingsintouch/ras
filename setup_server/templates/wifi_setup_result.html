@@ -1,16 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="jumbotron">
-  <h1>WiFi Connection Result</h1>
+  <h1> Establish a new WiFi connection</h1>
   <br>
-  <p style="font-size:1.5vw;">{{result}}</p>
-  <br>  
+  <p style="font-size:1.5vw;">WiFi network: {{ wifi_network }}</p>
+  <br>
+  <p style="font-size:1.5vw;">WiFi password: {{ wifi_password }}</p>
+  <br>
+  <p style="font-size:1.5vw;">If the values are correct: </p>
+  <br>
+  <p style="font-size:1.5vw;">1. press OK.</p>
+  <br>
+  <p style="font-size:1.5vw;">2. unplug the device from Ethernet.</p>
+  <br>
+  <p style="font-size:1.5vw;">The device will wait until you disconnect from Ethernet before trying to get a WiFi connection.</p>
+  <br>
+  <br>
   <form method="POST" style="font-size:1.5vw;" >
     {# This hidden_tag is a CSRF security feature. #}
     {{ form.hidden_tag() }}
     <br>
     {{ form.submit() }}
   </form>
+  <br>
+  <!-- <p style="font-size:1.5vw;">After disconnecting the device from Ethernet and a successful connection to the WiFi network has been established, you will have to visit a new address in your browser to continue the Setup process.</p> -->
 
 </div>
 

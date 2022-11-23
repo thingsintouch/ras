@@ -6,7 +6,10 @@ def reset_counter(name_of_the_counter):
     params.put(name_of_the_counter, "0")
 
 def get_counter(name_of_the_counter):
-    counter = params.get(name_of_the_counter)
+    try:
+        counter = params.get(name_of_the_counter)
+    except Exception as e:
+        counter = None
     if counter is None:
         counter = 0
         reset_counter(name_of_the_counter)

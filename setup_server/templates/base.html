@@ -17,7 +17,6 @@
       <img src="{{ url_for('static', filename='thingsLogo05_100.png') }}"/>
       {% if current_user.is_authenticated %}
       <li class="nav-link"><a href="{{ url_for('wifi_setup.define_wifi') }}">WiFi</a></li>
-      <!-- <li class="nav-link"><a href="{{ url_for('wifi_delete.delete_wifi') }}">Delete WiFi</a></li> -->
       <li class="nav-link"><a href="{{ url_for('odoo_setup.odoo_link') }}">Odoo</a></li>
       <li class="nav-link"><a href="{{ url_for('ras_info.show_info') }}">Info</a></li>
       <!-- <li class="nav-link"><a href="{{ url_for('daily_reboot.daily_reboot_time') }}">Daily Reboot</a></li> -->
