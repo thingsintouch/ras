@@ -479,6 +479,6 @@ def ensure_wpa_supplicant():
     if on_ethernet():   
         if not are_the_right_service_configurations_in_place():
             setup_wpa_supplicant()
-    else:
-        restart_dhcp_service()
+    # else:
+    #     restart_dhcp_service()
     
