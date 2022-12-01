@@ -125,6 +125,18 @@ def runShellCommand_and_returnOutput(command):
 
 rs = runShellCommand_and_returnOutput
 
+def name_of_SSID_connected_to():
+    result = False
+    try:
+        answer = rs("sudo iwgetid -r")
+        loggerDEBUG(f"answer name_of_SSID_connected_to: {answer}")
+        result = str(answer)
+    except Exception as e:
+        loggerDEBUG(f"answer name_of_SSID_connected_to:- Exception: {e}")
+        result = False
+    loggerDEBUG(f"answer name_of_SSID_connected_to:- result: {result}")
+    return result
+
 def is_enabled(service):
     result = False
     try:
@@ -188,6 +200,12 @@ def stop_service(service):
         rs("sudo systemctl stop "+service)
     except Exception as e:
         loggerDEBUG(f"stop_service({service})- Exception: {e}")
+
+def launch_wifi_connect():
+    try:
+        rs("sudo wifi-connect")
+    except Exception as e:
+        loggerDEBUG(f"launch_wifi_connect- Exception: {e}")
 
 def connect_to_wifi_through_d_bus_method():
     while on_ethernet():

@@ -12,7 +12,8 @@ from common.constants import WORKING_DIR, PARAMS, CLOCKINGS
 from common.params import Params
 from odoo.odooRequests import check_if_registered
 from common.connectivity import isPingable
-from common.common import setTimeZone, reboot
+from common.common import setTimeZone, reboot, on_ethernet, \
+        name_of_SSID_connected_to, launch_wifi_connect
 
 
 params = Params(db=PARAMS)
@@ -50,6 +51,13 @@ class Status_Flags_To_Check():
             "fullFactoryReset"          : self.fullFactoryReset,
             "deleteClockings"           : self.deleteClockings
         }
+        self.wifi_connect_launched = False
+    
+    def should_launch_wifi_connect(self):
+        if not self. wifi_connect_launched:
+            if not on_ethernet() and not name_of_SSID_connected_to():
+                self.wifi_connect_launched = True
+                launch_wifi_connect()
 
     def check_and_execute(self):
         self.check_if_registered_once_after_every_launch()
