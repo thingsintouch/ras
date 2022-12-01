@@ -16,14 +16,14 @@ from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, l
 from messaging.messaging import SubscriberMultipart as Subscriber
 from common.common import setTimeZone, store_factory_settings_in_database, \
     ensure_python_dependencies,set_bluetooth_device_name, \
-    ensure_git_does_not_change_env_file, ensure_wpa_supplicant
+    ensure_git_does_not_change_env_file, ensure_network_manager
 from common.get_managed_processes import get_managed_essential_processes
 
 params = Params(db=co.PARAMS)
 
 params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
 store_factory_settings_in_database()
-ensure_wpa_supplicant()
+ensure_network_manager()
 setTimeZone()
 
 loggerINFO("###################### RAS launched ###################")
