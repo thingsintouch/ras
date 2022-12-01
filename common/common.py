@@ -397,7 +397,22 @@ def setup_wpa_supplicant():
     time.sleep(5)
     reboot()
 
+def setup_network_manager():
+    enable_service("NetworkManager")
+    disable_service("dhcpcd")
+    start_service("NetworkManager")
+    time.sleep(5)
+    stop_service("dhcpcd")
+    time.sleep(5)
+    reboot()
+
 def ensure_wpa_supplicant():
     if on_ethernet():
         if not are_the_right_service_configurations_in_place():
             setup_wpa_supplicant()
+
+def ensure_network_manager():
+    if is_enabled("NetworkManager") and not is_enabled("dhcpcd"): 
+        return True
+    else:
+        setup_network_manager()
