@@ -23,7 +23,7 @@ params = Params(db=co.PARAMS)
 
 params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
 store_factory_settings_in_database()
-ensure_wpa_supplicant()
+# ensure_wpa_supplicant()
 setTimeZone()
 
 loggerINFO("###################### RAS launched ###################")
