@@ -44,24 +44,16 @@ conf_contents = '<?xml version="1.0" encoding="UTF-8"?> \n \
   </policy>\n \
 </busconfig>\n '
 
-wpa_conf_1 ='# /etc/wpa_supplicant/wpa_supplicant.conf \n \
-# /boot/wpa_supplicant.conf \n \
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev \n \
+wpa_conf_1 ='ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev \n \
 update_config=1\n \
 \n \
 network={ \n \
-        scan_ssid=1 \n \
         ssid="'
 
 wpa_conf_2 = '"\n \
         psk="'
 
-wpa_conf_3 = '" \n \
-        priority=2 \n \
-        proto=RSN \n \
-        key_mgmt=WPA-PSK \n \
-        pairwise=CCMP \n \
-        auth_alg=OPEN \n \
+wpa_conf_3 = '"\n \
 }\n \
 '
 
@@ -209,7 +201,7 @@ def prepare_wpa_supplicant_conf_file():
             file_content = wpa_conf_1 + wifi_network + wpa_conf_2 + \
                 wifi_password + wpa_conf_3
             f.write(file_content)
-        copy_wpa_supp_conf_to_boot()
+        #copy_wpa_supp_conf_to_boot()
         loggerDEBUG("inside prepare_wpa_supplicant_conf_file ---------------------+---+-+-+-+")
     except Exception as e:
         loggerDEBUG(f"prepare_wpa_supplicant_conf_file - Exception: {e}")

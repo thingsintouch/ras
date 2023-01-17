@@ -33,7 +33,7 @@ def write_clocking(card, now_in_seconds):
 
 def get_minimum_time():
     n = params.get("minimumTimeBetweenClockings")
-    if n is None or n is "False": 
+    if n is None or not n: 
         min_time_between_clockings = DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS
     elif n:
         min_time_between_clockings = int(n)
