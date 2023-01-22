@@ -560,7 +560,7 @@ class Oled():
                     if self.internetQualityMessage is None:
                         self.internetQualityMessage = "< !! >"
                     else:
-                        self.internetQualityMessage = ip_address #[8:]                   
+                        self.internetQualityMessage = ip_address[8:]                   
                     if self.odooReachabilityMessage is None: self. odooReachabilityMessage = "no comm to db"
                     self.draw_text_centered(draw, [0, 0], fontClockInfos, self.internetQualityMessage)
                     self.draw_text_centered(draw, [0, 49], fontClockInfos, self.odooReachabilityMessage)

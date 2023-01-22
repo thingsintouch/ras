@@ -23,7 +23,7 @@ params = Params(db=co.PARAMS)
 
 params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
 store_factory_settings_in_database()
-ensure_wpa_supplicant()
+# ensure_wpa_supplicant()
 setTimeZone()
 
 loggerINFO("###################### RAS launched ###################")
@@ -36,7 +36,7 @@ managed_essential_processes = get_managed_essential_processes(
     params.get("template_to_register_device")
     )
 
-ensure_python_dependencies()
+#ensure_python_dependencies()
 
 managed_NON_essential_processes = {}
 
