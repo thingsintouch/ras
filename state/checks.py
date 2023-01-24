@@ -100,6 +100,7 @@ class Status_Flags_To_Check():
         self.rebootTerminal()
 
     def fullFactoryReset(self):
+        display_off()
         loggerINFO("-----############### fullFactoryReset ###############------")
         params.delete_all_keys()
         os.system("sudo sh /home/pi/ras/state/fullFactoryReset.sh")
