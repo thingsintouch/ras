@@ -17,6 +17,7 @@ from messaging.messaging import SubscriberMultipart as Subscriber
 from common.common import setTimeZone, store_factory_settings_in_database, \
     ensure_python_dependencies,set_bluetooth_device_name, \
     ensure_git_does_not_change_env_file, ensure_wpa_supplicant
+from common.common import runShellCommand_and_returnOutput as rs
 from common.get_managed_processes import get_managed_essential_processes
 
 params = Params(db=co.PARAMS)
@@ -27,9 +28,18 @@ store_factory_settings_in_database()
 setTimeZone()
 
 loggerINFO("###################### RAS launched ###################")
+git_version_hash = (rs("git describe --tags")) or "N/A"
+git_version_hash = git_version_hash.split("\n")[0]
+loggerINFO(f"###### git version hash: {git_version_hash}")
+git_repository = (rs("git remote -v")) or "N/A"
+git_repository = git_repository.split("\n")[0]
+loggerINFO(f"{git_repository}")
+loggerINFO("#"*55)
 
 set_bluetooth_device_name()
-params.put("firmwareVersion",co.RAS_VERSION)
+params.put("firmwareVersion", git_version_hash)
+
+
 ensure_git_does_not_change_env_file()
 
 managed_essential_processes = get_managed_essential_processes(
