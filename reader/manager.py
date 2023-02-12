@@ -9,8 +9,8 @@ params = Params(db=co.PARAMS)
 
 
 def get_scan_reader_function():
-    scan_function = {}
-    scan_function
+    # scan_function = {}
+    # scan_function
     try:
         hardware_card_reader = params.get("hardware_card_reader")
     except Exception as e:
