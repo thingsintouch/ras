@@ -47,6 +47,7 @@ def get_clocking_handling(last_clockings, card, now_in_seconds):
         write_clocking(card, now_in_seconds)
     else:
         how_to_handle_the_clocking = "too_little_time_between_clockings"
+    loggerDEBUG(f"how the card swipe will be processed: {how_to_handle_the_clocking}")
     return how_to_handle_the_clocking
 
 def enough_time_between_clockings(last_clockings, card_id_as_string, now_in_seconds):
