@@ -469,7 +469,7 @@ class MFRC522:
 
         #loggerDEBUG(f"in scan card ######## -  card: {card}")
 
-        if card:
-            loggerDEBUG(f"from MFRC CardReader - card: {self.card}")
+        # if card:
+        #     loggerDEBUG(f"from MFRC CardReader - card: {self.card}")
         
         return card
