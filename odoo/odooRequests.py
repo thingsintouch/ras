@@ -19,7 +19,7 @@ def post_request_and_get_answer(requestURL, payload):
     try:
         if params.get("odooPortOpen") == "1":
 
-            posting     = requests.post(url=requestURL, data=payload, verify= False, timeout=150000)
+            posting = requests.post(url=requestURL, data=payload, verify= False, timeout=150000)
             
             if params.get("odooPortOpen") != "0" and posting.status_code == 404:
                 loggerINFO(f"Route is not recognized by Odoo anymore, RAS has to be registered again")
@@ -34,11 +34,11 @@ def post_request_and_get_answer(requestURL, payload):
             answer = {"error": "Odoo Port Closed"}
 
     except ConnectionRefusedError as e:
-        loggerDEBUG(f"post_request_and_get_answer - ConnectionRefusedError - Request Exception : {e}")
+        #loggerDEBUG(f"post_request_and_get_answer - ConnectionRefusedError - Request Exception : {e}")
         answer = {"error": "ConnectionRefusedError"}
 
     except Exception as e:
-        loggerDEBUG(f"post_request_and_get_answer not Available - Exception: {e}")
+        #loggerDEBUG(f"post_request_and_get_answer not Available - Exception: {e}")
         answer = {"error": e}
 
     loggerDEBUG(f"in post_request_and_get_answer - requestURL {requestURL} -payload {payload} -answer: {answer}")
