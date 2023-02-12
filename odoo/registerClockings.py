@@ -64,7 +64,8 @@ def registerClockings():
                         remove(join(CLOCKINGS,card_code_and_timestamp))
                         store_name_for_a_rfid_code(card_code, answer.get("employee_name","-"))
                     elif answer.get('error') or False:
-                        loggerDEBUG(f"Clocking {card_code_and_timestamp} produced error answer from Odoo and has been deleted")
-                        remove(join(CLOCKINGS,card_code_and_timestamp))
+                        loggerDEBUG(f"Clocking {card_code_and_timestamp} produced error answer from Odoo")
+                        #loggerDEBUG(f"Clocking {card_code_and_timestamp} produced error answer from Odoo and has been deleted")
+                        #remove(join(CLOCKINGS,card_code_and_timestamp))
                     else: # do not process all the older clockings if a clocking for a card has failed
-                        card_codes_to_not_process.append(card_code) 
+                        card_codes_to_not_process.append(card_code)
