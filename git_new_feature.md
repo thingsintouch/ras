@@ -29,18 +29,18 @@ Here are the steps to create a new branch, develop a new feature, test it, and i
     ```
 
 8. Merge the changes from the new-feature branch into the main branch by running the following command:
- ```
- git merge new-feature
- ```
+    ```
+    git merge new-feature
+    ```
 
 9. Resolve any conflicts that arise during the merge process, if necessary.
 
 10. Test the main branch with the new feature to make sure everything works correctly.
 
 11. If everything looks good, push the changes to the main branch by running the following command:
- ```
- git push origin main
- ```
+    ```
+    git push origin main
+    ```
 
 And that's it! You've successfully created a new branch, developed a new feature in it, tested it, and integrated the changes into the main branch.
 
