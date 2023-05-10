@@ -98,18 +98,41 @@ Here are the steps to create a new branch, develop a new feature, test it, and i
     ```
 
 8. Merge the changes from the new-feature branch into the main branch by running the following command:
- ```
- git merge new-feature
- ```
+    ```
+    git merge new-feature
+    ```
 
 9. Resolve any conflicts that arise during the merge process, if necessary.
 
 10. Test the main branch with the new feature to make sure everything works correctly.
 
 11. If everything looks good, push the changes to the main branch by running the following command:
- ```
- git push origin main
- ```
+    ```
+    git push origin main
+    ```
 
 And that's it! You've successfully created a new branch, developed a new feature in it, tested it, and integrated the changes into the main branch.
 
+# Merge a feature developed on a new branch called "new_feature" and squash all the commits into one before merging:
+
+1. Checkout the branch that you want to merge the new_feature branch into:
+   ```
+   git checkout main
+   ```
+
+2. Merge the new_feature branch into the current branch with the --squash option. This option will merge all the changes from the new_feature branch into the current branch as a single commit:
+   ```
+   git merge --squash new_feature
+   ```
+
+3. Commit the changes by creating a new commit message for the merge commit:
+   ```
+   git commit -m "Merge new_feature branch with squashed commits"
+   ```
+
+4. Push the changes to the remote branch:
+   ```
+   git push origin main
+   ```
+
+And that's it! You have now merged the new_feature branch into the main branch with all the changes squashed into a single commit.
