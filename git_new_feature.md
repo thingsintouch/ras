@@ -74,44 +74,39 @@ Here are the steps to create a new branch, develop a new feature, test it, and i
 1. Open a terminal window and navigate to the root directory of your Git repository.
 
 2. Check out the main branch by running the following command:
-...
-git checkout main
-...
+    ```
+    git checkout main
+    ```
 
 3. Create a new branch to work on the new feature by running the following command:
-
-... 
-git branch new-feature
-... 
+    ```
+    git branch new-feature
+    ```
 
 4. Switch to the new branch by running the following command:
-
-...
-git checkout new-feature
-... 
+    ```
+    git checkout new-feature
+    ```
 
 5. Develop the new feature by writing code, making changes, and committing your work as you normally would.
 
 6. Test the new feature to make sure it works correctly.
 
 7. When you're ready to integrate the new feature into the main branch, switch back to the main branch by running the following command:
-
-...
-git checkout main
-...
+    ```
+    git checkout main
+    ```
 
 8. Merge the changes from the new-feature branch into the main branch by running the following command:
-
  ```
  git merge new-feature
  ```
- 
+
 9. Resolve any conflicts that arise during the merge process, if necessary.
 
 10. Test the main branch with the new feature to make sure everything works correctly.
 
 11. If everything looks good, push the changes to the main branch by running the following command:
-
  ```
  git push origin main
  ```
