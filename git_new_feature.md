@@ -33,10 +33,10 @@ git checkout main
 
 8. Merge the changes from the new-feature branch into the main branch by running the following command:
 
-...
-git merge new-feature
-...
-
+ ```
+ git merge new-feature
+ ```
+ 
 9. Resolve any conflicts that arise during the merge process, if necessary.
 
 10. Test the main branch with the new feature to make sure everything works correctly.
