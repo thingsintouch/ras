@@ -58,7 +58,8 @@ def show_stored_clockings():
         timestamp = datetime.fromtimestamp(int(c[0]), tz=tzinfo).strftime('%H:%M:%S %A %d-%b-%y')
         card = c[1]
         person_name = get_two_lines_name(card).replace("\n"," ")
-        c_with_timestamp.append((timestamp, person_name))
+        c_with_timestamp.append((timestamp, card, person_name))
+
 
     return render_template('show_stored_clockings.html', clockings=c_with_timestamp)
 

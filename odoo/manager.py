@@ -19,12 +19,13 @@ if not os.path.exists(CLOCKINGS):
 def get_two_lines_name(card):
     if card in os.listdir(PARAMS+'/d'):
         full_name = read_db(PARAMS, card).decode('utf-8')
-        if " " in full_name:
-            two_lines_name = full_name.replace(" ", "\n", 1)
-        else:
-            two_lines_name = "\n" + full_name
-    else:
-        two_lines_name = "new card\n"+str(card)
+        if full_name != "":
+            if " " in full_name:
+                two_lines_name = full_name.replace(" ", "\n", 1)
+            else:
+                two_lines_name = "\n" + full_name
+            return two_lines_name
+    two_lines_name = "card\n"+str(card)
     return two_lines_name
 
 def write_clocking(card, now_in_seconds):
