@@ -54,7 +54,7 @@ def registerClockings():
                     card_code_and_timestamp = clocking_tuple[2]
                     timestamp = clocking_tuple[0]
                     answer = register_async_clocking(card_code, timestamp)
-                    time.sleep(0.3)
+                    time.sleep(0.7)
                 except Exception as e:
                     loggerDEBUG(f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}")
                     answer = False
@@ -64,6 +64,7 @@ def registerClockings():
                     store_name_for_a_rfid_code(card_code, employee_name)
                     if answer.get("logged", False):
                         params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
+                        # put checkin or checkout in file of card code --- answer.get("action") 
                         remove(join(CLOCKINGS,card_code_and_timestamp))
                     else: # do not process all the older clockings if a clocking for a card has failed
                         card_codes_to_not_process.append(card_code)
