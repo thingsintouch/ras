@@ -33,7 +33,7 @@ def main():
             oled.three_lines_text(message)
             time.sleep(get_display_time())
 
-        time.sleep(PERIOD_DISPLAY_MANAGER+0.3)
+        time.sleep(PERIOD_DISPLAY_MANAGER)
         params.put("displayClock", "yes")
 
 if __name__ == "__main__":
