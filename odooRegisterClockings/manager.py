@@ -10,6 +10,7 @@ from common.constants import CLOCKINGS
 def main():
 
     BLOCKING_waiting_until_RAS_acknowledged_from_Odoo()
+    sleep(60) # wait one minute to let the cpu calm down from the reboot
 
     while True:
         registerClockings()
