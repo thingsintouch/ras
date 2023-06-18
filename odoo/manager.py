@@ -89,7 +89,7 @@ def main():
                      "\n" + two_lines_name              
             display_publisher.publish("display_card_related_message", text)
 
-        time.sleep(0.3)
+        time.sleep(0.2)
 
 
 if __name__ == "__main__":

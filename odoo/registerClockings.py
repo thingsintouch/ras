@@ -54,7 +54,7 @@ def registerClockings():
                     card_code_and_timestamp = clocking_tuple[2]
                     timestamp = clocking_tuple[0]
                     answer = register_async_clocking(card_code, timestamp)
-                    time.sleep(1.8)
+                    time.sleep(2.7)
                 except Exception as e:
                     loggerDEBUG(f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}")
                     answer = False
