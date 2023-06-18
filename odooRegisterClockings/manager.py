@@ -15,7 +15,7 @@ def main():
         registerClockings()
         minimum = get_period("period_register_clockings")
         clockings_waiting = len(listdir(CLOCKINGS))
-        period_register_clockings = max(minimum, clockings_waiting*3)
+        period_register_clockings = max(minimum, clockings_waiting*4)
         sleep(period_register_clockings)
 
 
