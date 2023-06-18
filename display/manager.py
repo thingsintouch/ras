@@ -27,6 +27,7 @@ def main():
         #loggerDEBUG(f"received {topic} {message}")
         if topic == "display_card_related_message":
             params.put("displayClock", "no")
+            time.sleep(0.3) # give time the screen to change
             text = f"new message on display: \n {message}"
             #loggerDEBUG(text)           
             oled.three_lines_text(message)
