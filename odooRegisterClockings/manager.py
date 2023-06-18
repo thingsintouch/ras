@@ -16,7 +16,7 @@ def main():
         minimum = get_period("period_register_clockings")
         clockings_waiting = len(listdir(CLOCKINGS))
         period_register_clockings = max(minimum, clockings_waiting*4)
-        sleep(period_register_clockings)
+        sleep(period_register_clockings+10)
 
 
 if __name__ == "__main__":
