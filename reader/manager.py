@@ -4,6 +4,7 @@ from common import constants as co
 from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG
 from messaging.messaging import PublisherMultipart as Publisher
 from common.params import Params
+from common.common import runShellCommand_and_returnOutput as rs
 
 params = Params(db=co.PARAMS)
 
@@ -21,6 +22,8 @@ def get_scan_reader_function():
 
     if hardware_card_reader == "RDM6300":
         from reader.RDM6300 import scan_card
+        rs("sudo systemctl stop serial-getty@ttyS0.service")
+        rs("sudo systemctl disable serial-getty@ttyS0.service")
         return scan_card
 
     from reader.MFRC522 import MFRC522
