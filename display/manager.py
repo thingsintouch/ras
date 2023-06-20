@@ -31,7 +31,7 @@ def main():
             text = f"new message on display: \n {message}"
             #loggerDEBUG(text)           
             oled.three_lines_text(message)
-            display_time = max(0.4, get_display_time()-0.5)
+            display_time = max(0.1, get_display_time()-1.2)
             time.sleep(display_time)
 
         time.sleep(PERIOD_DISPLAY_MANAGER)
