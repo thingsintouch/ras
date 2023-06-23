@@ -30,7 +30,8 @@ def get_two_lines_name(card):
 
 def write_clocking(card, now_in_seconds):
     file_name_of_the_clocking = CLOCKINGS + "/" + str(card) + "-" + str(now_in_seconds)
-    with open(file_name_of_the_clocking, 'w'): pass
+    with open(file_name_of_the_clocking, 'w') as f:
+        f.write("Odoo server has not been contacted\n")
 
 def get_minimum_time():
     n = params.get("minimumTimeBetweenClockings")
