@@ -2,7 +2,7 @@ import time
 import zmq
 import os
 
-from common.constants import PARAMS, CLOCKINGS, DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS
+from common.constants import PARAMS, CLOCKINGS, IN_OR_OUT, DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS
 from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG, loggerERROR
 
 from messaging.messaging import SubscriberMultipart as Subscriber
@@ -15,6 +15,11 @@ params = Params(db=PARAMS)
 
 if not os.path.exists(CLOCKINGS):
     mkdirs_exists_ok(CLOCKINGS)
+    
+if not os.path.exists(IN_OR_OUT):
+    mkdirs_exists_ok(IN_OR_OUT)
+
+
 
 def get_two_lines_name(card):
     if card in os.listdir(PARAMS+'/d'):

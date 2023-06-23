@@ -7,7 +7,7 @@ from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, l
 
 from odoo.odooRequests import register_async_clocking
 
-from common.constants import PARAMS, CLOCKINGS
+from common.constants import PARAMS, CLOCKINGS, IN_OR_OUT
 from common.params import Params
 
 params              = Params(db=PARAMS)
@@ -66,9 +66,12 @@ def registerClockings():
                     loggerDEBUG(f"processing clocking - answer from Odoo {answer} ")
                     employee_name = answer.get("employee_name","")
                     store_name_for_a_rfid_code(card_code, employee_name)
+                    params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
                     if answer.get("logged", False):
-                        params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
-                        # put checkin or checkout in file of card code --- answer.get("action") 
+                        # params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
+                        in_or_out = answer.get("action", "no action")
+                        with open(join(IN_OR_OUT,card_code), 'w') as f:
+                            f.write(in_or_out + "\n")
                         remove(join(CLOCKINGS,card_code_and_timestamp))
                     else: # do not process all the older clockings if a clocking for a card has failed
                         error_message = answer.get("error_message", "No error message received.") 
