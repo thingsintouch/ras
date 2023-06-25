@@ -120,11 +120,12 @@ def main():
             if how_to_handle_the_clocking != "too_little_time_between_clockings" and params.get("show_checkin_or_out_display") == "1":
                 text = display_check_in_or_out(card)
                 if not text:
-                    text = params.get_filtered(how_to_handle_the_clocking) 
+                    text = params.get_filtered(how_to_handle_the_clocking)
+                else:
+                    change_check_in_or_check_out_in_the_file(card) # this is made because there is no guarantee that the message will be updated from odoo
             else:
                 text = params.get_filtered(how_to_handle_the_clocking) 
             text = text + "\n" + two_lines_name
-            change_check_in_or_check_out_in_the_file(card) # this is made because there is no guarantee that the message will be updated from odoo
             display_publisher.publish("display_card_related_message", text)
 
         time.sleep(0.2)
