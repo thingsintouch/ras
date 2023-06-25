@@ -9,6 +9,7 @@ from odoo.odooRequests import register_async_clocking
 
 from common.constants import PARAMS, CLOCKINGS, IN_OR_OUT
 from common.params import Params
+from common.common import write_to_file
 
 params              = Params(db=PARAMS)
 
@@ -58,8 +59,7 @@ def registerClockings():
                     time.sleep(3.6)
                 except Exception as e:
                     message_to_write_in_file = f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}"
-                    with open(join(CLOCKINGS,card_code_and_timestamp), 'w') as f:
-                        f.write(message_to_write_in_file + "\n")
+                    write_to_file(join(CLOCKINGS,card_code_and_timestamp),message_to_write_in_file + "\n")
                     loggerDEBUG(message_to_write_in_file)
                     answer = False
                 if answer:
@@ -70,13 +70,11 @@ def registerClockings():
                     if answer.get("logged", False):
                         # params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
                         in_or_out = answer.get("action", "no action")
-                        with open(join(IN_OR_OUT,card_code), 'w') as f:
-                            f.write(in_or_out + "\n")
+                        write_to_file(join(IN_OR_OUT,card_code),in_or_out + "\n")
                         remove(join(CLOCKINGS,card_code_and_timestamp))
                     else: # do not process all the older clockings if a clocking for a card has failed
                         error_message = answer.get("error_message", "No error message received.") 
                         message_to_write_in_file = "Clocking has not been logged in Odoo. Error Message from Odoo: " + error_message
-                        with open(join(CLOCKINGS,card_code_and_timestamp), 'w') as f:
-                            f.write(message_to_write_in_file + "\n")
+                        write_to_file(join(CLOCKINGS,card_code_and_timestamp), message_to_write_in_file + "\n")
                         card_codes_to_not_process.append(card_code)
 

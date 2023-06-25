@@ -134,7 +134,8 @@ keys_by_Type[TxType.ON_SETUP_SERVER] = [
     "odoo_port",
     "template_to_register_device",
     "RAS_runs_locally",
-    "clockings_expiration_period_in_weeks"
+    "clockings_expiration_period_in_weeks",
+    "show_checkin_or_out_display"
     ]
 
 keys_by_Type.update({
