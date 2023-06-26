@@ -37,7 +37,7 @@ def get_two_lines_name(card):
 
 def write_clocking(card, now_in_seconds):
     file_name_of_the_clocking = CLOCKINGS + "/" + str(card) + "-" + str(now_in_seconds)
-    write_to_file(file_name_of_the_clocking, "Odoo server has not been contacted\n")
+    write_to_file(file_name_of_the_clocking, "Odoo server has not been contacted for this clocking. Refer to previous clockings of this card.\n")
 
 def get_minimum_time():
     n = params.get("minimumTimeBetweenClockings")
@@ -70,13 +70,20 @@ def enough_time_between_clockings(last_clockings, card_id_as_string, now_in_seco
         enough_time = False     
     return enough_time
 
-def display_check_in_or_out(card):
-    message_for_check_in = params.get("check_in_message_display") or "CHECK IN"
-    message_for_check_out = params.get("check_out_message_display") or "CHECK OUT"
+def get_last_clocking(card):
     file = join(IN_OR_OUT,card)
     if isfile(file):
         with open(file, 'r') as f:
-            last_clocking = f.readline().rstrip('\n')
+            last_clocking = f.readline().rstrip('\n') 
+    else:
+        last_clocking = False
+    return last_clocking  
+
+def display_check_in_or_out(card):
+    message_for_check_in = params.get("check_in_message_display") or "CHECK IN"
+    message_for_check_out = params.get("check_out_message_display") or "CHECK OUT"
+    last_clocking = get_last_clocking(card)
+    if last_clocking:
         if last_clocking =="check_in":
             message_display_in_or_out = message_for_check_out
         else:
@@ -86,15 +93,17 @@ def display_check_in_or_out(card):
         return False
 
 def change_check_in_or_check_out_in_the_file(card):
-    with open(join(IN_OR_OUT,card), 'r') as f:
-        last_clocking = f.readline().rstrip('\n')
-    if last_clocking == "check_in":
-        message_to_store = "check_out"
+    last_clocking = get_last_clocking(card)
+    if last_clocking:
+        if last_clocking =="check_in":
+            message_to_store = "check_out"
+        else:
+            message_to_store = "check_in"
+        write_to_file(join(IN_OR_OUT,card), message_to_store + "\n")
+        return message_to_store
     else:
-        message_to_store = "check_in"
-    write_to_file(join(IN_OR_OUT,card), message_to_store + "\n")
-
-
+        write_to_file(join(IN_OR_OUT,card), "")
+        return False
 
 class LastClockings():
     def __init__(self):
@@ -115,18 +124,24 @@ def main():
             now_in_seconds = int(time.time())
             two_lines_name = get_two_lines_name(card)
             how_to_handle_the_clocking = get_clocking_handling(last_clockings, card, now_in_seconds)
+            text = display_check_in_or_out_message = False
 
-            buzzer_publisher.publish("buzz", how_to_handle_the_clocking)
             if how_to_handle_the_clocking != "too_little_time_between_clockings" and params.get("show_checkin_or_out_display") == "1":
-                text = display_check_in_or_out(card)
-                if not text:
-                    text = params.get_filtered(how_to_handle_the_clocking)
+                text = display_check_in_or_out_message = display_check_in_or_out(card)
+            
+            if display_check_in_or_out_message:
+                sound_to_play = change_check_in_or_check_out_in_the_file(card) # this is made because there is no guarantee that the message will be updated from odoo
+                # After changing the clocking, the check_in or check_out is then up to date
+                if sound_to_play:
+                    buzzer_publisher.publish("buzz", sound_to_play)
                 else:
-                    change_check_in_or_check_out_in_the_file(card) # this is made because there is no guarantee that the message will be updated from odoo
+                    buzzer_publisher.publish("buzz", how_to_handle_the_clocking)
             else:
-                text = params.get_filtered(how_to_handle_the_clocking) 
+                buzzer_publisher.publish("buzz", how_to_handle_the_clocking)
+                text = params.get_filtered(how_to_handle_the_clocking)
+
             text = text + "\n" + two_lines_name
-            display_publisher.publish("display_card_related_message", text)
+            display_publisher.publish("display_card_related_message", text) 
 
         time.sleep(0.2)
 
