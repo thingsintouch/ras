@@ -47,7 +47,7 @@ managed_essential_processes = get_managed_essential_processes(
     )
 
 if params.get("show_checkin_or_out_display") is None:
-    params.put("show_checkin_or_out_display", "0")
+    params.put("show_checkin_or_out_display", "1")
 
 #ensure_python_dependencies()
 
