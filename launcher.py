@@ -46,6 +46,9 @@ managed_essential_processes = get_managed_essential_processes(
     params.get("template_to_register_device")
     )
 
+if params.get("show_checkin_or_out_display") is None:
+    params.put("show_checkin_or_out_display", "1")
+
 #ensure_python_dependencies()
 
 managed_NON_essential_processes = {}

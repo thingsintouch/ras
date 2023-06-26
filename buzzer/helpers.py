@@ -10,6 +10,8 @@ sound["too_little_time_between_clockings"] = "FALSE"
 sound["failed_odoo_connection"] = "FALSE"
 sound["success_odoo_connection"] = "check_in"
 sound["OK"] = "cardswiped"
+sound["check_in"] = "check_in"
+sound["check_out"] = "check_out"
 
 def buzz(msg):
   #loggerDEBUG(f"playing {msg}")

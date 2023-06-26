@@ -18,7 +18,9 @@ keys_by_Type = {}
 
 keys_by_Type[TxType.DISPLAY_MESSAGE] = [
     "card_registered",
-    "too_little_time_between_clockings"
+    "too_little_time_between_clockings",
+    "check_in_message_display",
+    "check_out_message_display"
     ]
 
 keys_by_Type[TxType.ON_ROUTINE_CALLS] =     \
@@ -134,7 +136,8 @@ keys_by_Type[TxType.ON_SETUP_SERVER] = [
     "odoo_port",
     "template_to_register_device",
     "RAS_runs_locally",
-    "clockings_expiration_period_in_weeks"
+    "clockings_expiration_period_in_weeks",
+    "show_checkin_or_out_display"
     ]
 
 keys_by_Type.update({

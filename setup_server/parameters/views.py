@@ -11,14 +11,6 @@ params = Params(db=PARAMS)
 
 parameters = Blueprint('parameters',__name__)
 
-# commands_list = [
-#     ('0', 'command_update', 'Update the Firmware', "shouldGetFirmwareUpdate"),
-#     ('1', 'command_reboot', 'Reboot the Device', "rebootTerminal"),
-#     ('2', 'command_partial_reset', 'Partial Reset', "partialFactoryReset"),
-#     ('3', 'command_full_reset', 'Full Factory Reset', "fullFactoryReset"),
-#     ('4', 'command_shutdown', 'Shutdown the Device', "shutdownTerminal"),
-#     ('5', 'command_delete_clockings', 'Delete clockings stored in the device', "deleteClockings"),
-#     ]
 options_list = [
     ('0', 'option_device_name', 'device_name', "RASxxx", "The device name "),
     ('1', 'option_time_format', 'time_format', "time_format", "The time format "),
@@ -34,8 +26,11 @@ options_list = [
     ('11', 'option_odoo_port', 'odoo_port', "odoo_port", "The Odoo server port "),
     ('12', 'option_register_template', 'register_template', "template_to_register_device", "The template used to register the device in Odoo "),
     ('13', 'option_runs_locally', 'runs_locally', "RAS_runs_locally", "The parameter to indicate if the device runs locally "),
-    ('14', 'option_clockings_expiration', 'clockings_expiration', "clockings_expiration_period_in_weeks", "The clockings expiration period (how many weeks after which the clockings will be deleted from local storage) "),  
-     ]
+    ('14', 'option_clockings_expiration', 'clockings_expiration', "clockings_expiration_period_in_weeks", "The clockings expiration period (how many weeks after which the clockings will be deleted from local storage) "),
+    ('15', 'option_show_in_out', 'show_in_out', "show_checkin_or_out_display", "Should the terminal show an estimation if the clocking is checkin or checkout"),
+    ('16', 'option_check_in_message_display', 'check_in_message_display', "check_in_message_display", "The message to be shown on the display for a CHECK-IN"),
+    ('17', 'option_check_out_message_display', 'check_out_message_display', "check_out_message_display", "The message to be shown on the display for a CHECK-OUT"),
+    ]
 
 @parameters.route('/parameters',methods=['GET','POST'])
 @login_required
@@ -57,11 +52,10 @@ def take_parameter():
         form.register_template.data = params.get("template_to_register_device") or "not set"
         form.runs_locally.data = params.get("RAS_runs_locally") or "0"
         form.clockings_expiration.data = params.get("clockings_expiration_period_in_weeks") or "2"
+        form.show_in_out.data = params.get("show_checkin_or_out_display") or "0"
+        form.check_in_message_display.data = params.get("check_in_message_display") or "CHECK IN"
+        form.check_out_message_display.data = params.get("check_out_message_display") or "CHECK OUT"
     if form.is_submitted():
-        # for c in commands_list:
-        #     if c[1] in request.form:
-        #         command = c[0]
-        #         return redirect(url_for('parameters.command_result', command=command ))
         for o in options_list:
             if o[1] in request.form:
                 #pPrint(list(request.form.keys()))
@@ -72,20 +66,6 @@ def take_parameter():
                 return redirect(url_for('parameters.option_result', option=option ))
     return render_template('parameters.html', form=form)
 
-# @parameters.route('/commands/<int:command>',methods=['GET','POST'])
-# @login_required
-# def command_result(command):
-#     command_text = commands_list[command][2]
-#     form=ParametersResult()
-#     if form.validate_on_submit():
-#         if form.cancel.data:
-#             pass
-#         else:
-#             booleanFlag = commands_list[command][3]
-#             params.put(booleanFlag,"1")
-#         return redirect(url_for('parameters.take_parameter'))
-
-#     return render_template('command_result.html', form=form, command=command_text)
 
 @parameters.route('/options/<int:option>',methods=['GET','POST'])
 @login_required

@@ -1,12 +1,13 @@
 from flask import render_template,url_for,flash, redirect,request,Blueprint
 from flask_login import current_user,login_required
 
+from os.path import join
+
 from thermal.hardware_status import get_hardware_status
 from odoo.odooRequests import  get_iot_template
 from common.params import Params
-from common.constants import PARAMS
+from common.constants import PARAMS, CLOCKINGS
 from common.common import runShellCommand_and_returnOutput as rs
-#from common.common import get_wifi_SSID_of_RAS
 
 from odoo.registerClockings import get_sorted_clockings_from_older_to_newer
 from odoo.manager import get_two_lines_name
@@ -58,7 +59,11 @@ def show_stored_clockings():
         timestamp = datetime.fromtimestamp(int(c[0]), tz=tzinfo).strftime('%H:%M:%S %A %d-%b-%y')
         card = c[1]
         person_name = get_two_lines_name(card).replace("\n"," ")
-        c_with_timestamp.append((timestamp, card, person_name))
+        card_code_and_timestamp = c[2]
+        with open(join(CLOCKINGS,card_code_and_timestamp), 'r') as f:
+            message_from_odoo = f.readline() # .rstrip('\n')
+        if not message_from_odoo: message_from_odoo = "- refer to previous clockings of this card"
+        c_with_timestamp.append((timestamp, card, person_name, message_from_odoo))
 
 
     return render_template('show_stored_clockings.html', clockings=c_with_timestamp)

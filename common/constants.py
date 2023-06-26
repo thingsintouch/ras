@@ -32,6 +32,7 @@ HASH_PERSON_REGISTER_TERMINAL = bytes(config("HASH_PERSON_REGISTER_TERMINAL"), e
 
 PARAMS = WORKING_DIR + "/data/params"
 CLOCKINGS = WORKING_DIR + "/data/clockings"
+IN_OR_OUT = WORKING_DIR + "/data/in_or_out"
 LOG = WORKING_DIR + "/data/log"
 KEYS = WORKING_DIR + "/data/keys"
 KEY_ACTIONS = WORKING_DIR + "/data/key_actions"

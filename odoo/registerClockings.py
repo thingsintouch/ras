@@ -7,8 +7,9 @@ from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, l
 
 from odoo.odooRequests import register_async_clocking
 
-from common.constants import PARAMS, CLOCKINGS
+from common.constants import PARAMS, CLOCKINGS, IN_OR_OUT
 from common.params import Params
+from common.common import write_to_file
 
 params              = Params(db=PARAMS)
 
@@ -50,22 +51,30 @@ def registerClockings():
             loggerDEBUG(f"processing clocking {clocking_tuple}")
             card_code = clocking_tuple[1]
             if card_code not in card_codes_to_not_process:
+                message_to_write_in_file = "No answer from Odoo"
                 try:
                     card_code_and_timestamp = clocking_tuple[2]
                     timestamp = clocking_tuple[0]
                     answer = register_async_clocking(card_code, timestamp)
                     time.sleep(3.6)
                 except Exception as e:
-                    loggerDEBUG(f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}")
+                    message_to_write_in_file = f"Could not Register Clocking {card_code_and_timestamp} - Exception: {e}"
+                    write_to_file(join(CLOCKINGS,card_code_and_timestamp),message_to_write_in_file + "\n")
+                    loggerDEBUG(message_to_write_in_file)
                     answer = False
                 if answer:
                     loggerDEBUG(f"processing clocking - answer from Odoo {answer} ")
                     employee_name = answer.get("employee_name","")
                     store_name_for_a_rfid_code(card_code, employee_name)
+                    params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
                     if answer.get("logged", False):
-                        params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
-                        # put checkin or checkout in file of card code --- answer.get("action") 
+                        # params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
+                        in_or_out = answer.get("action", "no action")
+                        write_to_file(join(IN_OR_OUT,card_code),in_or_out + "\n")
                         remove(join(CLOCKINGS,card_code_and_timestamp))
                     else: # do not process all the older clockings if a clocking for a card has failed
+                        error_message = answer.get("error_message", "No error message received.") 
+                        message_to_write_in_file = "Clocking has not been logged in Odoo. Error Message from Odoo: " + error_message
+                        write_to_file(join(CLOCKINGS,card_code_and_timestamp), message_to_write_in_file + "\n")
                         card_codes_to_not_process.append(card_code)
 

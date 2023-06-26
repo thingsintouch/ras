@@ -18,6 +18,7 @@ from factory_settings.custom_params import factory_settings
 from os.path import isfile, exists
 import dbus
 import sys
+import fcntl
 
 progname = "com.example.HelloWorld"
 objpath  = "/HelloWorld"
@@ -393,3 +394,9 @@ def ensure_wpa_supplicant():
     if on_ethernet():
         if not are_the_right_service_configurations_in_place():
             setup_wpa_supplicant()
+
+def write_to_file(filename, content):
+    with open(filename, 'w') as file:
+        fcntl.flock(file, fcntl.LOCK_EX)  # Acquire an exclusive lock
+        file.write(content)
+        fcntl.flock(file, fcntl.LOCK_UN)  # Release the lock

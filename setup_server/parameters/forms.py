@@ -1,7 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, PasswordField, IntegerField
-from wtforms.validators import DataRequired, Length
-from common.common import pPrint
+from wtforms import StringField, SubmitField, SelectField, IntegerField
 from odoo.routineCheck import tz_list
 
 time_format_choices = [("12 hour", "12 hour"), ("24 hour", "24 hour")]
@@ -49,6 +47,12 @@ class ParametersForm(FlaskForm):
     text_card = StringField('New text to be displayed when a card is swiped ')
     option_text_card = SubmitField('Change display text')
 
+    check_in_message_display = StringField('New text to be displayed when a card is swiped in a CHECK-IN')
+    option_check_in_message_display = SubmitField('Change display text for a CHECK-IN')
+
+    check_out_message_display = StringField('New text to be displayed when a card is swiped in a CHECK-OUT')
+    option_check_out_message_display = SubmitField('Change display text for a CHECK-OUT')
+
     min_time = IntegerField('Minimum time to wait between clockings (0-30000 seconds)')
     option_min_time = SubmitField('Change the minimum time')
 
@@ -58,13 +62,9 @@ class ParametersForm(FlaskForm):
     period_register_clockings = IntegerField('The terminal will send new clockings to Odoo in a period of (14-3600 seconds)')
     option_period_register_clockings = SubmitField('Change the period')
 
-    # command_update = SubmitField('Update')
-    # command_reboot = SubmitField('Reboot')
-    # command_partial_reset = SubmitField('Partial Reset')
-    # command_full_reset = SubmitField('Full Reset')
-    # command_shutdown = SubmitField('Shutdown')
-    # command_delete_clockings = SubmitField('Delete clockings')
-
+    show_in_out = SelectField(u'Display if the clocking is an estimated check-in or -out',
+        choices=[("0","No info is shown (check-in or check-out)"), ("1","Estimated check-in or check-out is displayed")])
+    option_show_in_out = SubmitField('Set')
 
 class ParametersResult(FlaskForm):
     submit = SubmitField('OK')
