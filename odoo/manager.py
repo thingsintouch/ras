@@ -71,8 +71,8 @@ def enough_time_between_clockings(last_clockings, card_id_as_string, now_in_seco
     return enough_time
 
 def display_check_in_or_out(card):
-    message_for_check_in = "CHECK IN"
-    message_for_check_out = "CHECK OUT"
+    message_for_check_in = params.get("check_in_message_display") or "CHECK IN"
+    message_for_check_out = params.get("check_out_message_display") or "CHECK OUT"
     file = join(IN_OR_OUT,card)
     if isfile(file):
         with open(file, 'r') as f:

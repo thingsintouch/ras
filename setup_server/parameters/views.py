@@ -28,7 +28,9 @@ options_list = [
     ('13', 'option_runs_locally', 'runs_locally', "RAS_runs_locally", "The parameter to indicate if the device runs locally "),
     ('14', 'option_clockings_expiration', 'clockings_expiration', "clockings_expiration_period_in_weeks", "The clockings expiration period (how many weeks after which the clockings will be deleted from local storage) "),
     ('15', 'option_show_in_out', 'show_in_out', "show_checkin_or_out_display", "Should the terminal show an estimation if the clocking is checkin or checkout"),
-     ]
+    ('16', 'option_check_in_message_display', 'check_in_message_display', "check_in_message_display", "The message to be shown on the display for a CHECK-IN"),
+    ('17', 'option_check_out_message_display', 'check_out_message_display', "check_out_message_display", "The message to be shown on the display for a CHECK-OUT"),
+    ]
 
 @parameters.route('/parameters',methods=['GET','POST'])
 @login_required
@@ -51,6 +53,8 @@ def take_parameter():
         form.runs_locally.data = params.get("RAS_runs_locally") or "0"
         form.clockings_expiration.data = params.get("clockings_expiration_period_in_weeks") or "2"
         form.show_in_out.data = params.get("show_checkin_or_out_display") or "0"
+        form.check_in_message_display.data = params.get("check_in_message_display") or "CHECK IN"
+        form.check_out_message_display.data = params.get("check_out_message_display") or "CHECK OUT"
     if form.is_submitted():
         for o in options_list:
             if o[1] in request.form:

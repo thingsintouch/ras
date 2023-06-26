@@ -47,6 +47,12 @@ class ParametersForm(FlaskForm):
     text_card = StringField('New text to be displayed when a card is swiped ')
     option_text_card = SubmitField('Change display text')
 
+    check_in_message_display = StringField('New text to be displayed when a card is swiped in a CHECK-IN')
+    option_check_in_message_display = SubmitField('Change display text for a CHECK-IN')
+
+    check_out_message_display = StringField('New text to be displayed when a card is swiped in a CHECK-OUT')
+    option_check_out_message_display = SubmitField('Change display text for a CHECK-OUT')
+
     min_time = IntegerField('Minimum time to wait between clockings (0-30000 seconds)')
     option_min_time = SubmitField('Change the minimum time')
 
