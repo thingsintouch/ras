@@ -29,7 +29,7 @@ class SubscriberMultipart():
             loggerDEBUG(f"POINT 4 ##########  received TOPIC: {topic}, MESSAGE: {message}")
             return topic, message
         except Exception as e:
-            loggerDEBUG(f"POINT 3 and 4 -- EXCEPTION  - probably timeout {e} ")
+            loggerDEBUG(f"POINT 3 and 4 -- EXCEPTION  - probably timeout - exception message: {e} ")
             return "error", ""
 
 class PublisherMultipart():
