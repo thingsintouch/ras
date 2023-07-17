@@ -117,9 +117,9 @@ def main():
     last_clockings = LastClockings()
 
     while 1:
-
+        loggerDEBUG("POINT 1 ############  before the BLOCKING receive on process odoo -- waiting for a card ")
         topic, card = odoo_subscriber.receive() # BLOCKING
-
+        loggerDEBUG("POINT 99 ############  after the BLOCKING receive on process odoo -- waiting for a card ")
         if topic == "new_card":
             now_in_seconds = int(time.time())
             two_lines_name = get_two_lines_name(card)

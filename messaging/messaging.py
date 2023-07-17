@@ -10,6 +10,7 @@ class SubscriberMultipart():
     def __init__(self,port):
         self.context = zmq.Context()  
         self.socket = self.context.socket(zmq.SUB)
+        self.socket.setsockopt(zmq.RCVTIMEO, 1000) # Set timeout to 1 second
         self.socket.connect(f"tcp://localhost:{port}")
         self.port=port
 
@@ -18,11 +19,18 @@ class SubscriberMultipart():
         self.socket.setsockopt(zmq.SUBSCRIBE, str(topic).encode('utf-8'))
 
     def receive(self):
-        topic_bytes, message_bytes = self.socket.recv_multipart() # this call is blocking
-        topic = topic_bytes.decode('utf-8')
-        message = pickle.loads(message_bytes)
-        # loggerDEBUG(f"received TOPIC: {topic}, MESSAGE: {message}")
-        return topic, message
+
+        loggerDEBUG("POINT 2 ############  before the BLOCKING self.socket.recv_multipart() ")
+        try:
+            topic_bytes, message_bytes = self.socket.recv_multipart() # this call is blocking
+            loggerDEBUG("POINT 3 ############  AFTER the BLOCKING -- no exception -- self.socket.recv_multipart() ")
+            topic = topic_bytes.decode('utf-8')
+            message = pickle.loads(message_bytes)
+            loggerDEBUG(f"POINT 4 ##########  received TOPIC: {topic}, MESSAGE: {message}")
+            return topic, message
+        except Exception as e:
+            loggerDEBUG(f"POINT 3 and 4 -- EXCEPTION  - probably timeout {e} ")
+            return "error", ""
 
 class PublisherMultipart():
     def __init__(self,port):
