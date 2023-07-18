@@ -23,7 +23,7 @@ def main():
     while 1:
         # get 
         topic, message = buzzer_subscriber.receive() # BLOCKING
-        #loggerDEBUG(f"received {topic} {message}")
+        loggerINFO(f"received {topic} {message}")
         if topic == "buzz":
             buzz(message)          
 

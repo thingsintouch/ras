@@ -42,7 +42,7 @@ def main():
         card = scan_function()
 
         if card:
-            loggerDEBUG(f"card read {card}")
+            loggerINFO(f"card read {card}")
 
             card_id_as_string = f"{card}"
 

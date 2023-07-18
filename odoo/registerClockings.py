@@ -69,6 +69,7 @@ def registerClockings():
                     params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
                     if answer.get("logged", False):
                         # params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
+                        loggerINFO(f"clocking logged in Odoo - answer from Odoo {answer} ")
                         in_or_out = answer.get("action", "no action")
                         write_to_file(join(IN_OR_OUT,card_code),in_or_out + "\n")
                         remove(join(CLOCKINGS,card_code_and_timestamp))
