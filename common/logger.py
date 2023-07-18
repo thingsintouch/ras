@@ -40,13 +40,11 @@ def appendToIncrementalLog(message):
     # params.put("incrementalLog", currentLog)
 
 def loggerDEBUG(message):
-    show_debug = os.environ.get("SHOW_DEBUG")
-    print(f"show_debug {show_debug}")
-    if show_debug is not None and show_debug == "NO":
+    if params.get("show_debug") is not None and params.get("show_debug")=="0":
         pass
     else:
         logger.debug(message)
-    logger.debug(message)
+
 
 def loggerINFO(message):
     #appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "INFO " + message)

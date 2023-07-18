@@ -46,6 +46,7 @@ keys_by_Type[TxType.ON_ROUTINE_CALLS] =     \
     "partialFactoryReset", # do not delete locally stored clocking data
     "fullFactoryReset",    # will delete locally stored clocking data
     "RASxxx",
+    "show_debug"
     
     ] 
 
