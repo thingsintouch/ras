@@ -18,7 +18,7 @@ def get_scan_reader_function():
         loggerDEBUG(f"did not found a 'hardware card reader' on the parameters: {e}")
         hardware_card_reader = "MFRC522" # default
 
-    loggerDEBUG(f"Reader is: {hardware_card_reader}")
+    loggerINFO(f"Reader is: {hardware_card_reader}")
 
     if hardware_card_reader == "RDM6300":
         from reader.RDM6300 import scan_card
