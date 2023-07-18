@@ -40,21 +40,25 @@ def appendToIncrementalLog(message):
     # params.put("incrementalLog", currentLog)
 
 def loggerDEBUG(message):
-    logger.debug(message)
+    show_debug = os.environ.get("SHOW_DEBUG")
+    if show_debug is not None and show_debug == "NO":
+        pass
+    else:
+        logger.debug(message)
 
 def loggerINFO(message):
-    appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "INFO " + message)
+    #appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "INFO " + message)
     logger.info(message)
 
 def loggerWARNING(message):
-    appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "WARNING " + message)
+    #appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "WARNING " + message)
     logger.warning(message)
 
 def loggerERROR(message):
-    appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "ERROR " + message)
+    #appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "ERROR " + message)
     logger.error(message)
 
 def loggerCRITICAL(message):
-    appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "CRITICAL " + message)
+    #appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "CRITICAL " + message)
     logger.critical(message)
 
