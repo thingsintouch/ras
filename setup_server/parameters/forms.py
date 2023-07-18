@@ -68,7 +68,7 @@ class ParametersForm(FlaskForm):
 
     show_debug = SelectField(u'Display if the clocking is an estimated check-in or -out',
         choices=[("0","No DEBUG messages are logged"), ("1","DEBUG Messages are logged")])
-    option_debug = SubmitField('Set')
+    option_show_debug = SubmitField('Set')
 
 class ParametersResult(FlaskForm):
     submit = SubmitField('OK')
