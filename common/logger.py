@@ -45,7 +45,6 @@ def loggerDEBUG(message):
     else:
         logger.debug(message)
 
-
 def loggerINFO(message):
     #appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "INFO " + message)
     logger.info(message)

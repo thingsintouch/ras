@@ -126,8 +126,9 @@ class Status_Flags_To_Check():
             if current_hour == params.get("dailyRebootHour"):
                 if params.get("automaticUpdate") == "1":
                     self.shouldGetFirmwareUpdate()
-                time.sleep(10) # avoid to reboot twice
-                self.rebootTerminal()
+                else:
+                    #time.sleep(10) # avoid to reboot twice
+                    self.rebootTerminal()
 
 class Timezone_Checker():
 
