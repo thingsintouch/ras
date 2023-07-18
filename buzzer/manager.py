@@ -23,8 +23,8 @@ def main():
     while 1:
         # get 
         topic, message = buzzer_subscriber.receive() # BLOCKING
-        loggerINFO(f"received {topic} {message}")
         if topic == "buzz":
+            loggerINFO(f"received {topic} {message}")
             buzz(message)          
 
         time.sleep(co.PERIOD_BUZZER_MANAGER)
