@@ -30,6 +30,7 @@ options_list = [
     ('15', 'option_show_in_out', 'show_in_out', "show_checkin_or_out_display", "Should the terminal show an estimation if the clocking is checkin or checkout"),
     ('16', 'option_check_in_message_display', 'check_in_message_display', "check_in_message_display", "The message to be shown on the display for a CHECK-IN"),
     ('17', 'option_check_out_message_display', 'check_out_message_display', "check_out_message_display", "The message to be shown on the display for a CHECK-OUT"),
+    ('18', 'option_show_debug', 'show_debug', "show_debug", "Should the terminal log DEBUG messages"),
     ]
 
 @parameters.route('/parameters',methods=['GET','POST'])
@@ -55,6 +56,7 @@ def take_parameter():
         form.show_in_out.data = params.get("show_checkin_or_out_display") or "0"
         form.check_in_message_display.data = params.get("check_in_message_display") or "CHECK IN"
         form.check_out_message_display.data = params.get("check_out_message_display") or "CHECK OUT"
+        form.show_debug.data = params.get("show_debug") or "0"
     if form.is_submitted():
         for o in options_list:
             if o[1] in request.form:
