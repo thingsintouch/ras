@@ -80,8 +80,9 @@ def scan_card():
     while not card:
         time.sleep(0.4)
         card = wait_for_card() # Blocking
-        
-    #print(f"card read:{card}")
-    return card
+
+    card_str = str(card).zfill(10)
+    # print(f"card read:{card_str}")
+    return card_str
 
 #scan_card()
