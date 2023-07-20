@@ -66,6 +66,10 @@ class ParametersForm(FlaskForm):
         choices=[("0","No info is shown (check-in or check-out)"), ("1","Estimated check-in or check-out is displayed")])
     option_show_in_out = SubmitField('Set')
 
+    show_debug = SelectField(u'Log the debug messages',
+        choices=[("0","No DEBUG messages are logged"), ("1","DEBUG Messages are logged")])
+    option_show_debug = SubmitField('Set')
+
 class ParametersResult(FlaskForm):
     submit = SubmitField('OK')
     cancel = SubmitField('Cancel')

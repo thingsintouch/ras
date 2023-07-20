@@ -400,3 +400,7 @@ def write_to_file(filename, content):
         fcntl.flock(file, fcntl.LOCK_EX)  # Acquire an exclusive lock
         file.write(content)
         fcntl.flock(file, fcntl.LOCK_UN)  # Release the lock
+
+def initialize_show_debug_messages():
+    if params.get("show_debug") is None:
+        params.put("show_debug", "0")
