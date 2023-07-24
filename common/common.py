@@ -445,8 +445,7 @@ def set_eth0_MAC_address(new_MAC_address):
     try:
         rs("sudo ifconfig eth0 down")
         rs("sudo ifconfig eth0 hw ether "+new_MAC_address)
-        time.sleep(10)
-        rs("sudo ifconfig eth0 ")
+        rs("sudo ifconfig eth0 up")
         params.put("eth0_MAC_address", new_MAC_address)
     except Exception as e:
         loggerDEBUG(f"set_eth0_MAC_address {new_MAC_address} - Exception: {e}")
