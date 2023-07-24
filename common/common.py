@@ -435,7 +435,7 @@ def generate_random_eth0_MAC_address():
 
     return eth0_address
 
-def initialize_MAC_address():
+def initialize_eth0_MAC_address():
     if params.get("eth0_MAC_address") is None:
         #eth0_MACaddress = generate_random_eth0_address()
         wlan0_MAC_address = get_MAC_address("wlan0")
