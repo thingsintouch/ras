@@ -6,6 +6,7 @@ import os
 import time
 import socket
 import secrets
+import random
 
 from hashlib import blake2b
 
@@ -404,3 +405,38 @@ def write_to_file(filename, content):
 def initialize_show_debug_messages():
     if params.get("show_debug") is None:
         params.put("show_debug", "0")
+
+def get_MAC_address(network_interface): # wlan0 or eth0
+    MAC_address = None
+    try:
+        with open('/sys/class/net/'+network_interface+'/address', 'r') as file:
+            MAC_address = file.read().strip()
+    except FileNotFoundError:
+        loggerDEBUG(f"Error: File '/sys/class/net/{network_interface}/address' not found.")
+    except Exception as e:
+        loggerDEBUG(f"get_MAC_address {network_interface} - Exception: {e}")
+    loggerDEBUG(f"get_MAC_address- returns: {network_interface} {MAC_address}")
+    return MAC_address
+
+def generate_random_eth0_MAC_address():
+    # The OUI (Organizationally Unique Identifier) for Raspberry Pi Foundation is "b8:27:eb"
+    oui = "b8:27:eb"
+
+    # Generate the remaining 3 bytes (xx:xx:xx) of the MAC address
+    random_bytes = [random.randint(0x00, 0xFF) for _ in range(3)]
+
+    # Format the random bytes into hexadecimal strings
+    random_bytes_str = [format(byte, '02x') for byte in random_bytes]
+
+    # Concatenate the OUI and random bytes to form the complete MAC address
+    eth0_address = ":".join([oui] + random_bytes_str)
+
+    loggerDEBUG(f"generate_random_eth0_MAC_address returns: {eth0_address}")
+
+    return eth0_address
+
+def initialize_MAC_address():
+    if params.get("eth0_MAC_address") is None:
+        #eth0_MACaddress = generate_random_eth0_address()
+        wlan0_MAC_address = get_MAC_address("wlan0")
+        generate_random_eth0_MAC_address()

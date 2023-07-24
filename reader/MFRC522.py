@@ -456,9 +456,10 @@ class MFRC522:
         # Scan for cards
         (status, TagType) = \
             self.MFRC522_Request(self.PICC_REQIDL) #0x26
-
+        #loggerDEBUG(f"in scan card ######## -  after Request() PICC_REQIDL - status : {status}")
         # Get the UID of the card
         (status, uid) = self.MFRC522_Anticoll()
+        #loggerDEBUG(f"in scan card ######## -  after Anticoll() - status : {status}")
 
         # If we have the UID, continue
         if status == self.MI_OK:
