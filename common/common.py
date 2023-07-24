@@ -418,25 +418,35 @@ def get_MAC_address(network_interface): # wlan0 or eth0
     loggerDEBUG(f"get_MAC_address- returns: {network_interface} {MAC_address}")
     return MAC_address
 
-def generate_random_eth0_MAC_address():
-    # The OUI (Organizationally Unique Identifier) for Raspberry Pi Foundation is "b8:27:eb"
-    oui = "b8:27:eb"
-
+def generate_random_eth0_MAC_address(oui):
     # Generate the remaining 3 bytes (xx:xx:xx) of the MAC address
     random_bytes = [random.randint(0x00, 0xFF) for _ in range(3)]
 
     # Format the random bytes into hexadecimal strings
     random_bytes_str = [format(byte, '02x') for byte in random_bytes]
 
-    # Concatenate the OUI and random bytes to form the complete MAC address
     eth0_address = ":".join([oui] + random_bytes_str)
-
-    loggerDEBUG(f"generate_random_eth0_MAC_address returns: {eth0_address}")
-
     return eth0_address
+
+def generate_eth0_MAC_address(oui, wlan0_MAC_address):
+    if wlan0_MAC_address is None:
+        return None
+
+    # Validate that the wlan0_MAC_address is in the correct format "xx:xx:xx:xx:xx:xx"
+    mac_parts = wlan0_MAC_address.split(":")
+    if len(mac_parts) != 6:
+        return None
+
+    # Substitute the first three parts of the MAC address with oui
+    eth0_MAC_address = oui + ":".join([oui] + mac_parts[3:])
+    return eth0_MAC_address
 
 def initialize_eth0_MAC_address():
     if params.get("eth0_MAC_address") is None:
-        #eth0_MACaddress = generate_random_eth0_address()
+        oui = "b8:27:ec" # The OUI (Organizationally Unique Identifier) for Raspberry Pi Foundation is "b8:27:eb"
         wlan0_MAC_address = get_MAC_address("wlan0")
-        generate_random_eth0_MAC_address()
+        eth0_MAC_address = generate_eth0_MAC_address(oui, wlan0_MAC_address)
+        if eth0_MAC_address is None:
+            generate_random_eth0_MAC_address(oui)
+        loggerDEBUG(f"eth0_MAC_address {eth0_MAC_address}")
+        loggerDEBUG(f"wlan0_MAC_address {wlan0_MAC_address}")
