@@ -458,7 +458,7 @@ def set_oui(wlan0_MAC_address):
     # D8:3A:DD Raspberry Pi Trading Ltd
     # DC:A6:32 Raspberry Pi Trading Ltd
     # E4:5F:01 Raspberry Pi Trading Ltd
-    if wlan0_MAC_address is not None and "b8:27:eb" in wlan0_MAC_address[:3]:
+    if wlan0_MAC_address is not None and "b8:27:eb" in wlan0_MAC_address[:9]:
         oui = "28:cd:c1"
     else:
         oui = "b8:27:ec"
