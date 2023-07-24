@@ -46,7 +46,8 @@ keys_by_Type[TxType.ON_ROUTINE_CALLS] =     \
     "partialFactoryReset", # do not delete locally stored clocking data
     "fullFactoryReset",    # will delete locally stored clocking data
     "RASxxx",
-    "show_debug"
+    "show_debug",
+    "setEthernetMAC"
     
     ] 
 
@@ -140,7 +141,8 @@ keys_by_Type[TxType.ON_SETUP_SERVER] = [
     "template_to_register_device",
     "RAS_runs_locally",
     "clockings_expiration_period_in_weeks",
-    "show_checkin_or_out_display"
+    "show_checkin_or_out_display",
+    "use_self_generated_eth0_MAC_address"
     ]
 
 keys_by_Type.update({

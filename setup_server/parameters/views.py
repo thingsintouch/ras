@@ -31,6 +31,7 @@ options_list = [
     ('16', 'option_check_in_message_display', 'check_in_message_display', "check_in_message_display", "The message to be shown on the display for a CHECK-IN"),
     ('17', 'option_check_out_message_display', 'check_out_message_display', "check_out_message_display", "The message to be shown on the display for a CHECK-OUT"),
     ('18', 'option_show_debug', 'show_debug', "show_debug", "Should the terminal log DEBUG messages"),
+    #('19', 'option_use_self_generated_eth0_MAC_address', 'use_self_generated_eth0_MAC_address', "use_self_generated_eth0_MAC_address", "Use ethernet MAC address of Adapter or of Raspberry Pi?"),
     ]
 
 @parameters.route('/parameters',methods=['GET','POST'])
@@ -57,6 +58,7 @@ def take_parameter():
         form.check_in_message_display.data = params.get("check_in_message_display") or "CHECK IN"
         form.check_out_message_display.data = params.get("check_out_message_display") or "CHECK OUT"
         form.show_debug.data = params.get("show_debug") or "0"
+        #form.use_self_generated_eth0_MAC_address = params.get("use_self_generated_eth0_MAC_address") or "0"
     if form.is_submitted():
         for o in options_list:
             if o[1] in request.form:
