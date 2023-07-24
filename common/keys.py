@@ -108,6 +108,7 @@ keys_by_Type[TxType.ON_DEVICE_SETUP] = [
     "serial_get_iot_keys",
     "passphrase_get_iot_keys",
     "eth0_MAC_address",
+    "wlan0_MAC_address"
   ]
 
 keys_by_Type[TxType.ON_ACK_FROM_ODOO] = [

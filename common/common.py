@@ -454,6 +454,7 @@ def initialize_eth0_MAC_address():
     if params.get("eth0_MAC_address") is None:
         oui = "b8:27:ec" # The OUI (Organizationally Unique Identifier) for Raspberry Pi Foundation is "b8:27:eb"
         wlan0_MAC_address = get_MAC_address("wlan0")
+        params.put("wlan0_MAC_address", wlan0_MAC_address)
         eth0_MAC_address = generate_eth0_MAC_address(oui, wlan0_MAC_address)
         if eth0_MAC_address is None:
             generate_random_eth0_MAC_address(oui)

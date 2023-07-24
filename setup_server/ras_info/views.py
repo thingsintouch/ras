@@ -30,6 +30,8 @@ def show_info():
     git_repository = (rs("git remote -v")) or "N/A"
     git_repository = git_repository.split("\n")[0]
     device_name = params.get("RASxxx") or "N/A"
+    wlan0_MAC_address = params.get("wlan0_MAC_address") or "N/A"
+    eth0_MAC_address = params.get("eth0_MAC_address") or "N/A"
     # wifi_SSID = get_wifi_SSID_of_RAS()
     # wifi_success =  params.get("wifi_connection_counter_successful") or "0"
     # wifi_NO_success =  params.get("wifi_connection_counter_unsuccessful") or "0"
@@ -43,6 +45,8 @@ def show_info():
                 git_version_hash=git_version_hash,
                 git_repository=git_repository,
                 device_name=device_name,
+                wlan0_MAC_address=wlan0_MAC_address,
+                eth0_MAC_address=eth0_MAC_address,
                 # wifi_SSID=wifi_SSID,
                 # wifi_success=wifi_success,
                 # wifi_NO_success=wifi_NO_success
