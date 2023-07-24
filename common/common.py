@@ -441,6 +441,15 @@ def generate_eth0_MAC_address(oui, wlan0_MAC_address):
     eth0_MAC_address = ":".join([oui] + mac_parts[3:])
     return eth0_MAC_address
 
+def set_eth0_MAC_address(new_MAC_address):
+    try:
+        rs("sudo ifconfig eth0 down")
+        rs("sudo ifconfig eth0 hw ether "+new_MAC_address)
+        rs("sudo ifconfig eth0 ")
+        params.put("eth0_MAC_address", new_MAC_address)
+    except Exception as e:
+        loggerDEBUG(f"set_eth0_MAC_address {new_MAC_address} - Exception: {e}")
+ 
 def initialize_eth0_MAC_address():
     if params.get("eth0_MAC_address") is None:
         oui = "b8:27:ec" # The OUI (Organizationally Unique Identifier) for Raspberry Pi Foundation is "b8:27:eb"
@@ -450,3 +459,5 @@ def initialize_eth0_MAC_address():
             generate_random_eth0_MAC_address(oui)
         loggerDEBUG(f"eth0_MAC_address {eth0_MAC_address}")
         loggerDEBUG(f"wlan0_MAC_address {wlan0_MAC_address}")
+        set_eth0_MAC_address(eth0_MAC_address)
+
