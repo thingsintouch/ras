@@ -450,10 +450,24 @@ def set_eth0_MAC_address(new_MAC_address):
     except Exception as e:
         loggerDEBUG(f"set_eth0_MAC_address {new_MAC_address} - Exception: {e}")
 
+def set_oui(wlan0_MAC_address):
+    # The OUI (Organizationally Unique Identifier)
+    # 28:CD:C1 Raspberry Pi Trading Ltd
+    # 3A:35:41 Raspberry Pi (Trading) Ltd
+    # B8:27:EB Raspberry Pi Foundation
+    # D8:3A:DD Raspberry Pi Trading Ltd
+    # DC:A6:32 Raspberry Pi Trading Ltd
+    # E4:5F:01 Raspberry Pi Trading Ltd
+    if wlan0_MAC_address is not None and "b8:27:eb" in wlan0_MAC_address[:3]:
+        oui = "28:cd:c1"
+    else:
+        oui = "b8:27:ec"
+    return oui
+
 def use_self_generated_eth0_MAC_address():
-    oui = "b8:27:ec" # The OUI (Organizationally Unique Identifier) for Raspberry Pi Foundation is "b8:27:eb"
     wlan0_MAC_address = get_MAC_address("wlan0")
     params.put("wlan0_MAC_address", wlan0_MAC_address)
+    oui = set_oui(wlan0_MAC_address)
     eth0_MAC_address = generate_eth0_MAC_address(oui, wlan0_MAC_address)
     if eth0_MAC_address is None:
         generate_random_eth0_MAC_address(oui)
