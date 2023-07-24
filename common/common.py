@@ -438,7 +438,7 @@ def generate_eth0_MAC_address(oui, wlan0_MAC_address):
         return None
 
     # Substitute the first three parts of the MAC address with oui
-    eth0_MAC_address = oui + ":".join([oui] + mac_parts[3:])
+    eth0_MAC_address = ":".join([oui] + mac_parts[3:])
     return eth0_MAC_address
 
 def initialize_eth0_MAC_address():
