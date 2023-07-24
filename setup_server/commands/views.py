@@ -18,7 +18,7 @@ commands_list = [
     ('3', 'command_full_reset', 'Full Factory Reset', "fullFactoryReset"),
     ('4', 'command_shutdown', 'Shutdown the Device', "shutdownTerminal"),
     ('5', 'command_delete_clockings', 'Delete clockings stored in the device', "deleteClockings"),
-    ('6', 'command_set_ethernet_mac', 'Set the Ethernet Mac to match the MAC of the Raspberry Pi', "setEthernetMAC"),
+    ('6', 'command_set_ethernet_mac', 'Set the Ethernet MAC Address of the Device to match the MAC Address of the Raspberry Pi and not the MAC Address of the Adapter', "setEthernetMAC"),
     ]
 # options_list = [
 #     ('0', 'option_device_name', 'device_name', "RASxxx", "The device name "),
