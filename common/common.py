@@ -6,6 +6,7 @@ import os
 import time
 import socket
 import secrets
+import random
 
 from hashlib import blake2b
 
@@ -404,3 +405,77 @@ def write_to_file(filename, content):
 def initialize_show_debug_messages():
     if params.get("show_debug") is None:
         params.put("show_debug", "0")
+
+def get_MAC_address(network_interface): # wlan0 or eth0
+    MAC_address = None
+    try:
+        with open('/sys/class/net/'+network_interface+'/address', 'r') as file:
+            MAC_address = file.read().strip()
+    except FileNotFoundError:
+        loggerDEBUG(f"Error: File '/sys/class/net/{network_interface}/address' not found.")
+    except Exception as e:
+        loggerDEBUG(f"get_MAC_address {network_interface} - Exception: {e}")
+    loggerDEBUG(f"get_MAC_address- returns: {network_interface} {MAC_address}")
+    return MAC_address
+
+def generate_random_eth0_MAC_address(oui):
+    # Generate the remaining 3 bytes (xx:xx:xx) of the MAC address
+    random_bytes = [random.randint(0x00, 0xFF) for _ in range(3)]
+
+    # Format the random bytes into hexadecimal strings
+    random_bytes_str = [format(byte, '02x') for byte in random_bytes]
+
+    eth0_address = ":".join([oui] + random_bytes_str)
+    return eth0_address
+
+def generate_eth0_MAC_address(oui, wlan0_MAC_address):
+    if wlan0_MAC_address is None:
+        return None
+
+    # Validate that the wlan0_MAC_address is in the correct format "xx:xx:xx:xx:xx:xx"
+    mac_parts = wlan0_MAC_address.split(":")
+    if len(mac_parts) != 6:
+        return None
+
+    # Substitute the first three parts of the MAC address with oui
+    eth0_MAC_address = ":".join([oui] + mac_parts[3:])
+    return eth0_MAC_address
+
+def set_eth0_MAC_address(new_MAC_address):
+    try:
+        rs("sudo ifconfig eth0 down")
+        rs("sudo ifconfig eth0 hw ether "+new_MAC_address)
+        rs("sudo ifconfig eth0 up")
+        params.put("eth0_MAC_address", new_MAC_address)
+    except Exception as e:
+        loggerDEBUG(f"set_eth0_MAC_address {new_MAC_address} - Exception: {e}")
+
+def set_oui(wlan0_MAC_address):
+    # The OUI (Organizationally Unique Identifier)
+    # 28:CD:C1 Raspberry Pi Trading Ltd
+    # 3A:35:41 Raspberry Pi (Trading) Ltd
+    # B8:27:EB Raspberry Pi Foundation
+    # D8:3A:DD Raspberry Pi Trading Ltd
+    # DC:A6:32 Raspberry Pi Trading Ltd
+    # E4:5F:01 Raspberry Pi Trading Ltd
+    if wlan0_MAC_address is not None and "b8:27:eb" in wlan0_MAC_address[:9]:
+        oui = "28:cd:c1"
+    else:
+        oui = "b8:27:ec"
+    return oui
+
+def use_self_generated_eth0_MAC_address():
+    wlan0_MAC_address = get_MAC_address("wlan0")
+    params.put("wlan0_MAC_address", wlan0_MAC_address)
+    oui = set_oui(wlan0_MAC_address)
+    eth0_MAC_address = generate_eth0_MAC_address(oui, wlan0_MAC_address)
+    if eth0_MAC_address is None:
+        generate_random_eth0_MAC_address(oui)
+    loggerDEBUG(f"eth0_MAC_address {eth0_MAC_address}")
+    loggerDEBUG(f"wlan0_MAC_address {wlan0_MAC_address}")
+    set_eth0_MAC_address(eth0_MAC_address)
+ 
+def initialize_eth0_MAC_address():
+    if params.get("use_self_generated_eth0_MAC_address")==1 and params.get("eth0_MAC_address") is None:
+        use_self_generated_eth0_MAC_address()
+

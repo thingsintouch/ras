@@ -12,7 +12,7 @@ from common.constants import WORKING_DIR, PARAMS, CLOCKINGS
 from common.params import Params
 from odoo.odooRequests import check_if_registered
 from common.connectivity import isPingable
-from common.common import setTimeZone, reboot
+from common.common import setTimeZone, reboot, use_self_generated_eth0_MAC_address
 
 
 params = Params(db=PARAMS)
@@ -23,7 +23,8 @@ list_of_boolean_flags = [
     "partialFactoryReset",
     "fullFactoryReset",
     "shutdownTerminal",
-    "deleteClockings"
+    "deleteClockings",
+    "setEthernetMAC"
 ]
 
 def display_off():
@@ -48,7 +49,8 @@ class Status_Flags_To_Check():
             "rebootTerminal"            : self.rebootTerminal,
             "partialFactoryReset"       : self.partialFactoryReset,
             "fullFactoryReset"          : self.fullFactoryReset,
-            "deleteClockings"           : self.deleteClockings
+            "deleteClockings"           : self.deleteClockings,
+            "setEthernetMAC"            : self.setEthernetMAC
         }
 
     def check_and_execute(self):
@@ -129,6 +131,9 @@ class Status_Flags_To_Check():
                 else:
                     #time.sleep(10) # avoid to reboot twice
                     self.rebootTerminal()
+    
+    def setEthernetMAC(self):
+        use_self_generated_eth0_MAC_address()
 
 class Timezone_Checker():
 

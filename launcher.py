@@ -17,11 +17,12 @@ from messaging.messaging import SubscriberMultipart as Subscriber
 from common.common import setTimeZone, store_factory_settings_in_database, \
     ensure_python_dependencies,set_bluetooth_device_name, \
     ensure_git_does_not_change_env_file, ensure_wpa_supplicant, \
-    initialize_show_debug_messages
+    initialize_show_debug_messages, initialize_eth0_MAC_address
 from common.common import runShellCommand_and_returnOutput as rs
 from common.get_managed_processes import get_managed_essential_processes
 
 initialize_show_debug_messages()
+initialize_eth0_MAC_address()
 
 params = Params(db=co.PARAMS)
 

@@ -64,6 +64,7 @@ class CommandForm(FlaskForm):
     command_full_reset = SubmitField('Full Reset')
     command_shutdown = SubmitField('Shutdown')
     command_delete_clockings = SubmitField('Delete clockings')
+    command_set_ethernet_mac= SubmitField('Set Ethernet MAC')
 
 
 class CommandResult(FlaskForm):

@@ -70,6 +70,10 @@ class ParametersForm(FlaskForm):
         choices=[("0","No DEBUG messages are logged"), ("1","DEBUG Messages are logged")])
     option_show_debug = SubmitField('Set')
 
+    # use_self_generated_eth0_MAC_address = SelectField(u'MAC address for Ethernet',
+    #     choices=[("0","Use Adapter MAC address"), ("1","Use Raspberry Pi MAC address")])
+    # option_use_self_generated_eth0_MAC_address = SubmitField('Set')
+
 class ParametersResult(FlaskForm):
     submit = SubmitField('OK')
     cancel = SubmitField('Cancel')

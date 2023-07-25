@@ -7,6 +7,7 @@ from thermal.hardware_status import get_hardware_status
 from odoo.odooRequests import  get_iot_template
 from common.params import Params
 from common.constants import PARAMS, CLOCKINGS
+from common.common import get_MAC_address
 from common.common import runShellCommand_and_returnOutput as rs
 
 from odoo.registerClockings import get_sorted_clockings_from_older_to_newer
@@ -30,6 +31,8 @@ def show_info():
     git_repository = (rs("git remote -v")) or "N/A"
     git_repository = git_repository.split("\n")[0]
     device_name = params.get("RASxxx") or "N/A"
+    wlan0_MAC_address = get_MAC_address("wlan0") or "N/A"
+    eth0_MAC_address = get_MAC_address("eth0") or "N/A"
     # wifi_SSID = get_wifi_SSID_of_RAS()
     # wifi_success =  params.get("wifi_connection_counter_successful") or "0"
     # wifi_NO_success =  params.get("wifi_connection_counter_unsuccessful") or "0"
@@ -43,6 +46,8 @@ def show_info():
                 git_version_hash=git_version_hash,
                 git_repository=git_repository,
                 device_name=device_name,
+                wlan0_MAC_address=wlan0_MAC_address,
+                eth0_MAC_address=eth0_MAC_address,
                 # wifi_SSID=wifi_SSID,
                 # wifi_success=wifi_success,
                 # wifi_NO_success=wifi_NO_success
