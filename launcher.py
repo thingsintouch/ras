@@ -22,12 +22,13 @@ from common.common import runShellCommand_and_returnOutput as rs
 from common.get_managed_processes import get_managed_essential_processes
 
 initialize_show_debug_messages()
-initialize_eth0_MAC_address()
 
 params = Params(db=co.PARAMS)
 
 params.put("acknowledged", "0") # terminal is NOT acknowledged at the beginning
 store_factory_settings_in_database()
+initialize_eth0_MAC_address()
+
 # ensure_wpa_supplicant()
 setTimeZone()
 

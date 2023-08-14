@@ -75,7 +75,7 @@ class Status_Flags_To_Check():
             os.chdir(WORKING_DIR)
             os.system("sudo git fetch origin ras_oca")
             os.system("sudo git reset --hard origin/ras_oca")
-            os.system("sudo git fetch -f --all --tags")
+            os.system(" ")
             time.sleep(1)
             self.rebootTerminal()
         else:
