@@ -67,7 +67,7 @@ class Status_Flags_To_Check():
                 time.sleep(2)
     
     def check_if_eth_mac_is_set(self):
-        if params.get("use_self_generated_eth0_MAC_address")==1:
+        if params.get("use_self_generated_eth0_MAC_address")=="1":
             stored_mac_address = params.get("eth0_MAC_address")
             if stored_mac_address is None:
                 stored_mac_address = get_self_generated_eth0_MAC_address()
