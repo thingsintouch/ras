@@ -12,7 +12,9 @@ from common.constants import WORKING_DIR, PARAMS, CLOCKINGS
 from common.params import Params
 from odoo.odooRequests import check_if_registered
 from common.connectivity import isPingable
-from common.common import setTimeZone, reboot, use_self_generated_eth0_MAC_address
+from common.common import (
+    setTimeZone, reboot, use_self_generated_eth0_MAC_address, 
+    on_ethernet, get_self_generated_eth0_MAC_address, get_MAC_address)
 
 
 params = Params(db=PARAMS)
@@ -55,6 +57,7 @@ class Status_Flags_To_Check():
 
     def check_and_execute(self):
         self.check_if_registered_once_after_every_launch()
+        self.check_if_eth_mac_is_set()
         for boolean_flag in list_of_boolean_flags:
             if params.get(boolean_flag) == "1":
                 set_all_boolean_flags_to_false()
@@ -62,6 +65,16 @@ class Status_Flags_To_Check():
                 loggerINFO("-"*20 + boolean_flag + "#"*20)
                 self.action_for_boolean_flag[boolean_flag]()
                 time.sleep(2)
+    
+    def check_if_eth_mac_is_set(self):
+        if params.get("use_self_generated_eth0_MAC_address")==1:
+            if on_ethernet():
+                stored_mac_address = params.get("eth0_MAC_address")
+                if stored_mac_address is None:
+                    stored_mac_address = get_self_generated_eth0_MAC_address()
+                if get_MAC_address("eth0") != stored_mac_address:
+                    params.put("setEthernetMAC", "1")
+
 
     def check_if_registered_once_after_every_launch(self):
         if not self.acknowledged and params.get("odooPortOpen") == "1":
