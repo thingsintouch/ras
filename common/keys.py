@@ -79,6 +79,7 @@ keys_by_Type[TxType.FACTORY_SETTINGS] = [
     "hardware_display",
     "hardware_sound",
     "template_to_register_device",
+    "use_self_generated_eth0_MAC_address"
 
   ]
 
