@@ -476,6 +476,6 @@ def use_self_generated_eth0_MAC_address():
     set_eth0_MAC_address(eth0_MAC_address)
  
 def initialize_eth0_MAC_address():
-    if params.get("use_self_generated_eth0_MAC_address")==1 and params.get("eth0_MAC_address") is None:
+    if params.get("use_self_generated_eth0_MAC_address")==1:  #and params.get("eth0_MAC_address") is None
         use_self_generated_eth0_MAC_address()
 
