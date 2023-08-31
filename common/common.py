@@ -285,16 +285,51 @@ def set_bluetooth_device_name():
     params.put("bluetooth_device_name", bluetooth_device_name)
 
 def get_own_IP_address():
+    # employs UDP broadcast to retrieve the local IP address. The choice of '10.255.255.255' 
+    # as the IP address is commonly used for this purpose, as it's a broadcast address 
+    # that reaches all devices within the local network
+    # It's plausible that certain networks or firewalls might impose restrictions 
+    # or block UDP broadcast packets.
+    # So, the device could be connected but show on the display "not connected".
     st = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         st.connect(('10.255.255.255', 1))
+        st.settimeout(2)  # Set a timeout for socket operations
         IP = st.getsockname()[0]
     except Exception:
+        loggerDEBUG(f"Exception while retrieving IP address making a UDP broadcast: {e}")
         IP = '127.0.0.1'
     finally:
         st.close()
+    if IP == '127.0.0.1':
+        IP = get_own_IP_address_with_google()
     params.put("ip", IP)
     return IP
+
+def get_own_IP_address_with_google():
+    try:
+        # Create a temporary socket to get the local IP address
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(2)  # Set a timeout for socket operations
+
+        # Connect to a remote server (Google's DNS server)
+        s.connect(("8.8.8.8", 80))
+
+        # Get the local IP address from the socket's address
+        local_ip = s.getsockname()[0]
+
+    except socket.error as e:
+        loggerDEBUG(f"Error while retrieving IP address contacting 8.8.8.8 (google): {e}")
+        local_ip = '127.0.0.1'
+    
+    except Exception as e:
+        loggerDEBUG(f"Exception while retrieving IP address contacting 8.8.8.8 (google): {e}")
+        local_ip = '127.0.0.1'
+
+    finally:
+        s.close()
+
+    return local_ip
 
 def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex for ports
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
