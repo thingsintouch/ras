@@ -296,7 +296,7 @@ def get_own_IP_address():
         st.connect(('10.255.255.255', 1))
         st.settimeout(2)  # Set a timeout for socket operations
         IP = st.getsockname()[0]
-    except Exception:
+    except Exception as e:
         loggerDEBUG(f"Exception while retrieving IP address making a UDP broadcast: {e}")
         IP = '127.0.0.1'
     finally:
