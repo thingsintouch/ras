@@ -301,8 +301,8 @@ def get_own_IP_address():
         IP = '127.0.0.1'
     finally:
         st.close()
-    if IP == '127.0.0.1':
-        IP = get_own_IP_address_with_google()
+    # if IP == '127.0.0.1':
+    #     IP = get_own_IP_address_with_google()
     params.put("ip", IP)
     return IP
 
