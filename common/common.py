@@ -510,8 +510,31 @@ def get_self_generated_eth0_MAC_address():
     loggerDEBUG(f"wlan0_MAC_address {wlan0_MAC_address}")
     return eth0_MAC_address
 
+def store_permanently_eth0_ḾAC_address(eth0_MAC_address):
+    try:
+        file_name = "/etc/systemd/network/99-default.link"
+        rs("sudo rm " + file_name)
+        lines_to_write = [
+            "[Match]",
+            "OriginalName=eth0",
+            " ",
+            "[Link]",
+            "MACAddress="+eth0_MAC_address
+        ]
+        # Open the file in write mode (or create if it doesn't exist)
+        with open(file_name, "w") as file:
+            for line in lines_to_write:
+                file.write(line + "\n")
+        loggerINFO(f"successfully stored permanently_eth0_ḾAC_address {eth0_MAC_address}")    
+    except Exception as e:
+        loggerINFO(f"store_permanently_eth0_ḾAC_address {eth0_MAC_address} - Exception: {e}")    
+
+
 def use_self_generated_eth0_MAC_address():
-    set_eth0_MAC_address(get_self_generated_eth0_MAC_address())
+    eth0_MAC_address = get_self_generated_eth0_MAC_address()
+    set_eth0_MAC_address(eth0_MAC_address)
+    store_permanently_eth0_ḾAC_address(eth0_MAC_address)
+
  
 def initialize_eth0_MAC_address():
     if params.get("use_self_generated_eth0_MAC_address")==1:  #and params.get("eth0_MAC_address") is None
