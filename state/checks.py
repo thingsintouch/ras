@@ -52,7 +52,8 @@ class Status_Flags_To_Check():
             "partialFactoryReset"       : self.partialFactoryReset,
             "fullFactoryReset"          : self.fullFactoryReset,
             "deleteClockings"           : self.deleteClockings,
-            "setEthernetMAC"            : self.setEthernetMAC
+            "setEthernetMAC"            : self.setEthernetMAC,
+            "deleteIPs"                 : self.deleteIPs
         }
 
     def check_and_execute(self):
@@ -146,7 +147,13 @@ class Status_Flags_To_Check():
                     self.rebootTerminal()
     
     def setEthernetMAC(self):
+        loggerINFO("-----############### set unique Ethernet MAC ###############------")
         use_self_generated_eth0_MAC_address()
+    
+    def deleteIPs(self):
+        loggerINFO("-----############### delete all IPs on wlan0 and etho ###############------")
+        os.system("sudo ip addr flush eth0")
+        os.system("sudo ip addr flush wlan0")
 
 class Timezone_Checker():
 
