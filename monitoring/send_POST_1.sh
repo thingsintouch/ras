@@ -31,7 +31,7 @@ PYTHON_SCRIPT="
 import json
 
 # Define the path to the JSON file
-JSON_FILE = '/home/pi/ras/factory_settings/custom_params.json'
+JSON_FILE = '/home/pi/ras/factory_settings/custom_params.py'
 
 try:
     with open(JSON_FILE, 'r') as f:
