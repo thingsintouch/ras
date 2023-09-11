@@ -21,7 +21,7 @@ used_ram_MB=$(printf "%.0f" $used_ram_MB)
 # Round the values to integers using printf
 cpu_load_1min_percent=$(bc <<< "scale=0; ($cpu_load_1min_percent*100)/$cpu_count")
 cpu_load_5min_percent=$(bc <<< "scale=0; ($cpu_load_5min_percent*100)/$cpu_count")
-temp=$(printf "%.0f" $temp)
+temp_C=$(printf "%.0f" $temp_C)
 used_ram_percent=$(bc <<< "scale=0; ($used_ram_MB*100)/$max_ram_MB")
 # Store and print the values in stats.txt
 echo "CPU load 1 min: $cpu_load_1min_percent%" 
