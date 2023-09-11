@@ -28,20 +28,20 @@ PRODUCTION_NUMBER="not defined"
 if [ -f "$PYTHON_FILE" ]; then
 # Define the Python script
 PYTHON_SCRIPT="
-import json
-
-# Define the path to the JSON file
-JSON_FILE = '/home/pi/ras/factory_settings/custom_params.py'
+PYTHON_FILE = '/home/pi/ras/factory_settings/custom_params.py'
 
 try:
-    with open(JSON_FILE, 'r') as f:
-        data = json.load(f)
-        production_number = data.get('productionNumber', 'not defined')
-        print(str(production_number))
+    with open(PYTHON_FILE, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            if 'productionNumber' in line:
+                production_number = line.split('\"')[-2]
+                print(f'Production Number: {production_number}')
+                break
+        else:
+            print('Production Number not found.')
 except FileNotFoundError:
-    print(f'File {JSON_FILE} not found.')
-except json.JSONDecodeError:
-    print(f'Error decoding JSON in {JSON_FILE}.')
+    print(f'File {PYTHON_FILE} not found.')
 "
 
 # Run the Python script and capture its output
