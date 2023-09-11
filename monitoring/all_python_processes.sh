@@ -5,4 +5,4 @@ pgrep -a python3 | while read pid cmd; do
   #echo "Command: $cmd"
   #echo "Subprocesses:"
   pstree -p $pid
-done | tr '\n' ';' | sed 's/;;/;/g'
+done | tr '\n' ';' | sed 's/;;/;/g' | tr -d ' '
