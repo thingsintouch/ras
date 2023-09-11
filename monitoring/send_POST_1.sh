@@ -36,7 +36,7 @@ try:
         for line in lines:
             if 'productionNumber' in line:
                 production_number = line.split('\"')[-2]
-                print(f'Production Number: {production_number}')
+                print(f'{production_number}')
                 break
         else:
             print('Production Number not found.')
