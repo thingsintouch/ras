@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Check if jq is installed
+if command -v jq &> /dev/null
+then
+    echo "jq is installed"
+else
+    echo "jq is not installed, installing it now"
+    # Install jq using apt
+    sudo apt update
+    sudo apt install jq
+fi
+
 # Define the endpoint URL
 URL="https://2309a_hasura.thingserp.com/v1/graphql"
 
