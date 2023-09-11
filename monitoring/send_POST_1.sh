@@ -39,9 +39,9 @@ try:
         production_number = data.get('productionNumber', 'not defined')
         print(str(production_number))
 except FileNotFoundError:
-    print(f"File {JSON_FILE} not found.")
+    print(f'File {JSON_FILE} not found.')
 except json.JSONDecodeError:
-    print(f"Error decoding JSON in {JSON_FILE}.")
+    print(f'Error decoding JSON in {JSON_FILE}.')
 "
 
 # Run the Python script and capture its output
