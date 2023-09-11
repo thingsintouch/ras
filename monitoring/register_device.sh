@@ -8,7 +8,7 @@ else
     echo "jq is not installed, installing it now"
     # Install jq using apt
     sudo apt update
-    sudo apt install jq
+    sudo DEBIAN_FRONTEND=noninteractive apt install -y jq
 fi
 
 # Define the endpoint URL
