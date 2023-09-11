@@ -1,8 +1,5 @@
 #!/bin/bash
-# List all python3 processes and subprocesses
+# List all python3 subprocesses without full path
 pgrep -a python3 | while read pid cmd; do
-  echo "Process ID: $pid"
-  echo "Command: $cmd"
-  echo "Subprocesses:"
-  pstree -p $pid
-done
+  basename "$cmd" | xargs pstree -a -p $pid
+done | tr '\n' ';' | sed 's/;;/;/g'
