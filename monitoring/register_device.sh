@@ -171,3 +171,11 @@ echo "git_branch=$git_branch"
 echo "git_tag=$git_tag"
 echo "git_hash=$git_hash"
 echo "git_repository='$git_repository'"
+
+#!/bin/bash
+
+# Get the boot duration using systemd-analyze
+boot_duration=$(systemd-analyze | grep "Startup finished" | awk '{print $5}')
+
+# Print the boot duration
+echo "Last boot took approximately $boot_duration seconds."
