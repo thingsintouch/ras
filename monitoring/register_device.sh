@@ -157,7 +157,7 @@ cd /home/pi/ras
 git_branch=$(git symbolic-ref --short HEAD)
 
 # Get the current Git commit hash
-git_hash=$(git rev-parse HEAD)
+git_hash=$(git describe --tags)
 
 # Get the remote repository URL (assuming there's only one remote named "origin")
 git_repository=$(git config --get remote.origin.url)
