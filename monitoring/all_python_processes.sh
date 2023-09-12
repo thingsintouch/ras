@@ -26,3 +26,18 @@ done
 for key in "${!bool_vars[@]}"; do
   echo "$key: ${bool_vars[$key]}"
 done
+
+# Initialize the all_alive variable to true
+all_alive=true
+
+# Loop through the values of the boolean variables
+for value in "${bool_vars[@]}"; do
+  # Check if any value is false
+  if [ "$value" = false ]; then
+    all_alive=false
+    break  # No need to continue checking if one is false
+  fi
+done
+
+# Print the value of all_alive
+echo "all_alive: $all_alive"
