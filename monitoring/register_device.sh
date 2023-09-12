@@ -149,3 +149,23 @@ fi
 
 # Printing the value of the boolean variable
 #echo "HAS_DEVICE=$HAS_DEVICE"
+
+# Navigate to the Git repository directory
+cd /home/pi/ras
+
+# Get the current Git branch
+git_branch=$(git symbolic-ref --short HEAD)
+
+# Get the current Git commit hash
+git_hash=$(git rev-parse HEAD)
+
+# Get the remote repository URL (assuming there's only one remote named "origin")
+git_repository=$(git config --get remote.origin.url)
+
+# Define the output file for variables
+variables_file="/home/pi/ras/git_variables.sh"
+
+# Create the output file with the variables
+echo "git_branch=$git_branch" 
+echo "git_hash=$git_hash" 
+echo "git_repository='$git_repository'"
