@@ -173,7 +173,7 @@ echo "git_hash=$git_hash"
 echo "git_repository='$git_repository'"
 
 # Get the boot duration using systemd-analyze and convert it to milliseconds
-boot_duration_seconds=$(systemd-analyze | grep "Startup finished" | awk '{print $10}')
+boot_duration_seconds=$(systemd-analyze | grep "Startup finished" | awk '{print $10}' | tr -d 's')
 boot_duration_milliseconds=$(bc <<< "scale=0; ($boot_duration_seconds*1000)/1")
 
 # Print the boot duration in milliseconds
