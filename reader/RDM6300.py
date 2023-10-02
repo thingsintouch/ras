@@ -78,7 +78,7 @@ def scan_card():
     serial_port.reset_input_buffer()
     card = False
     while not card:
-        time.sleep(0.4)
+        time.sleep(0.8)
         card = wait_for_card() # Blocking
 
     card_str = str(card).zfill(10)
