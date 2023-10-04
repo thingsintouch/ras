@@ -549,8 +549,8 @@ def insert_line_at_top(file_path, line_to_insert):
         # Insert the new line at the top
         lines.insert(0, line_to_insert)
 
-        # Ensure the file has less than 200 lines by deleting the last line if necessary
-        if len(lines) > 8:
+        # Ensure the file has less than 400 lines by deleting the last line if necessary
+        if len(lines) > 400:
             lines.pop()
 
         # Write the modified content back to the file
@@ -565,4 +565,14 @@ def insert_line_at_top(file_path, line_to_insert):
         with open(file_path, 'w') as file:
             file.write(line_to_insert)
             loggerDEBUG(f"File {file_path} created with the inserted line")
+
+def return_lines_from_file(file_path):
+    try:
+        # Read the existing file content
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+    except FileNotFoundError:
+        loggerDEBUG(f"File not found: {file_path}")
+        lines = []
+    return lines
 
