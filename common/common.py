@@ -21,6 +21,11 @@ import dbus
 import sys
 import fcntl
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+
 progname = "com.example.HelloWorld"
 objpath  = "/HelloWorld"
 intfname = "com.example.HelloWorldInterface"
@@ -576,3 +581,39 @@ def return_lines_from_file(file_path):
         lines = []
     return lines
 
+# Email configuration
+EMAIL_PROVIDER_SMTP_ADDRESS = 'smtp.gmail.com'
+#MY_PASSWORD = 'ikgk owvu ldvk mqse'
+MY_EMAIL = 'logsras@gmail.com'
+
+def send_email(email, subject, message_text, attachment_filename):
+    try:
+        # Create the email message
+        message = MIMEMultipart()
+        message['From'] = MY_EMAIL
+        message['To'] = email
+        message['Subject'] = subject
+
+        # Attach the file if provided
+        if attachment_filename:
+            with open(attachment_filename, 'rb') as attachment:
+                part = MIMEApplication(attachment.read(), Name=attachment_filename)
+
+            part['Content-Disposition'] = f'attachment; filename={attachment_filename}'
+            message.attach(part)
+        
+        # Attach the plain text message
+        message.attach(MIMEText(message_text, 'plain'))
+
+        with smtplib.SMTP(EMAIL_PROVIDER_SMTP_ADDRESS, timeout=20) as connection:
+            connection.starttls()
+            MY_PASSWORD = params.get("smtp_password") or False
+            if MY_PASSWORD:
+                connection.login(MY_EMAIL, MY_PASSWORD)
+                connection.sendmail(
+                    from_addr=MY_EMAIL,
+                    to_addrs=email,
+                    msg=f"Subject:{subject}\n\n{message}".encode('utf-8')
+                )
+    except Exception as e:
+        loggerDEBUG(f"Exception sending E-Mail: {e}")

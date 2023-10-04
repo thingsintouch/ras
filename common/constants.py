@@ -31,6 +31,7 @@ HASH_DIGEST_SIZE = int(config("HASH_DIGEST_SIZE"))
 HASH_PERSON_REGISTER_TERMINAL = bytes(config("HASH_PERSON_REGISTER_TERMINAL"), encoding='utf8')
 
 PARAMS = WORKING_DIR + "/data/params"
+CUSTOM_PARAMS = WORKING_DIR + "/factory_settings/custom_params.py"
 LAST_REGISTERED = WORKING_DIR + "/data/last_registered.txt"
 CLOCKINGS = WORKING_DIR + "/data/clockings"
 IN_OR_OUT = WORKING_DIR + "/data/in_or_out"

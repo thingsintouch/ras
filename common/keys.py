@@ -47,6 +47,9 @@ keys_by_Type[TxType.ON_ROUTINE_CALLS] =     \
     "fullFactoryReset",    # will delete locally stored clocking data
     "RASxxx",
     "show_debug",
+    "emailLogs",
+    "send_emailLogs",
+    "smtp_password",
     "setEthernetMAC",
     "deleteIPs"
     
