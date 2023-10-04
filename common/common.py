@@ -550,7 +550,7 @@ def insert_line_at_top(file_path, line_to_insert):
         lines.insert(0, line_to_insert)
 
         # Ensure the file has less than 200 lines by deleting the last line if necessary
-        if len(lines) > 200:
+        if len(lines) > 8:
             lines.pop()
 
         # Write the modified content back to the file
