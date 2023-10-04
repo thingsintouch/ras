@@ -24,8 +24,6 @@ if not os.path.exists(CLOCKINGS):
 if not os.path.exists(IN_OR_OUT):
     mkdirs_exists_ok(IN_OR_OUT)
 
-
-
 def get_two_lines_name(card):
     if card in os.listdir(PARAMS+'/d'):
         full_name = read_db(PARAMS, card).decode('utf-8')
@@ -43,7 +41,7 @@ def write_clocking(card, now_in_seconds):
     write_to_file(file_name_of_the_clocking, "Odoo server has not been contacted for this clocking. Refer to previous clockings of this card.\n")
     tz = params.get("tz") or "Europe/Berlin"
     tzinfo = pytz.timezone(tz)
-    line_to_insert = datetime.fromtimestamp(int(now_in_seconds), tz=tzinfo).strftime('%H:%M:%S %A %d-%b-%y') + " - " +  str(card) 
+    line_to_insert = datetime.fromtimestamp(int(now_in_seconds), tz=tzinfo).strftime('%H:%M:%S %A %d-%b-%y') + " - " +  str(card) + "\n" 
     insert_line_at_top(LAST_REGISTERED, line_to_insert)
 
 def get_minimum_time():
