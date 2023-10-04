@@ -11,7 +11,7 @@ MY_PASSWORD = 'ikgk owvu ldvk mqse'
 MY_EMAIL = 'logsras@gmail.com'
 receiver_email = 'lu.bu.sax@gmail.com'
 
-def send_email(email, message_text, attachment_filename):
+def send_email(email, subject, message_text, attachment_filename):
 
     # Create the email message
     message = MIMEMultipart()
@@ -36,10 +36,11 @@ def send_email(email, message_text, attachment_filename):
         connection.sendmail(
             from_addr=MY_EMAIL,
             to_addrs=email,
-            msg=f"Subject:New Low Price Flight!\n\n{message}".encode('utf-8')
+            msg=f"Subject:{subject}\n\n{message}".encode('utf-8')
         )
 
 email_text = 'This is a test'
 attachment_filename = 'example.txt'
+subject = "testing"
 
-send_email(receiver_email, email_text, attachment_filename)
+send_email(receiver_email, subject, email_text, attachment_filename)

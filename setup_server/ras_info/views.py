@@ -73,7 +73,7 @@ def show_stored_clockings():
 
     return render_template('show_stored_clockings.html', clockings=c_with_timestamp)
 
-@ras_info.route('/show_last_registered_clockings',methods=['GET','POST'])
+@ras_info.route('/show_registered_clockings',methods=['GET','POST'])
 @login_required
 def show_registered_clockings():
     clockings = get_sorted_clockings_from_older_to_newer()
@@ -91,4 +91,4 @@ def show_registered_clockings():
         c_with_timestamp.append((timestamp, card, person_name, message_from_odoo))
 
 
-    return render_template('show_stored_clockings.html', clockings=c_with_timestamp)
+    return render_template('show_registered_clockings.html', clockings=c_with_timestamp)
