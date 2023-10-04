@@ -612,7 +612,7 @@ def send_email(email, subject, message_text, attachment_filename):
                 connection.sendmail(
                     from_addr=MY_EMAIL,
                     to_addrs=email,
-                    msg=f"Subject:{subject}\n\n{message}".encode('utf-8')
+                    msg=f"Subject:{subject}\n\n{message_text}".encode('utf-8')
                 )
     except Exception as e:
         loggerDEBUG(f"Exception sending E-Mail: {e}")
