@@ -596,12 +596,11 @@ def send_email(email, subject, message_text, attachment_filename):
 
         # Attach the file if provided
         if attachment_filename:
-            with open(attachment_filename, 'rb') as attachment:
-                part = MIMEApplication(attachment.read(), Name=attachment_filename)
+            with open(attachment_filename, 'r') as file:
+                lines = file.readlines()
+            for line in lines:
+                message_text = "\n" + message_text + line
 
-            part['Content-Disposition'] = f'attachment; filename={attachment_filename}'
-            message.attach(part)
-        
         # Attach the plain text message
         message.attach(MIMEText(message_text, 'plain'))
 
