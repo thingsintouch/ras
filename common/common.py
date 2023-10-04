@@ -599,7 +599,7 @@ def send_email(email, subject, message_text, attachment_filename):
             with open(attachment_filename, 'r') as file:
                 lines = file.readlines()
             for line in lines:
-                message_text = "\n" + message_text + line
+                message_text = message_text + line
 
         # Attach the plain text message
         message.attach(MIMEText(message_text, 'plain'))
