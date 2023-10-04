@@ -166,7 +166,7 @@ class Status_Flags_To_Check():
             serial_number = factory_settings["productionNumber"] or "no s/n"
             subject = f"RAS #{serial_number} - log of last registered cards"
             if email:
-                send_email(email, subject, "Please find attached the last 400 registered cards", LAST_REGISTERED)
+                send_email(email, subject, "Please find attached the last 400 registered cards. \n\n", LAST_REGISTERED)
         except:
             pass
         
