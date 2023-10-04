@@ -12,6 +12,7 @@ class CommandForm(FlaskForm):
     command_delete_clockings = SubmitField('Delete clockings')
     command_set_ethernet_mac= SubmitField('Set Ethernet MAC')
     command_delete_IPs =  SubmitField('Delete all IP addresses')
+    command_send_emailLogs = SubmitField('Send Email with Log of last 400 registered cards')
 
 class CommandResult(FlaskForm):
     submit = SubmitField('OK')

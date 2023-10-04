@@ -21,6 +21,11 @@ import dbus
 import sys
 import fcntl
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+
 progname = "com.example.HelloWorld"
 objpath  = "/HelloWorld"
 intfname = "com.example.HelloWorldInterface"
@@ -540,3 +545,74 @@ def initialize_eth0_MAC_address():
     if params.get("use_self_generated_eth0_MAC_address")==1:  #and params.get("eth0_MAC_address") is None
         use_self_generated_eth0_MAC_address()
 
+def insert_line_at_top(file_path, line_to_insert):
+    try:
+        # Read the existing file content
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+
+        # Insert the new line at the top
+        lines.insert(0, line_to_insert)
+
+        # Ensure the file has less than 400 lines by deleting the last line if necessary
+        if len(lines) > 400:
+            lines.pop()
+
+        # Write the modified content back to the file
+        with open(file_path, 'w') as file:
+            file.writelines(lines)
+
+        loggerDEBUG(f"Line inserted successfully in {file_path}")
+
+    except FileNotFoundError:
+        loggerDEBUG(f"File not found: {file_path}")
+        # Create the file if it doesn't exist
+        with open(file_path, 'w') as file:
+            file.write(line_to_insert)
+            loggerDEBUG(f"File {file_path} created with the inserted line")
+
+def return_lines_from_file(file_path):
+    try:
+        # Read the existing file content
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+    except FileNotFoundError:
+        loggerDEBUG(f"File not found: {file_path}")
+        lines = []
+    return lines
+
+# Email configuration
+EMAIL_PROVIDER_SMTP_ADDRESS = 'smtp.gmail.com'
+#MY_PASSWORD = 'ikgk owvu ldvk mqse'
+MY_EMAIL = 'logsras@gmail.com'
+
+def send_email(email, subject, message_text, attachment_filename):
+    try:
+        # Create the email message
+        message = MIMEMultipart()
+        message['From'] = MY_EMAIL
+        message['To'] = email
+        message['Subject'] = subject
+
+        # Attach the file if provided
+        if attachment_filename:
+            with open(attachment_filename, 'r') as file:
+                lines = file.readlines()
+            for line in lines:
+                message_text = message_text + line
+
+        # Attach the plain text message
+        message.attach(MIMEText(message_text, 'plain'))
+
+        with smtplib.SMTP(EMAIL_PROVIDER_SMTP_ADDRESS, timeout=20) as connection:
+            connection.starttls()
+            MY_PASSWORD = params.get("smtp_password") or False
+            if MY_PASSWORD:
+                connection.login(MY_EMAIL, MY_PASSWORD)
+                connection.sendmail(
+                    from_addr=MY_EMAIL,
+                    to_addrs=email,
+                    msg=f"Subject:{subject}\n\n{message_text}".encode('utf-8')
+                )
+    except Exception as e:
+        loggerDEBUG(f"Exception sending E-Mail: {e}")

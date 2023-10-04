@@ -3,7 +3,7 @@ import time
 import os
 from os.path import join, isfile
 
-from common.constants import PARAMS, CLOCKINGS, IN_OR_OUT, DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS
+from common.constants import LAST_REGISTERED, PARAMS, CLOCKINGS, IN_OR_OUT, DEFAULT_MINIMUM_TIME_BETWEEN_CLOCKINGS
 from common.logger import loggerINFO, loggerCRITICAL, loggerDEBUG, loggerERROR
 
 from messaging.messaging import SubscriberMultipart as Subscriber
@@ -11,7 +11,10 @@ from messaging.messaging import PublisherMultipart as Publisher
 
 
 from common.params import Params, mkdirs_exists_ok, read_db
-from common.common import write_to_file
+from common.common import write_to_file, insert_line_at_top
+
+from datetime import datetime
+import pytz
 
 params = Params(db=PARAMS)
 
@@ -20,8 +23,6 @@ if not os.path.exists(CLOCKINGS):
     
 if not os.path.exists(IN_OR_OUT):
     mkdirs_exists_ok(IN_OR_OUT)
-
-
 
 def get_two_lines_name(card):
     if card in os.listdir(PARAMS+'/d'):
@@ -38,6 +39,10 @@ def get_two_lines_name(card):
 def write_clocking(card, now_in_seconds):
     file_name_of_the_clocking = CLOCKINGS + "/" + str(card) + "-" + str(now_in_seconds)
     write_to_file(file_name_of_the_clocking, "Odoo server has not been contacted for this clocking. Refer to previous clockings of this card.\n")
+    tz = params.get("tz") or "Europe/Berlin"
+    tzinfo = pytz.timezone(tz)
+    line_to_insert = datetime.fromtimestamp(int(now_in_seconds), tz=tzinfo).strftime('%H:%M:%S %A %d-%b-%y') + " - " +  str(card) + "\n" 
+    insert_line_at_top(LAST_REGISTERED, line_to_insert)
 
 def get_minimum_time():
     n = params.get("minimumTimeBetweenClockings")

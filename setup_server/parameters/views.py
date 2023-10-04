@@ -31,6 +31,8 @@ options_list = [
     ('16', 'option_check_in_message_display', 'check_in_message_display', "check_in_message_display", "The message to be shown on the display for a CHECK-IN"),
     ('17', 'option_check_out_message_display', 'check_out_message_display', "check_out_message_display", "The message to be shown on the display for a CHECK-OUT"),
     ('18', 'option_show_debug', 'show_debug', "show_debug", "Should the terminal log DEBUG messages"),
+    ('19', 'option_emailLogs', 'emailLogs', "emailLogs", "The Logs will be sent to this E-Mail address"), 
+    ('20', 'option_smtp_password', 'smtp_password', "smtp_password", "SMTP password"),   
     ]
 
 @parameters.route('/parameters',methods=['GET','POST'])
@@ -57,6 +59,9 @@ def take_parameter():
         form.check_in_message_display.data = params.get("check_in_message_display") or "CHECK IN"
         form.check_out_message_display.data = params.get("check_out_message_display") or "CHECK OUT"
         form.show_debug.data = params.get("show_debug") or "0"
+        form.emailLogs.data = params.get("emailLogs") or "no E-mail"
+        form.smtp_password.data = params.get("smtp_password") or "not set"
+
     if form.is_submitted():
         for o in options_list:
             if o[1] in request.form:

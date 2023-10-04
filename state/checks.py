@@ -7,14 +7,17 @@ from display.helpers import sh1106
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
-from common.constants import WORKING_DIR, PARAMS, CLOCKINGS
+from common.constants import WORKING_DIR, PARAMS, CLOCKINGS, LAST_REGISTERED
 
 from common.params import Params
 from odoo.odooRequests import check_if_registered
 from common.connectivity import isPingable
 from common.common import (
     setTimeZone, reboot, use_self_generated_eth0_MAC_address, 
-    on_ethernet, get_self_generated_eth0_MAC_address, get_MAC_address)
+    on_ethernet, get_self_generated_eth0_MAC_address, get_MAC_address,
+    send_email)
+from factory_settings.custom_params import factory_settings
+
 
 
 params = Params(db=PARAMS)
@@ -26,7 +29,8 @@ list_of_boolean_flags = [
     "fullFactoryReset",
     "shutdownTerminal",
     "deleteClockings",
-    "setEthernetMAC"
+    "setEthernetMAC",
+    "send_emailLogs"
 ]
 
 def display_off():
@@ -53,7 +57,8 @@ class Status_Flags_To_Check():
             "fullFactoryReset"          : self.fullFactoryReset,
             "deleteClockings"           : self.deleteClockings,
             "setEthernetMAC"            : self.setEthernetMAC,
-            "deleteIPs"                 : self.deleteIPs
+            "deleteIPs"                 : self.deleteIPs,
+            "send_emailLogs"            : self.send_emailLogs
         }
 
     def check_and_execute(self):
@@ -154,6 +159,17 @@ class Status_Flags_To_Check():
         loggerINFO("-----############### delete all IPs on wlan0 and etho ###############------")
         os.system("sudo ip addr flush eth0")
         os.system("sudo ip addr flush wlan0")
+
+    def send_emailLogs(self):
+        try:
+            email = params.get("emailLogs") or False
+            serial_number = factory_settings["productionNumber"] or "no s/n"
+            subject = f"RAS #{serial_number} - log of last registered cards"
+            if email:
+                send_email(email, subject, "Please find attached the last 400 registered cards. \n\n", LAST_REGISTERED)
+        except:
+            pass
+        
 
 class Timezone_Checker():
 
