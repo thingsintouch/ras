@@ -73,3 +73,22 @@ def show_stored_clockings():
 
     return render_template('show_stored_clockings.html', clockings=c_with_timestamp)
 
+@ras_info.route('/show_last_registered_clockings',methods=['GET','POST'])
+@login_required
+def show_registered_clockings():
+    clockings = get_sorted_clockings_from_older_to_newer()
+    tz = params.get("tz") or "Europe/Berlin"
+    tzinfo = pytz.timezone(tz)
+    c_with_timestamp = []
+    for c in clockings:
+        timestamp = datetime.fromtimestamp(int(c[0]), tz=tzinfo).strftime('%H:%M:%S %A %d-%b-%y')
+        card = c[1]
+        person_name = get_two_lines_name(card).replace("\n"," ")
+        card_code_and_timestamp = c[2]
+        with open(join(CLOCKINGS,card_code_and_timestamp), 'r') as f:
+            message_from_odoo = f.readline() # .rstrip('\n')
+        if not message_from_odoo: message_from_odoo = "- refer to previous clockings of this card"
+        c_with_timestamp.append((timestamp, card, person_name, message_from_odoo))
+
+
+    return render_template('show_stored_clockings.html', clockings=c_with_timestamp)
