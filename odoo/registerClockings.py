@@ -51,7 +51,7 @@ def registerClockings():
             loggerDEBUG(f"processing clocking {clocking_tuple}")
             card_code = clocking_tuple[1]
             if card_code not in card_codes_to_not_process:
-                message_to_write_in_file = "No answer from Odoo"
+                message_to_write_in_file = "Odoo could not store this clocking"
                 try:
                     card_code_and_timestamp = clocking_tuple[2]
                     timestamp = clocking_tuple[0]
@@ -78,4 +78,6 @@ def registerClockings():
                         message_to_write_in_file = "Clocking has not been logged in Odoo. Error Message from Odoo: " + error_message
                         write_to_file(join(CLOCKINGS,card_code_and_timestamp), message_to_write_in_file + "\n")
                         card_codes_to_not_process.append(card_code)
-
+                else:
+                    write_to_file(join(CLOCKINGS,card_code_and_timestamp), message_to_write_in_file + "\n")
+                    card_codes_to_not_process.append(card_code)
