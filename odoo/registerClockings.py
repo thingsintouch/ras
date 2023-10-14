@@ -34,11 +34,14 @@ def get_sorted_clockings_from_older_to_newer():
                 splitted  = f.split("-")
                 card_code = splitted[0]
                 timestamp = splitted[1]
-                if int(timestamp) < limit_for_clockings_to_remain:
-                    remove(join(CLOCKINGS,f))
-                    loggerINFO(f"removed old clocking stored locally: {f}")
-                else:
-                    clocking_tuples.append((timestamp, card_code, f))
+                try:
+                    if int(timestamp) < limit_for_clockings_to_remain:
+                        remove(join(CLOCKINGS,f))
+                        loggerINFO(f"removed old clocking stored locally: {f}")
+                    else:
+                        clocking_tuples.append((timestamp, card_code, f))
+                except Exception as e:
+                    loggerINFO(f"could not process {f} on get_sorted_clockings - Exception was {e}")
     return sorted(clocking_tuples, key=lambda clocking: clocking[0])
 
 def store_name_for_a_rfid_code(code, name):
