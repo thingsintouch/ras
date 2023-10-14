@@ -1,17 +1,26 @@
 import time
 
 from os import listdir, remove
-from os.path import isfile, join
+from os.path import isfile, join, exists
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
 from odoo.odooRequests import register_async_clocking
 
-from common.constants import PARAMS, CLOCKINGS, IN_OR_OUT
+from common.constants import PARAMS, CLOCKINGS, IN_OR_OUT, TO_BE_DELETED
 from common.params import Params
 from common.common import write_to_file
 
-params              = Params(db=PARAMS)
+params = Params(db=PARAMS)
+
+def set_for_deletion(f):
+    if exists(join(TO_BE_DELETED,f)):
+        remove(join(CLOCKINGS,f))
+        if not exists(join(CLOCKINGS,f)):
+            remove(join(TO_BE_DELETED,f))
+        return True
+    else:
+        return False
 
 def get_sorted_clockings_from_older_to_newer():
     clocking_tuples = []
@@ -21,14 +30,15 @@ def get_sorted_clockings_from_older_to_newer():
     limit_for_clockings_to_remain = now_in_seconds - seconds_until_clockings_deleted_locally
     for f in listdir(CLOCKINGS):
         if isfile(join(CLOCKINGS, f)):
-            splitted  = f.split("-")
-            card_code = splitted[0]
-            timestamp = splitted[1]
-            if int(timestamp) < limit_for_clockings_to_remain:
-                remove(join(CLOCKINGS,f))
-                loggerINFO(f"removed old clocking stored locally: {f}")
-            else:
-                clocking_tuples.append((timestamp, card_code, f))
+            if not set_for_deletion(f):
+                splitted  = f.split("-")
+                card_code = splitted[0]
+                timestamp = splitted[1]
+                if int(timestamp) < limit_for_clockings_to_remain:
+                    remove(join(CLOCKINGS,f))
+                    loggerINFO(f"removed old clocking stored locally: {f}")
+                else:
+                    clocking_tuples.append((timestamp, card_code, f))
     return sorted(clocking_tuples, key=lambda clocking: clocking[0])
 
 def store_name_for_a_rfid_code(code, name):
