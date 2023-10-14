@@ -1,13 +1,15 @@
 import os
-from os.path import isfile, join
+from os.path import isfile, join, exists
 import time
 import sys
+import fcntl
 
 from display.helpers import sh1106
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
-from common.constants import WORKING_DIR, PARAMS, CLOCKINGS, LAST_REGISTERED
+from common.constants import (
+    WORKING_DIR, PARAMS, CLOCKINGS, LAST_REGISTERED, TO_BE_DELETED)
 
 from common.params import Params
 from odoo.odooRequests import check_if_registered
@@ -15,7 +17,7 @@ from common.connectivity import isPingable
 from common.common import (
     setTimeZone, reboot, use_self_generated_eth0_MAC_address, 
     on_ethernet, get_self_generated_eth0_MAC_address, get_MAC_address,
-    send_email)
+    send_email, delete_file, create_file)
 from factory_settings.custom_params import factory_settings
 
 
@@ -130,13 +132,17 @@ class Status_Flags_To_Check():
 
     def deleteClockings(self):
         loggerINFO("-----############### deleteClockings stored in the device (locally) ###############------")
+        file_path ="still not defined"
         try:
             for f in os.listdir(CLOCKINGS):
                 if isfile(join(CLOCKINGS, f)):
-                    os.remove(join(CLOCKINGS,f))
-        except:
-            pass
-        time.sleep(1)
+                    file_path = join(CLOCKINGS, f)
+                    delete_file(file_path)
+                    if exists(file_path):
+                        create_file(TO_BE_DELETED, f)
+            time.sleep(0.2)
+        except Exception as e:
+            loggerINFO(f"there was an Exception while trying to delete the clockings files: {e} - file_path was: {file_path}")
 
     def check_daily_reboot(self):
         current_time =  time.localtime()

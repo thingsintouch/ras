@@ -16,7 +16,7 @@ from common.params import Params
 import common.constants as co
 from common.keys import keys_by_Type, TxType
 from factory_settings.custom_params import factory_settings
-from os.path import isfile, exists
+from os.path import isfile, exists, join
 import dbus
 import sys
 import fcntl
@@ -437,10 +437,13 @@ def ensure_wpa_supplicant():
             setup_wpa_supplicant()
 
 def write_to_file(filename, content):
-    with open(filename, 'w') as file:
-        fcntl.flock(file, fcntl.LOCK_EX)  # Acquire an exclusive lock
-        file.write(content)
-        fcntl.flock(file, fcntl.LOCK_UN)  # Release the lock
+    try:
+        with open(filename, 'w') as file:
+            fcntl.flock(file, fcntl.LOCK_EX)  # Acquire an exclusive lock
+            file.write(str(content))
+            fcntl.flock(file, fcntl.LOCK_UN)
+    except Exception as e:
+            loggerERROR(f"could not release the lock on {filename} while writing {content} in it - Exception {e}")
 
 def initialize_show_debug_messages():
     if params.get("show_debug") is None:
@@ -583,7 +586,6 @@ def return_lines_from_file(file_path):
 
 # Email configuration
 EMAIL_PROVIDER_SMTP_ADDRESS = 'smtp.gmail.com'
-#MY_PASSWORD = 'ikgk owvu ldvk mqse'
 MY_EMAIL = 'logsras@gmail.com'
 
 def send_email(email, subject, message_text, attachment_filename):
@@ -616,3 +618,34 @@ def send_email(email, subject, message_text, attachment_filename):
                 )
     except Exception as e:
         loggerDEBUG(f"Exception sending E-Mail: {e}")
+
+def delete_file(file_path):
+    with open(file_path, 'w') as lockfile:
+        timeout = 1.1  # Specify your desired timeout in seconds
+        start_time = time.time()
+        locked = False
+        while time.time() - start_time < timeout:
+            try:
+                fcntl.flock(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                locked = True
+                break
+            except BlockingIOError:
+                # Another process holds the lock; wait for a moment and retry
+                time.sleep(0.05)
+        if not locked:
+            loggerINFO(f"Failed to acquire the lock for {file_path} that was set for deletion")
+        else:
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                loggerERROR(f"Failed to delete the file {file_path} - Exception: {e}")
+        # Check if the file has been successfully deleted
+    file_deleted = not exists(file_path)
+    return file_deleted
+
+def create_file(directory, file_name):
+    if not exists(directory): os.makedirs(directory)
+    file_path = join(directory, file_name)
+    if not exists(file_path):
+        with open(file_path, 'w') as f:
+            pass
