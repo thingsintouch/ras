@@ -441,11 +441,8 @@ def write_to_file(filename, content):
         with open(filename, 'w') as file:
             fcntl.flock(file, fcntl.LOCK_EX)  # Acquire an exclusive lock
             file.write(str(content))
-    finally:
-        try:
-            # Attempt to release the lock, even if an exception occurred
             fcntl.flock(file, fcntl.LOCK_UN)
-        except Exception as e:
+    except Exception as e:
             loggerERROR(f"could not release the lock on {filename} while writing {content} in it - Exception {e}")
 
 def initialize_show_debug_messages():
