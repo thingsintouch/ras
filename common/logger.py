@@ -40,7 +40,7 @@ def loggerDEBUG(message):
     if params.get("show_debug") is not None and params.get("show_debug")=="0":
         pass
     else:
-        add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "INFO " + message + "\n")
+        add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "DEBUG " + message + "\n")
         logger.debug(message)
 
 def loggerINFO(message):
