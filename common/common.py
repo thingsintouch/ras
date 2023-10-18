@@ -25,6 +25,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+from datetime import datetime
 
 progname = "com.example.HelloWorld"
 objpath  = "/HelloWorld"
@@ -558,14 +559,14 @@ def insert_line_at_top(file_path, line_to_insert):
         lines.insert(0, line_to_insert)
 
         # Ensure the file has less than 400 lines by deleting the last line if necessary
-        if len(lines) > 400:
+        if len(lines) > 500:
             lines.pop()
 
         # Write the modified content back to the file
         with open(file_path, 'w') as file:
             file.writelines(lines)
 
-        loggerDEBUG(f"Line inserted successfully in {file_path}")
+        #loggerDEBUG(f"Line inserted successfully in {file_path}")
 
     except FileNotFoundError:
         loggerDEBUG(f"File not found: {file_path}")
@@ -649,3 +650,11 @@ def create_file(directory, file_name):
     if not exists(file_path):
         with open(file_path, 'w') as f:
             pass
+
+def get_timestamp_human(timestamp_int):
+    try:
+        timestamp_human = datetime.fromtimestamp(int(timestamp_int), tz=tzinfo).strftime('%H:%M:%S %A %d-%b-%y')
+    except Exception as e:
+        loggerINFO(f"could not calculate human readable timestamp from {timestamp_int} - Exception: {e}")
+        timestamp_human = "unconverted timestamp " + str(timestamp_int)
+    return timestamp_human

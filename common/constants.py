@@ -33,6 +33,7 @@ HASH_PERSON_REGISTER_TERMINAL = bytes(config("HASH_PERSON_REGISTER_TERMINAL"), e
 PARAMS = WORKING_DIR + "/data/params"
 CUSTOM_PARAMS = WORKING_DIR + "/factory_settings/custom_params.py"
 LAST_REGISTERED = WORKING_DIR + "/data/last_registered.txt"
+LAST_LOGS = WORKING_DIR + "/data/last_logs.txt"
 CLOCKINGS = WORKING_DIR + "/data/clockings"
 TO_BE_DELETED = WORKING_DIR + "/data/to_be_deleted"
 IN_OR_OUT = WORKING_DIR + "/data/in_or_out"

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="jumbotron">
-  <h1>Last 500 registered clockings on the device</h1>
+  <h1>Last 500 logs on the device</h1>
   <br>
-  {% for c in clockings %}
+  {% for c in logs %}
   <p style="font-size:1.5vw;">{{ c }}</p>   
   {% endfor %}
   <br>
