@@ -50,7 +50,6 @@ class Status_Flags_To_Check():
 
     def __init__(self):
         self.acknowledged = False
-        # self.tz = params.get("tz")
         self.action_for_boolean_flag = {
             "shouldGetFirmwareUpdate"   : self.shouldGetFirmwareUpdate,
             "shutdownTerminal"          : self.shutdownTerminal,
@@ -65,24 +64,12 @@ class Status_Flags_To_Check():
 
     def check_and_execute(self):
         self.check_if_registered_once_after_every_launch()
-        self.check_if_eth_mac_is_set()
         for boolean_flag in list_of_boolean_flags:
             if params.get(boolean_flag) == "1":
                 set_all_boolean_flags_to_false()
-                # display_off()
                 loggerINFO("-"*20 + boolean_flag + "#"*20)
                 self.action_for_boolean_flag[boolean_flag]()
                 time.sleep(2)
-    
-    def check_if_eth_mac_is_set(self):
-        if params.get("use_self_generated_eth0_MAC_address")=="1":
-            stored_mac_address = params.get("eth0_MAC_address")
-            if stored_mac_address is None:
-                stored_mac_address = get_self_generated_eth0_MAC_address()
-            loggerDEBUG(f"ethernet mac stored {stored_mac_address} - used {get_MAC_address('eth0')}")
-            if get_MAC_address("eth0") != stored_mac_address:
-                params.put("setEthernetMAC", "1")
-
 
     def check_if_registered_once_after_every_launch(self):
         if not self.acknowledged and params.get("odooPortOpen") == "1":

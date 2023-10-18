@@ -11,7 +11,8 @@ from messaging.messaging import PublisherMultipart as Publisher
 
 
 from common.params import Params, mkdirs_exists_ok, read_db
-from common.common import write_to_file, insert_line_at_top
+from common.common import write_to_file
+from common.common_avoid_circularity import insert_line_at_top
 
 from datetime import datetime
 import pytz

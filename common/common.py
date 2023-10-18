@@ -25,6 +25,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+from datetime import datetime
+import pytz
 
 progname = "com.example.HelloWorld"
 objpath  = "/HelloWorld"
@@ -543,36 +545,20 @@ def use_self_generated_eth0_MAC_address():
     set_eth0_MAC_address(eth0_MAC_address)
     store_permanently_eth0_ḾAC_address(eth0_MAC_address)
 
+def check_if_eth_mac_is_set():
+    if params.get("use_self_generated_eth0_MAC_address")=="1":
+        stored_mac_address = params.get("eth0_MAC_address")
+        if stored_mac_address is None:
+            stored_mac_address = get_self_generated_eth0_MAC_address()
+        loggerDEBUG(f"ethernet mac stored {stored_mac_address} - used {get_MAC_address('eth0')}")
+        if get_MAC_address("eth0") != stored_mac_address:
+            params.put("setEthernetMAC", "1")
  
 def initialize_eth0_MAC_address():
     if params.get("use_self_generated_eth0_MAC_address")==1:  #and params.get("eth0_MAC_address") is None
         use_self_generated_eth0_MAC_address()
+    check_if_eth_mac_is_set()
 
-def insert_line_at_top(file_path, line_to_insert):
-    try:
-        # Read the existing file content
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-
-        # Insert the new line at the top
-        lines.insert(0, line_to_insert)
-
-        # Ensure the file has less than 400 lines by deleting the last line if necessary
-        if len(lines) > 400:
-            lines.pop()
-
-        # Write the modified content back to the file
-        with open(file_path, 'w') as file:
-            file.writelines(lines)
-
-        loggerDEBUG(f"Line inserted successfully in {file_path}")
-
-    except FileNotFoundError:
-        loggerDEBUG(f"File not found: {file_path}")
-        # Create the file if it doesn't exist
-        with open(file_path, 'w') as file:
-            file.write(line_to_insert)
-            loggerDEBUG(f"File {file_path} created with the inserted line")
 
 def return_lines_from_file(file_path):
     try:
@@ -649,3 +635,13 @@ def create_file(directory, file_name):
     if not exists(file_path):
         with open(file_path, 'w') as f:
             pass
+
+def get_timestamp_human(timestamp_int):
+    try:
+        tz = params.get("tz") or "Europe/Berlin"
+        tzinfo = pytz.timezone(tz)
+        timestamp_human = datetime.fromtimestamp(int(timestamp_int), tz=tzinfo).strftime('%H:%M:%S %A %d-%b-%y')
+    except Exception as e:
+        loggerINFO(f"could not calculate human readable timestamp from {timestamp_int} - Exception: {e}")
+        timestamp_human = "unconverted timestamp " + str(timestamp_int)
+    return timestamp_human
