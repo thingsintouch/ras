@@ -545,10 +545,20 @@ def use_self_generated_eth0_MAC_address():
     set_eth0_MAC_address(eth0_MAC_address)
     store_permanently_eth0_ḾAC_address(eth0_MAC_address)
 
+def check_if_eth_mac_is_set():
+    if params.get("use_self_generated_eth0_MAC_address")=="1":
+        stored_mac_address = params.get("eth0_MAC_address")
+        if stored_mac_address is None:
+            stored_mac_address = get_self_generated_eth0_MAC_address()
+        loggerDEBUG(f"ethernet mac stored {stored_mac_address} - used {get_MAC_address('eth0')}")
+        if get_MAC_address("eth0") != stored_mac_address:
+            params.put("setEthernetMAC", "1")
  
 def initialize_eth0_MAC_address():
     if params.get("use_self_generated_eth0_MAC_address")==1:  #and params.get("eth0_MAC_address") is None
         use_self_generated_eth0_MAC_address()
+    check_if_eth_mac_is_set()
+
 
 def return_lines_from_file(file_path):
     try:
