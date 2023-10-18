@@ -549,32 +549,6 @@ def initialize_eth0_MAC_address():
     if params.get("use_self_generated_eth0_MAC_address")==1:  #and params.get("eth0_MAC_address") is None
         use_self_generated_eth0_MAC_address()
 
-def insert_line_at_top(file_path, line_to_insert):
-    try:
-        # Read the existing file content
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-
-        # Insert the new line at the top
-        lines.insert(0, line_to_insert)
-
-        # Ensure the file has less than 400 lines by deleting the last line if necessary
-        if len(lines) > 500:
-            lines.pop()
-
-        # Write the modified content back to the file
-        with open(file_path, 'w') as file:
-            file.writelines(lines)
-
-        #loggerDEBUG(f"Line inserted successfully in {file_path}")
-
-    except FileNotFoundError:
-        loggerDEBUG(f"File not found: {file_path}")
-        # Create the file if it doesn't exist
-        with open(file_path, 'w') as file:
-            file.write(line_to_insert)
-            loggerDEBUG(f"File {file_path} created with the inserted line")
-
 def return_lines_from_file(file_path):
     try:
         # Read the existing file content

@@ -4,7 +4,7 @@ import time
 import os
 
 from common.constants import PARAMS, LAST_LOGS
-from common.common import insert_line_at_top
+from common.common_avoid_circularity import insert_line_at_top
 from common.params import Params, Log
 import re
 
