@@ -43,18 +43,18 @@ def loggerDEBUG(message):
         logger.debug(message)
 
 def loggerINFO(message):
-    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "INFO " + message)
+    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "INFO " + message + "\n")
     logger.info(message)
 
 def loggerWARNING(message):
-    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "WARNING " + message)
+    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "WARNING " + message + "\n")
     logger.warning(message)
 
 def loggerERROR(message):
-    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "ERROR " + message)
+    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "ERROR " + message + "\n")
     logger.error(message)
 
 def loggerCRITICAL(message):
-    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "CRITICAL " + message)
+    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "CRITICAL " + message + "\n")
     logger.critical(message)
 

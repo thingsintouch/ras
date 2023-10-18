@@ -16,7 +16,7 @@ def insert_line_at_top(file_path, line_to_insert):
         with open(file_path, 'w') as file:
             file.writelines(lines)
 
-        print(f"Line inserted successfully in {file_path}")
+        # print(f"Line inserted successfully in {file_path}")
 
     except FileNotFoundError:
         print(f"File not found: {file_path}")

@@ -12,7 +12,6 @@ from common.common import runShellCommand_and_returnOutput as rs
 
 from odoo.registerClockings import get_sorted_clockings_from_older_to_newer
 from odoo.manager import get_two_lines_name
-import pytz
 
 params = Params(db=PARAMS)
 
@@ -56,8 +55,6 @@ def show_info():
 @login_required
 def show_stored_clockings():
     clockings = get_sorted_clockings_from_older_to_newer()
-    tz = params.get("tz") or "Europe/Berlin"
-    tzinfo = pytz.timezone(tz)
     c_with_timestamp = []
     for c in clockings:
         timestamp_human = get_timestamp_human(timestamp_int = c[0])

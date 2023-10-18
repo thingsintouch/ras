@@ -26,6 +26,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from datetime import datetime
+import pytz
 
 progname = "com.example.HelloWorld"
 objpath  = "/HelloWorld"
@@ -627,6 +628,8 @@ def create_file(directory, file_name):
 
 def get_timestamp_human(timestamp_int):
     try:
+        tz = params.get("tz") or "Europe/Berlin"
+        tzinfo = pytz.timezone(tz)
         timestamp_human = datetime.fromtimestamp(int(timestamp_int), tz=tzinfo).strftime('%H:%M:%S %A %d-%b-%y')
     except Exception as e:
         loggerINFO(f"could not calculate human readable timestamp from {timestamp_int} - Exception: {e}")
