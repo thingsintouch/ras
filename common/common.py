@@ -659,8 +659,15 @@ def mac_address_is_plausible(mac_address):
                 return True
     return False
 
+def get_ip_router():
+    answer = (rs("ip route show default | awk '/via/ {print $3}''")) 
+    ip_router = answer.replace("\n", "")
+    params.put("router_ip", ip_router)
+    return ip_router
+
 def get_router_mac_address():
-    answer = (rs("ip neigh show | grep \"$(ip route show | grep default | awk '{print $3}')\" | awk '{print $5}'")) 
+    command = "arp -n | awk '/^"+get_ip_router()+" / {print $3}'"
+    answer = (rs(command)) 
     mac_address = answer.replace("\n", "")
     loggerDEBUG(f"MAC address of the router {answer}")
     if mac_address_is_plausible(mac_address):

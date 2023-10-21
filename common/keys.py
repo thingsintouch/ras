@@ -56,6 +56,7 @@ keys_by_Type[TxType.ON_ROUTINE_CALLS] =     \
     "marry_router",
     "divorce_router",
     "router_MAC", # MAC address of the router
+    "router_ip",
     "router_eth_or_wlan", # wlan0 or eth0
     "is_router_married", # is the device married to a router 1 or 0
     ] 
