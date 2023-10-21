@@ -666,7 +666,7 @@ def get_ip_router():
     return ip_router
 
 def get_router_mac_address():
-    command = "arp -n | awk '/^"+get_ip_router()+" '/ {print $3}'"
+    command = "arp -n | awk '/^"+get_ip_router()+" / {print $3}'"
     answer = (rs(command)) 
     mac_address = answer.replace("\n", "")
     loggerDEBUG(f"MAC address of the router {answer}")
