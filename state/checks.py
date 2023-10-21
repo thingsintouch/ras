@@ -59,7 +59,9 @@ class Status_Flags_To_Check():
             "deleteClockings"           : self.deleteClockings,
             "setEthernetMAC"            : self.setEthernetMAC,
             "deleteIPs"                 : self.deleteIPs,
-            "send_emailLogs"            : self.send_emailLogs
+            "send_emailLogs"            : self.send_emailLogs,
+            "marry_router"              : self.marry_router,
+            "divorce_router"            : self.divorce_router,
         }
 
     def check_and_execute(self):
@@ -154,16 +156,22 @@ class Status_Flags_To_Check():
         os.system("sudo ip addr flush wlan0")
 
     def send_emailLogs(self):
+        loggerINFO("-----############### send email Logs ###############------")
         try:
             email = params.get("emailLogs") or False
             serial_number = factory_settings["productionNumber"] or "no s/n"
             subject = f"RAS #{serial_number} - log of last registered cards"
             if email:
-                send_email(email, subject, "Please find attached the last 400 registered cards. \n\n", LAST_REGISTERED)
+                send_email(email, subject, "Please find attached the last 500 registered cards. \n\n", LAST_REGISTERED)
         except:
             pass
-        
+    
+    def marry_router(self):
+        loggerINFO("-----############### Associate current router permanently to the device ###############------")
 
+    def divorce_router(self):
+        loggerINFO("-----############### Remove any association to a specific router ###############------")
+        
 class Timezone_Checker():
 
     def __init__(self):

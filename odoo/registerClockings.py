@@ -86,7 +86,7 @@ def registerClockings():
                         error_message = answer.get("error_message", "No error message received.")
                         delete_not_recognized_cards = params.get("delete_clockings_not_recognized") is not None and params.get("delete_clockings_not_recognized")=="1"
                         message = clocking_info + f"{employee_name} not logged in Odoo. Error Message from Odoo: {error_message}"
-                        if delete_not_recognized_cards and "No employee found with card" in error_message:
+                        if delete_not_recognized_cards and q in error_message:
                             delete_file(join(CLOCKINGS,card_code_and_timestamp))
                         else:
                             card_codes_to_not_process.append(card_code)

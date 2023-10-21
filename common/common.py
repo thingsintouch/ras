@@ -7,6 +7,7 @@ import time
 import socket
 import secrets
 import random
+import re
 
 from hashlib import blake2b
 
@@ -14,6 +15,7 @@ from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, l
 
 from common.params import Params
 import common.constants as co
+from common.connectivity import internetReachable
 from common.keys import keys_by_Type, TxType
 from factory_settings.custom_params import factory_settings
 from os.path import isfile, exists, join
@@ -645,3 +647,36 @@ def get_timestamp_human(timestamp_int):
         loggerINFO(f"could not calculate human readable timestamp from {timestamp_int} - Exception: {e}")
         timestamp_human = "unconverted timestamp " + str(timestamp_int)
     return timestamp_human
+
+def mac_address_is_plausible(mac_address):
+    # Regular expression pattern to match a valid MAC address
+    mac_pattern = r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'
+    # Check if the string matches the MAC address pattern
+    if re.match(mac_pattern, mac_address):
+        # Check if the length is appropriate (17 characters)
+        if len(mac_address) == 17:
+            # Check if the number of colons (:) is correct (5 colons)
+            if mac_address.count(':') == 5:
+                return True
+    return False
+
+def get_router_mac_address():
+    answer = (rs("ip neigh show | grep \"$(ip route show | grep default | awk '{print $3}')\" | awk '{print $5}'")) 
+    mac_address = answer.replace("\n", "")
+    loggerDEBUG(f"MAC address of the router {answer}")
+    if mac_address_is_plausible(mac_address):
+        params.put("router_MAC",mac_address)
+        return mac_address
+    else:
+        return False
+
+def get_interface(): # returns  no internet - eth0 - wlan0
+    if internetReachable():
+        if on_ethernet():
+            interface = "eth0"
+        else:
+            interface = "wlan0"
+    else:
+        interface = "no internet"
+    params.put("router_eth_or_wlan", interface)
+    return interface
