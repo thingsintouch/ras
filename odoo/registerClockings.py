@@ -83,9 +83,13 @@ def registerClockings():
                         write_to_file(join(IN_OR_OUT,card_code),in_or_out + "\n")
                         delete_file(join(CLOCKINGS,card_code_and_timestamp))
                     else: # do not process all the older clockings if a clocking for a card has failed
-                        error_message = answer.get("error_message", "No error message received.") 
+                        error_message = answer.get("error_message", "No error message received.")
+                        delete_not_recognized_cards = params.get("delete_clockings_not_recognized") is not None and params.get("delete_clockings_not_recognized")=="1"
                         message = clocking_info + f"{employee_name} not logged in Odoo. Error Message from Odoo: {error_message}"
-                        card_codes_to_not_process.append(card_code)
+                        if delete_not_recognized_cards and "No employee found with card" in error_message:
+                            delete_file(join(CLOCKINGS,card_code_and_timestamp))
+                        else:
+                            card_codes_to_not_process.append(card_code)
                 else:
                     message = clocking_info + "no answer from Odoo - Odoo could not store this clocking"
                     card_codes_to_not_process.append(card_code)

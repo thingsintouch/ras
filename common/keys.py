@@ -51,7 +51,8 @@ keys_by_Type[TxType.ON_ROUTINE_CALLS] =     \
     "send_emailLogs",
     "smtp_password",
     "setEthernetMAC",
-    "deleteIPs"
+    "deleteIPs",
+    "delete_clockings_not_recognized"
     
     ] 
 

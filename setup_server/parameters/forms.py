@@ -76,6 +76,10 @@ class ParametersForm(FlaskForm):
     smtp_password = StringField('SMTP password')
     option_smtp_password = SubmitField('SMTP password')
 
+    delete_clockings_not_recognized = SelectField(u'Delete not recognized clockings',
+        choices=[("0","Do not delete"), ("1","Delete not recognized clockings")])
+    option_delete_clockings_not_recognized = SubmitField('Set')
+
 
 class ParametersResult(FlaskForm):
     submit = SubmitField('OK')
