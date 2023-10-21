@@ -32,7 +32,9 @@ list_of_boolean_flags = [
     "shutdownTerminal",
     "deleteClockings",
     "setEthernetMAC",
-    "send_emailLogs"
+    "send_emailLogs",
+    "marry_router",
+    "divorce_router"
 ]
 
 def display_off():
