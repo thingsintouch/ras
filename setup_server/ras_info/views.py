@@ -33,6 +33,7 @@ def show_info():
     eth0_MAC_address = get_MAC_address("eth0") or "N/A"
     router_MAC_address = get_router_mac_address() or "N/A"
     router_interface = get_interface() or "N/A"
+    router_ip = params.get("router_ip") or "N/A"
 
     # wifi_SSID = get_wifi_SSID_of_RAS()
     # wifi_success =  params.get("wifi_connection_counter_successful") or "0"
@@ -50,7 +51,8 @@ def show_info():
                 wlan0_MAC_address=wlan0_MAC_address,
                 eth0_MAC_address=eth0_MAC_address,
                 router_MAC_address=router_MAC_address,
-                router_interface=router_interface
+                router_interface=router_interface,
+                router_ip=router_ip
                 # wifi_SSID=wifi_SSID,
                 # wifi_success=wifi_success,
                 # wifi_NO_success=wifi_NO_success
