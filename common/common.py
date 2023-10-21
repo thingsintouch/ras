@@ -660,8 +660,7 @@ def mac_address_is_plausible(mac_address):
     return False
 
 def get_ip_router():
-    answer = (rs("ip route show default | awk '/via/ {print $3}''")) 
-    ip_router = answer.replace("\n", "")
+    ip_router = (rs("ip route show default | awk '/via/ {print $3}''")) 
     params.put("router_ip", ip_router)
     return ip_router
 
