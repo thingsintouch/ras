@@ -15,7 +15,6 @@ from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, l
 
 from common.params import Params
 import common.constants as co
-from common.connectivity import internetReachable
 from common.keys import keys_by_Type, TxType
 from factory_settings.custom_params import factory_settings
 from os.path import isfile, exists, join
@@ -671,7 +670,7 @@ def get_router_mac_address():
         return False
 
 def get_interface(): # returns  no internet - eth0 - wlan0
-    if internetReachable():
+    if params.get("internetReachable") == "1":
         if on_ethernet():
             interface = "eth0"
         else:
