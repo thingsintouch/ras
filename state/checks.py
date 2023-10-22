@@ -171,9 +171,6 @@ class Status_Flags_To_Check():
     def marry_router(self):
         loggerINFO("-----############### Associate current router permanently to the device ###############------")
         network = get_network_info()
-        # wlan0_router_MAC_address = network["wlan0"]["mac_router"] or "N/A"
-        # wlan0_router_ip = network["wlan0"]["ip_router"] or "N/A"
-        # wlan0_device_ip = network["wlan0"]["ip_device"] or "N/A"
         if network["eth0"]["ip_device"] and network["eth0"]["mac_router"]:
             content_eth0_conf = \
                 "allow-hotplug eth0"+"\n"+ \
