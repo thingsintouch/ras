@@ -692,7 +692,7 @@ def get_network_info():
             network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
             network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $9}'"))
         print("iteration "+str(i)+ " - interface: "+interface+"- ip router "+network[interface]["ip_router"])
-        print("arp -n | awk '/^"+network[interface]["ip_router"]+" / {print $5}'  | head -n "+str(i))
+        print("arp -n | awk '/^"+network[interface]["ip_router"]+" / {count++} count == "+str(i)+" {print $5}'")
         interface_arp = (rs_no_next_line("arp -n | awk '/^"+network[interface]["ip_router"]+" / {count++} count == "+str(i)+" {print $5}'"))
         if interface_arp:
             network.setdefault(interface_arp, {})
