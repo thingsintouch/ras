@@ -673,7 +673,7 @@ def rs_no_next_line(command):
 
 def get_router_mac_address(ip, i):
     if ip and i:
-        command = "arp -n | awk '/^"+ip+" / {count++} count == "+str(i)+" {print $3}'"
+        command = "arp -n | awk '/"+ip+" / {count++; if (count == "+str(i)+") {print $3; exit}}'"
         mac_address = (rs_no_next_line(command)) 
         if mac_address_is_plausible(mac_address):
             return mac_address 
@@ -692,8 +692,8 @@ def get_network_info():
             network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
             network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $9}'"))
         print("iteration "+str(i)+ " - interface: "+interface+"- ip router "+network[interface]["ip_router"])
-        print("arp -n | awk '/^"+network[interface]["ip_router"]+" / {count++} count == "+str(i)+" {print $5}'")
-        interface_arp = (rs_no_next_line("arp -n | awk '/^"+network[interface]["ip_router"]+" / {count++} count == "+str(i)+" {print $5}'"))
+        #print("arp -n | awk '/^"+network[interface]["ip_router"]+" / {count++} count == "+str(i)+" {print $5}'")
+        interface_arp = (rs_no_next_line("arp -n | awk '/"+network[interface]["ip_router"]+" / {count++; if (count == "+str(i)+") {print $5; exit}}'"))
         if interface_arp:
             network.setdefault(interface_arp, {})
             network[interface_arp]["mac_router"]= get_router_mac_address(network[interface]["ip_router"], i)
