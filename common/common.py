@@ -691,6 +691,7 @@ def get_network_info():
             network.setdefault(interface, {})
             network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {print $3}' | head -n "+str(i)))
             network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {print $9}' | head -n "+str(i)))
+        print("iteration "+str(i)+ " - interface: "+interface+"- ip router "+network[interface]["ip_router"])
         print("arp -n | awk '/^"+network[interface]["ip_router"]+" / {print $5}'  | head -n "+str(i))
         interface_arp = (rs_no_next_line("arp -n | awk '/^"+network[interface]["ip_router"]+" / {print $5}'  | head -n "+str(i)))
         if interface_arp:
