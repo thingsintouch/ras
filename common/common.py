@@ -648,30 +648,62 @@ def get_timestamp_human(timestamp_int):
     return timestamp_human
 
 def mac_address_is_plausible(mac_address):
-    # Regular expression pattern to match a valid MAC address
-    mac_pattern = r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'
-    # Check if the string matches the MAC address pattern
-    if re.match(mac_pattern, mac_address):
-        # Check if the length is appropriate (17 characters)
-        if len(mac_address) == 17:
-            # Check if the number of colons (:) is correct (5 colons)
-            if mac_address.count(':') == 5:
-                return True
+    if mac_address:
+        # Regular expression pattern to match a valid MAC address
+        mac_pattern = r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'
+        # Check if the string matches the MAC address pattern
+        if re.match(mac_pattern, mac_address):
+            # Check if the length is appropriate (17 characters)
+            if len(mac_address) == 17:
+                # Check if the number of colons (:) is correct (5 colons)
+                if mac_address.count(':') == 5:
+                    return True
     return False
 
-def get_ip_router():
-    ip_router = (rs("ip route show default | awk '/via/ {print $3}' | head -n 1"))
-    ip_router = ip_router.replace("\n", "") 
-    params.put("router_ip", ip_router)
-    return ip_router
+def rs_no_next_line(command):
+    if command:
+        answer = rs(command)
+        if answer:
+            answer = answer.replace("\n", "")
+        else:
+            answer = False
+    else:
+        answer = False
+    return answer
 
-def get_router_mac_address():
-    command = "arp -n | awk '/^"+get_ip_router()+" / {print $3}'  | head -n 1"
-    answer = (rs(command)) 
-    mac_address = answer.replace("\n", "")
-    loggerDEBUG(f"MAC address of the router {answer}")
+def get_router_mac_address(ip, i):
+    if ip and i:
+        command = "arp -n | awk '/^"+ip+" / {print $3}'  | head -n "+str(i)
+        mac_address = (rs_no_next_line(command)) 
+        if mac_address_is_plausible(mac_address):
+            return mac_address 
+    return False
+
+# def get_ip_router():
+def get_network_info():
+    network = {       
+        }
+    network.setdefault("eth0", {})
+    network.setdefault("wlan0", {})
+    for i in [1,2]:
+        interface = (rs_no_next_line("ip route show default | awk '/via/ {print $5}' | head -n "+str(i)))
+        if interface:
+            network.setdefault(interface, {})
+            network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {print $3}' | head -n "+str(i)))
+            network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {print $9}' | head -n "+str(i)))
+        interface_arp = (rs_no_next_line("arp -n | awk '/^"+network[interface]["ip_router"]+" / {print $5}'  | head -n "+str(i)))
+        if interface_arp:
+            network.setdefault(interface_arp, {})
+            network[interface_arp]["mac_router"]= get_router_mac_address(network[interface]["ip_router"], i)
+
+    network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
+    network["wlan0"]["mac_device"] = params.get("wlan0_MAC_address") or False
+    return network
+
+def get_router_mac_address(ip, i):
+    command = "arp -n | awk '/^"+ip+" / {print $3}'  | head -n "+str(i)
+    mac_address = (rs_no_next_line(command)) 
     if mac_address_is_plausible(mac_address):
-        params.put("router_MAC",mac_address)
         return mac_address
     else:
         return False
