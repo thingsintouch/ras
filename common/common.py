@@ -694,8 +694,8 @@ def get_network_info():
             for j in [1,2]:
                 interface_arp = (rs_no_next_line("arp -n | awk '/"+network[interface]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
                 if interface_arp and interface_arp == interface:
-                    network.setdefault(interface_arp, {})
-                    network[interface_arp]["mac_router"]= get_router_mac_address(network[interface]["ip_router"], j)
+                    network[interface_arp].setdefault("mac_router", False)
+                    network[interface_arp]["mac_router"]= get_router_mac_address(network[interface_arp]["ip_router"], j)
 
     network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
     network["wlan0"]["mac_device"] = params.get("wlan0_MAC_address") or False
