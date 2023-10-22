@@ -189,7 +189,7 @@ class Status_Flags_To_Check():
                     "\n"+ \
                     "network={ \n" + "    ssid=\""+ ssid + "\"\n"+ \
                     "    psk=\""+ psk + "\"\n"+ \
-                    "    bssid="+ network["wlan0"]["mac_router"] + "\"\n"+ \
+                    "    bssid="+ network["wlan0"]["mac_router"] + "\n"+ \
                     "}\n"
                 write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)   
         print("sudo service networking restart")      
