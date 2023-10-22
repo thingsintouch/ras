@@ -686,11 +686,11 @@ def get_network_info():
     network.setdefault("eth0", {})
     network.setdefault("wlan0", {})
     for i in [1,2]:
-        interface = (rs_no_next_line("ip route show default | awk '/via/ {print $5}' | head -n "+str(i)))
+        interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
         if interface:
             network.setdefault(interface, {})
-            network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {print $3}' | head -n "+str(i)))
-            network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {print $9}' | head -n "+str(i)))
+            network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
+            network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $9}'"))
         print("iteration "+str(i)+ " - interface: "+interface+"- ip router "+network[interface]["ip_router"])
         print("arp -n | awk '/^"+network[interface]["ip_router"]+" / {print $5}'  | head -n "+str(i))
         interface_arp = (rs_no_next_line("arp -n | awk '/^"+network[interface]["ip_router"]+" / {print $5}'  | head -n "+str(i)))
