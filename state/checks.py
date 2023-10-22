@@ -202,6 +202,7 @@ class Status_Flags_To_Check():
     def divorce_router(self):
         loggerINFO("-----############### Remove any association to a specific router ###############------")
         delete_file(FILE_ETH0_CONF)
+        delete_file(FILE_WLAN0_CONF)
         ssid, psk = read_wifi_credentials()
         if ssid and psk:
             content_wpa_conf = \
