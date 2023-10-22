@@ -691,10 +691,11 @@ def get_network_info():
             network.setdefault(interface, {})
             network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
             network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $9}'"))
-        interface_arp = (rs_no_next_line("arp -n | awk '/"+network[interface]["ip_router"]+" / {count++; if (count == "+str(i)+") {print $5; exit}}'"))
-        if interface_arp:
-            network.setdefault(interface_arp, {})
-            network[interface_arp]["mac_router"]= get_router_mac_address(network[interface]["ip_router"], i)
+            for j in [1,2]:
+                interface_arp = (rs_no_next_line("arp -n | awk '/"+network[interface]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
+                if interface_arp and interface_arp == interface:
+                    network.setdefault(interface_arp, {})
+                    network[interface_arp]["mac_router"]= get_router_mac_address(network[interface]["ip_router"], j)
 
     network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
     network["wlan0"]["mac_device"] = params.get("wlan0_MAC_address") or False
