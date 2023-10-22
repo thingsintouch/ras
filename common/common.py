@@ -660,13 +660,13 @@ def mac_address_is_plausible(mac_address):
     return False
 
 def get_ip_router():
-    ip_router = (rs("ip route show default | awk '/via/ {print $3}'"))
+    ip_router = (rs("ip route show default | awk '/via/ {print $3}' | head -n 1"))
     ip_router = ip_router.replace("\n", "") 
     params.put("router_ip", ip_router)
     return ip_router
 
 def get_router_mac_address():
-    command = "arp -n | awk '/^"+get_ip_router()+" / {print $3}'"
+    command = "arp -n | awk '/^"+get_ip_router()+" / {print $3}'  | head -n 1"
     answer = (rs(command)) 
     mac_address = answer.replace("\n", "")
     loggerDEBUG(f"MAC address of the router {answer}")
