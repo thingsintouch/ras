@@ -683,18 +683,22 @@ def get_router_mac_address(ip, i):
 def get_network_info():
     network = {       
         }
-    network.setdefault("eth0", {})
-    network.setdefault("wlan0", {})
+    interface_default = {
+        "ip_router": False,
+        "ip_device": False,
+        "mac_router": False,
+        "mac_device": False
+    }
+    network.setdefault("eth0", interface_default)
+    network.setdefault("wlan0", interface_default)
     for i in [1,2]:
         interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
         if interface:
-            network.setdefault(interface, {})
             network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
             network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $9}'"))
             for j in [1,2]:
                 interface_arp = (rs_no_next_line("arp -n | awk '/"+network[interface]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
                 if interface_arp and interface_arp == interface:
-                    network[interface_arp].setdefault("mac_router", False)
                     network[interface_arp]["mac_router"]= get_router_mac_address(network[interface_arp]["ip_router"], j)
 
     network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
