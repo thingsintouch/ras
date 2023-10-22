@@ -192,11 +192,22 @@ class Status_Flags_To_Check():
                     "    bssid="+ network["wlan0"]["mac_router"] + "\n"+ \
                     "}\n"
                 write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)   
-        print("sudo service networking restart")      
+        os.system("sudo service networking restart")      
 
     def divorce_router(self):
         loggerINFO("-----############### Remove any association to a specific router ###############------")
         delete_file(FILE_ETH0_CONF)
+        ssid, psk = read_wifi_credentials()
+        if ssid and psk:
+            content_wpa_conf = \
+                "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev"+"\n"+ \
+                "update_config=1"+"\n"+ \
+                "\n"+ \
+                "network={ \n" + "    ssid=\""+ ssid + "\"\n"+ \
+                "    psk=\""+ psk + "\"\n"+ \
+                "}\n"
+            write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)
+        os.system("sudo service networking restart")
         
 class Timezone_Checker():
 

@@ -21,7 +21,7 @@ commands_list = [
     ('6', 'command_set_ethernet_mac', 'Set the Ethernet MAC Address of the Device to match the MAC Address of the Raspberry Pi and not the MAC Address of the Adapter', "setEthernetMAC"),
     ('7', 'command_delete_IPs', 'Delete the stored IP Addresses for Ethernet and WiFi', "deleteIPs"),
     ('8', 'command_send_emailLogs', 'Send Email with Log of last 400 registered cards (define the Email before)', "send_emailLogs"),
-    ('9', 'command_marry_router', 'Associate current router permanently to the device', "marry_router"),
+    ('9', 'command_marry_router', 'Associate current routers permanently to the device', "marry_router"),
     ('10', 'command_divorce_router', 'Remove any association to a specific router', "divorce_router"),
     ]
 

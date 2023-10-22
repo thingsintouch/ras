@@ -13,7 +13,7 @@ class CommandForm(FlaskForm):
     command_set_ethernet_mac= SubmitField('Set Ethernet MAC')
     command_delete_IPs =  SubmitField('Delete all IP addresses')
     command_send_emailLogs = SubmitField('Send Email with Log of last 500 registered cards')
-    command_marry_router = SubmitField('Associate current router permanently to the device')
+    command_marry_router = SubmitField('Associate current routers permanently to the device')
     command_divorce_router = SubmitField('Remove any association to a specific router')
 
 class CommandResult(FlaskForm):
