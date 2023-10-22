@@ -707,7 +707,6 @@ def get_network_info():
 
     network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
     network["wlan0"]["mac_device"] = params.get("wlan0_MAC_address") or False
-    print("network calculated - "+str(network))
     return network
 
 

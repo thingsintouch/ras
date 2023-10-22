@@ -32,7 +32,6 @@ def show_info():
     wlan0_MAC_address = get_MAC_address("wlan0") or "N/A"
     eth0_MAC_address = get_MAC_address("eth0") or "N/A"
     network = get_network_info()
-    print(network)
     eth0_router_MAC_address = network["eth0"]["mac_router"] or "N/A"
     eth0_router_ip = network["eth0"]["ip_router"] or "N/A"
     eth0_device_ip = network["eth0"]["ip_device"] or "N/A"
@@ -40,9 +39,6 @@ def show_info():
     wlan0_router_ip = network["wlan0"]["ip_router"] or "N/A"
     wlan0_device_ip = network["wlan0"]["ip_device"] or "N/A"
 
-    # wifi_SSID = get_wifi_SSID_of_RAS()
-    # wifi_success =  params.get("wifi_connection_counter_successful") or "0"
-    # wifi_NO_success =  params.get("wifi_connection_counter_unsuccessful") or "0"
     return render_template('ras_info.html',
                 temperatureCurrent=temperatureCurrent, 
                 loadAvgPerc_5min=loadAvgPerc_5min, 

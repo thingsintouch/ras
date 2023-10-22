@@ -16,8 +16,8 @@ from odoo.odooRequests import check_if_registered
 from common.connectivity import isPingable
 from common.common import (
     setTimeZone, reboot, use_self_generated_eth0_MAC_address, 
-    on_ethernet, get_self_generated_eth0_MAC_address, get_MAC_address,
-    send_email, delete_file, create_file)
+    on_ethernet, get_self_generated_eth0_MAC_address, write_to_file,
+    send_email, delete_file, create_file, get_network_info)
 from factory_settings.custom_params import factory_settings
 
 
@@ -170,6 +170,19 @@ class Status_Flags_To_Check():
     
     def marry_router(self):
         loggerINFO("-----############### Associate current router permanently to the device ###############------")
+        network = get_network_info()
+        # wlan0_router_MAC_address = network["wlan0"]["mac_router"] or "N/A"
+        # wlan0_router_ip = network["wlan0"]["ip_router"] or "N/A"
+        # wlan0_device_ip = network["wlan0"]["ip_device"] or "N/A"
+        file_eth0_conf = "/etc/network/interfaces/interfaces.d/eth0.conf"
+        if network["eth0"]["ip_device"] and network["eth0"]["mac_router"]:
+            content_eth0_conf = \
+                "allow-hotplug eth0"+"\n"+ \
+                "iface eth0 inet dhcp"+"\n"+ \
+                "    hwaddress ether "+ network["eth0"]["mac_router"]
+            write_to_file(filename=file_eth0_conf, content=content_eth0_conf)
+        if network["wlan0"]["ip_device"] and network["wlan0"]["mac_router"]:
+            print("change wpa_supplicant")       
 
     def divorce_router(self):
         loggerINFO("-----############### Remove any association to a specific router ###############------")
