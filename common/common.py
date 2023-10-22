@@ -720,3 +720,22 @@ def get_interface(): # returns  no internet - eth0 - wlan0
         interface = "no internet"
     params.put("router_eth_or_wlan", interface)
     return interface
+
+def read_wifi_credentials():
+    file_path = co.FILE_WPA_SUPP_CONF
+    ssid = False
+    psk = False
+    
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+            for line in lines:
+                if line.strip().startswith("ssid="):
+                    ssid = line.split('"')[1]
+                elif line.strip().startswith("psk="):
+                    psk = line.split('"')[1]
+
+    except FileNotFoundError:
+        loggerERROR(f"File not found: {file_path}")
+
+    return ssid, psk

@@ -41,7 +41,8 @@ LOG = WORKING_DIR + "/data/log"
 KEYS = WORKING_DIR + "/data/keys"
 KEY_ACTIONS = WORKING_DIR + "/data/key_actions"
 ETHERNET_FLAG_FILE = "/sys/class/net/eth0/carrier" # if 1, ethernet is up
-
+FILE_ETH0_CONF = "/etc/network/interfaces.d/eth0.conf"
+FILE_WPA_SUPP_CONF = "/etc/wpa_supplicant/wpa_supplicant.conf"
 
 MAX_NUMBER_OF_LOG_ENTRIES = 100
 
