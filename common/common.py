@@ -681,16 +681,20 @@ def get_router_mac_address(ip, i):
 
 # def get_ip_router():
 def get_network_info():
-    network = {       
+    network = {
+        "eth0":  {
+            "ip_router": False,
+            "ip_device": False,
+            "mac_router": False,
+            "mac_device": False
+            },
+        "wlan0":  {
+            "ip_router": False,
+            "ip_device": False,
+            "mac_router": False,
+            "mac_device": False
+            },    
         }
-    interface_default = {
-        "ip_router": False,
-        "ip_device": False,
-        "mac_router": False,
-        "mac_device": False
-    }
-    network.setdefault("eth0", interface_default)
-    network.setdefault("wlan0", interface_default)
     for i in [1,2]:
         interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
         if interface:
@@ -703,6 +707,7 @@ def get_network_info():
 
     network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
     network["wlan0"]["mac_device"] = params.get("wlan0_MAC_address") or False
+    print("network calculated - "+network)
     return network
 
 
