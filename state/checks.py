@@ -209,6 +209,7 @@ class Status_Flags_To_Check():
                 "}\n"
             write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)
         os.system("sudo service networking restart")
+        os.system("sudo ifconfig eth0 up")
         
 class Timezone_Checker():
 
