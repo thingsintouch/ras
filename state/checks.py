@@ -9,7 +9,8 @@ from display.helpers import sh1106
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
 from common.constants import (
-    WORKING_DIR, PARAMS, CLOCKINGS, LAST_REGISTERED, TO_BE_DELETED, FILE_ETH0_CONF, FILE_WPA_SUPP_CONF)
+    WORKING_DIR, PARAMS, CLOCKINGS, LAST_REGISTERED, 
+    TO_BE_DELETED, FILE_ETH0_CONF, FILE_WPA_SUPP_CONF, FILE_WLAN0_CONF)
 
 from common.params import Params
 from odoo.odooRequests import check_if_registered
@@ -171,13 +172,14 @@ class Status_Flags_To_Check():
     def marry_router(self):
         loggerINFO("-----############### Associate current router permanently to the device ###############------")
         network = get_network_info()
-        if network["eth0"]["ip_device"] and network["eth0"]["mac_router"]:
+        if network["eth0"]["ip_device"] and network["eth0"]["mac_router"] and network["eth0"]["ip_router"]:
             content_eth0_conf = \
                 "allow-hotplug eth0"+"\n"+ \
                 "iface eth0 inet dhcp"+"\n"+ \
-                "    hwaddress ether "+ network["eth0"]["mac_router"]
+                "    gateway "+ network["eth0"]["ip_router"]+"\n"+ \
+                "    hwaddress ether "+ network["eth0"]["mac_router"]+"\n"
             write_to_file(filename=FILE_ETH0_CONF, content=content_eth0_conf)
-        if network["wlan0"]["ip_device"] and network["wlan0"]["mac_router"]:
+        if network["wlan0"]["ip_device"] and network["wlan0"]["mac_router"] and network["wlan0"]["ip_router"]:
             ssid, psk = read_wifi_credentials()
             if ssid and psk:
                 content_wpa_conf = \
@@ -188,7 +190,12 @@ class Status_Flags_To_Check():
                     "    psk=\""+ psk + "\"\n"+ \
                     "    bssid="+ network["wlan0"]["mac_router"] + "\n"+ \
                     "}\n"
-                write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)   
+                write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)
+                content_wlan0_conf = \
+                    "auto wlan0"+"\n"+ \
+                    "iface wlan0 inet dhcp"+"\n"+ \
+                    "    gateway "+ network["wlan0"]["ip_router"]+"\n"
+                write_to_file(filename=FILE_WLAN0_CONF, content=content_wlan0_conf)
         os.system("sudo service networking restart")
         os.system("sudo ifconfig eth0 up")   
 
