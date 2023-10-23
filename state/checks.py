@@ -9,15 +9,16 @@ from display.helpers import sh1106
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
 from common.constants import (
-    WORKING_DIR, PARAMS, CLOCKINGS, LAST_REGISTERED, TO_BE_DELETED)
+    WORKING_DIR, PARAMS, CLOCKINGS, LAST_REGISTERED, 
+    TO_BE_DELETED, FILE_ETH0_CONF, FILE_WPA_SUPP_CONF, FILE_WLAN0_CONF)
 
 from common.params import Params
 from odoo.odooRequests import check_if_registered
 from common.connectivity import isPingable
 from common.common import (
     setTimeZone, reboot, use_self_generated_eth0_MAC_address, 
-    on_ethernet, get_self_generated_eth0_MAC_address, get_MAC_address,
-    send_email, delete_file, create_file)
+    on_ethernet, read_wifi_credentials, write_to_file,
+    send_email, delete_file, create_file, get_network_info)
 from factory_settings.custom_params import factory_settings
 
 
@@ -32,7 +33,9 @@ list_of_boolean_flags = [
     "shutdownTerminal",
     "deleteClockings",
     "setEthernetMAC",
-    "send_emailLogs"
+    "send_emailLogs",
+    "marry_router",
+    "divorce_router"
 ]
 
 def display_off():
@@ -59,7 +62,9 @@ class Status_Flags_To_Check():
             "deleteClockings"           : self.deleteClockings,
             "setEthernetMAC"            : self.setEthernetMAC,
             "deleteIPs"                 : self.deleteIPs,
-            "send_emailLogs"            : self.send_emailLogs
+            "send_emailLogs"            : self.send_emailLogs,
+            "marry_router"              : self.marry_router,
+            "divorce_router"            : self.divorce_router,
         }
 
     def check_and_execute(self):
@@ -154,16 +159,63 @@ class Status_Flags_To_Check():
         os.system("sudo ip addr flush wlan0")
 
     def send_emailLogs(self):
+        loggerINFO("-----############### send email Logs ###############------")
         try:
             email = params.get("emailLogs") or False
             serial_number = factory_settings["productionNumber"] or "no s/n"
             subject = f"RAS #{serial_number} - log of last registered cards"
             if email:
-                send_email(email, subject, "Please find attached the last 400 registered cards. \n\n", LAST_REGISTERED)
+                send_email(email, subject, "Please find attached the last 500 registered cards. \n\n", LAST_REGISTERED)
         except:
             pass
-        
+    
+    def marry_router(self):
+        loggerINFO("-----############### Associate current router permanently to the device ###############------")
+        network = get_network_info()
+        if network["eth0"]["ip_device"] and network["eth0"]["mac_router"] and network["eth0"]["ip_router"]:
+            content_eth0_conf = \
+                "allow-hotplug eth0"+"\n"+ \
+                "iface eth0 inet dhcp"+"\n"+ \
+                "    gateway "+ network["eth0"]["ip_router"]+"\n"+ \
+                "    hwaddress ether "+ network["eth0"]["mac_router"]+"\n"
+            write_to_file(filename=FILE_ETH0_CONF, content=content_eth0_conf)
+        if network["wlan0"]["ip_device"] and network["wlan0"]["mac_router"] and network["wlan0"]["ip_router"]:
+            ssid, psk = read_wifi_credentials()
+            if ssid and psk:
+                content_wpa_conf = \
+                    "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev"+"\n"+ \
+                    "update_config=1"+"\n"+ \
+                    "\n"+ \
+                    "network={ \n" + "    ssid=\""+ ssid + "\"\n"+ \
+                    "    psk=\""+ psk + "\"\n"+ \
+                    "    bssid="+ network["wlan0"]["mac_router"] + "\n"+ \
+                    "}\n"
+                write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)
+                content_wlan0_conf = \
+                    "auto wlan0"+"\n"+ \
+                    "iface wlan0 inet dhcp"+"\n"+ \
+                    "    gateway "+ network["wlan0"]["ip_router"]+"\n"
+                write_to_file(filename=FILE_WLAN0_CONF, content=content_wlan0_conf)
+        os.system("sudo service networking restart")
+        os.system("sudo ifconfig eth0 up")   
 
+    def divorce_router(self):
+        loggerINFO("-----############### Remove any association to a specific router ###############------")
+        delete_file(FILE_ETH0_CONF)
+        delete_file(FILE_WLAN0_CONF)
+        ssid, psk = read_wifi_credentials()
+        if ssid and psk:
+            content_wpa_conf = \
+                "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev"+"\n"+ \
+                "update_config=1"+"\n"+ \
+                "\n"+ \
+                "network={ \n" + "    ssid=\""+ ssid + "\"\n"+ \
+                "    psk=\""+ psk + "\"\n"+ \
+                "}\n"
+            write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)
+        os.system("sudo service networking restart")
+        os.system("sudo ifconfig eth0 up")
+        
 class Timezone_Checker():
 
     def __init__(self):

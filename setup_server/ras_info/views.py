@@ -7,7 +7,7 @@ from thermal.hardware_status import get_hardware_status
 from odoo.odooRequests import  get_iot_template
 from common.params import Params
 from common.constants import PARAMS, CLOCKINGS, LAST_REGISTERED, LAST_LOGS
-from common.common import get_MAC_address, return_lines_from_file, get_timestamp_human
+from common.common import get_MAC_address, return_lines_from_file, get_timestamp_human, get_network_info, get_interface
 from common.common import runShellCommand_and_returnOutput as rs
 
 from odoo.registerClockings import get_sorted_clockings_from_older_to_newer
@@ -31,9 +31,14 @@ def show_info():
     device_name = params.get("RASxxx") or "N/A"
     wlan0_MAC_address = get_MAC_address("wlan0") or "N/A"
     eth0_MAC_address = get_MAC_address("eth0") or "N/A"
-    # wifi_SSID = get_wifi_SSID_of_RAS()
-    # wifi_success =  params.get("wifi_connection_counter_successful") or "0"
-    # wifi_NO_success =  params.get("wifi_connection_counter_unsuccessful") or "0"
+    network = get_network_info()
+    eth0_router_MAC_address = network["eth0"]["mac_router"] or "N/A"
+    eth0_router_ip = network["eth0"]["ip_router"] or "N/A"
+    eth0_device_ip = network["eth0"]["ip_device"] or "N/A"
+    wlan0_router_MAC_address = network["wlan0"]["mac_router"] or "N/A"
+    wlan0_router_ip = network["wlan0"]["ip_router"] or "N/A"
+    wlan0_device_ip = network["wlan0"]["ip_device"] or "N/A"
+
     return render_template('ras_info.html',
                 temperatureCurrent=temperatureCurrent, 
                 loadAvgPerc_5min=loadAvgPerc_5min, 
@@ -46,9 +51,12 @@ def show_info():
                 device_name=device_name,
                 wlan0_MAC_address=wlan0_MAC_address,
                 eth0_MAC_address=eth0_MAC_address,
-                # wifi_SSID=wifi_SSID,
-                # wifi_success=wifi_success,
-                # wifi_NO_success=wifi_NO_success
+                eth0_router_MAC_address = eth0_router_MAC_address,
+                eth0_router_ip = eth0_router_ip,
+                eth0_device_ip = eth0_device_ip,
+                wlan0_router_MAC_address = wlan0_router_MAC_address,
+                wlan0_router_ip = wlan0_router_ip,
+                wlan0_device_ip = wlan0_device_ip
                 )
 
 @ras_info.route('/show_stored_clockings',methods=['GET','POST'])

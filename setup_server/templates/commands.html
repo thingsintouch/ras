@@ -19,7 +19,7 @@
     Delete all IP addresses (Ethernet and WiFi) {{ form.command_delete_IPs() }}
     <br>
     <br>
-    Send Email with Log of last 400 registered cards (define the Email before) {{ form.command_send_emailLogs() }}
+    Send Email with Log of last 500 registered cards (define the Email before) {{ form.command_send_emailLogs() }}
     <br>
     <br>   
     Reboot the Device {{ form.command_reboot() }}
@@ -29,6 +29,12 @@
     <br>
     <br>
     Full Factory Reset: set the parameters to their factory values {{ form.command_full_reset() }}
+    <br>
+    <br>
+    Associate current routers (wlan and ethernet) permanently to the device {{ form.command_marry_router() }}
+    <br>
+    <br>
+    Remove any association to a specific router {{ form.command_divorce_router() }}
     <br>
     <br>
     Shutdown the Device {{ form.command_shutdown() }}

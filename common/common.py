@@ -7,6 +7,7 @@ import time
 import socket
 import secrets
 import random
+import re
 
 from hashlib import blake2b
 
@@ -645,3 +646,96 @@ def get_timestamp_human(timestamp_int):
         loggerINFO(f"could not calculate human readable timestamp from {timestamp_int} - Exception: {e}")
         timestamp_human = "unconverted timestamp " + str(timestamp_int)
     return timestamp_human
+
+def mac_address_is_plausible(mac_address):
+    if mac_address:
+        # Regular expression pattern to match a valid MAC address
+        mac_pattern = r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'
+        # Check if the string matches the MAC address pattern
+        if re.match(mac_pattern, mac_address):
+            # Check if the length is appropriate (17 characters)
+            if len(mac_address) == 17:
+                # Check if the number of colons (:) is correct (5 colons)
+                if mac_address.count(':') == 5:
+                    return True
+    return False
+
+def rs_no_next_line(command):
+    if command:
+        answer = rs(command)
+        if answer:
+            answer = answer.replace("\n", "")
+        else:
+            answer = False
+    else:
+        answer = False
+    return answer
+
+def get_router_mac_address(ip, i):
+    if ip and i:
+        command = "arp -n | awk '/"+ip+" / {count++; if (count == "+str(i)+") {print $3; exit}}'"
+        mac_address = (rs_no_next_line(command)) 
+        if mac_address_is_plausible(mac_address):
+            return mac_address 
+    return False
+
+# def get_ip_router():
+def get_network_info():
+    network = {
+        "eth0":  {
+            "ip_router": False,
+            "ip_device": False,
+            "mac_router": False,
+            "mac_device": False
+            },
+        "wlan0":  {
+            "ip_router": False,
+            "ip_device": False,
+            "mac_router": False,
+            "mac_device": False
+            },    
+        }
+    for i in [1,2]:
+        interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
+        if interface:
+            network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
+            network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $9}'"))
+            for j in [1,2]:
+                interface_arp = (rs_no_next_line("arp -n | awk '/"+network[interface]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
+                if interface_arp and interface_arp == interface:
+                    network[interface_arp]["mac_router"]= get_router_mac_address(network[interface_arp]["ip_router"], j)
+
+    network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
+    network["wlan0"]["mac_device"] = params.get("wlan0_MAC_address") or False
+    return network
+
+
+def get_interface(): # returns  no internet - eth0 - wlan0
+    if params.get("internetReachable") == "1":
+        if on_ethernet():
+            interface = "eth0"
+        else:
+            interface = "wlan0"
+    else:
+        interface = "no internet"
+    params.put("router_eth_or_wlan", interface)
+    return interface
+
+def read_wifi_credentials():
+    file_path = co.FILE_WPA_SUPP_CONF
+    ssid = False
+    psk = False
+    
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+            for line in lines:
+                if line.strip().startswith("ssid="):
+                    ssid = line.split('"')[1]
+                elif line.strip().startswith("psk="):
+                    psk = line.split('"')[1]
+
+    except FileNotFoundError:
+        loggerERROR(f"File not found: {file_path}")
+
+    return ssid, psk
