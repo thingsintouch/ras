@@ -15,15 +15,17 @@ params = Params(db=PARAMS)
 
 def set_for_deletion(f):
     if exists(join(TO_BE_DELETED,f)):
-        delete_file(join(CLOCKINGS,f))
-        if not exists(join(CLOCKINGS,f)):
-            delete_file(join(TO_BE_DELETED,f))
-        return True
-    else:
-        return False
+        try:
+            delete_file(join(CLOCKINGS,f))
+            if not exists(join(CLOCKINGS,f)):
+                delete_file(join(TO_BE_DELETED,f))
+            return True
+        except Exception as e:
+            loggerERROR(f"exception {e} in set_for_deletion of {f}")
+    return False
 
 def get_sorted_clockings_from_older_to_newer():
-    clocking_tuples = []
+    sorted_clockings = clocking_tuples = []
     now_in_seconds = int(time.time())
     expiration_period_in_weeks = params.get("clockings_expiration_period_in_weeks") or "2"
     seconds_until_clockings_deleted_locally = int(expiration_period_in_weeks)*7*24*60*60
@@ -31,18 +33,22 @@ def get_sorted_clockings_from_older_to_newer():
     for f in listdir(CLOCKINGS):
         if isfile(join(CLOCKINGS, f)):
             if not set_for_deletion(f):
-                splitted  = f.split("-")
-                card_code = splitted[0]
-                timestamp = splitted[1]
                 try:
+                    splitted  = f.split("-")
+                    card_code = splitted[0]
+                    timestamp = splitted[1]
                     if int(timestamp) < limit_for_clockings_to_remain:
                         delete_file(join(CLOCKINGS,f))
                         loggerINFO(f"removed old clocking stored locally: {f}")
                     else:
                         clocking_tuples.append((timestamp, card_code, f))
                 except Exception as e:
-                    loggerINFO(f"could not process {f} on get_sorted_clockings - Exception was {e}")
-    return sorted(clocking_tuples, key=lambda clocking: clocking[0])
+                    loggerERROR(f"could not process {f} on get_sorted_clockings - Exception was {e}")
+    try:
+        sorted_clockings = sorted(clocking_tuples, key=lambda clocking: clocking[0])
+    except Exception as e:
+        loggerERROR(f"could not sort the clocking list - Exception was {e}")    
+    return sorted_clockings
 
 def store_name_for_a_rfid_code(code, name):
     if code in params.keys:
@@ -86,7 +92,7 @@ def registerClockings():
                         error_message = answer.get("error_message", "No error message received.")
                         delete_not_recognized_cards = params.get("delete_clockings_not_recognized") is not None and params.get("delete_clockings_not_recognized")=="1"
                         message = clocking_info + f"{employee_name} not logged in Odoo. Error Message from Odoo: {error_message}"
-                        if delete_not_recognized_cards and q in error_message:
+                        if delete_not_recognized_cards and "No employee found with card" in error_message:
                             delete_file(join(CLOCKINGS,card_code_and_timestamp))
                         else:
                             card_codes_to_not_process.append(card_code)
