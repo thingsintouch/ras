@@ -679,48 +679,6 @@ def get_router_mac_address(ip, i):
             return mac_address 
     return False
 
-# def get_ip_router():
-def get_network_info():
-    network = {
-        "eth0":  {
-            "ip_router": False,
-            "ip_device": False,
-            "mac_router": False,
-            "mac_device": False
-            },
-        "wlan0":  {
-            "ip_router": False,
-            "ip_device": False,
-            "mac_router": False,
-            "mac_device": False
-            },    
-        }
-    for i in [1,2]:
-        interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
-        if interface:
-            network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
-            network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $9}'"))
-            for j in [1,2]:
-                interface_arp = (rs_no_next_line("arp -n | awk '/"+network[interface]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
-                if interface_arp and interface_arp == interface:
-                    network[interface_arp]["mac_router"]= get_router_mac_address(network[interface_arp]["ip_router"], j)
-
-    network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
-    network["wlan0"]["mac_device"] = params.get("wlan0_MAC_address") or False
-    return network
-
-
-def get_interface(): # returns  no internet - eth0 - wlan0
-    if params.get("internetReachable") == "1":
-        if on_ethernet():
-            interface = "eth0"
-        else:
-            interface = "wlan0"
-    else:
-        interface = "no internet"
-    params.put("router_eth_or_wlan", interface)
-    return interface
-
 def read_wifi_credentials():
     file_path = co.FILE_WPA_SUPP_CONF
     ssid = False
@@ -739,3 +697,54 @@ def read_wifi_credentials():
         loggerERROR(f"File not found: {file_path}")
 
     return ssid, psk
+
+def get_network_info():
+    network = {
+        "eth0":  {
+            "ip_router": False,
+            "ip_device": False,
+            "mac_router": False,
+            "mac_device": False
+            },
+        "wlan0":  {
+            "ip_router": False,
+            "ip_device": False,
+            "mac_router": False,
+            "mac_device": False,
+            "ssid": False,
+            "psk": False
+            },    
+        }
+    ssid, psk = read_wifi_credentials()
+    network["wlan0"]["ssid"] = ssid
+    network["wlan0"]["psk"] = psk
+    if ssid:
+        network["wlan0"]["mac_router"]= rs_no_next_line("iwlist wlan0 scan | grep -B 6 -A 1 '"+ssid+"' | awk -F'Address:' '/Address/{print $2}'")
+    for interface in ["eth0","wlan0"]:
+        network[interface]["mac_device"] = params.get(interface+"_MAC_address") or False
+        network[interface]["ip_device"]= (rs_no_next_line("ip -4 addr show dev "+interface+" | grep -oP '(?<=inet\s)\d+\.\d+\.\d+\.\d+'"))
+    for i in [1,3]:
+        interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
+        if interface:
+            network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
+    for j in [1,2]:
+        interface_arp = (rs_no_next_line("arp -n | awk '/"+network[interface]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
+        if interface_arp =="eth0":
+            network[interface_arp]["mac_router"]= get_router_mac_address(network[interface_arp]["ip_router"], j)
+
+    # network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
+    # network["wlan0"]["mac_device"] = params.get("wlan0_MAC_address") or False
+    return network
+
+
+def get_interface(): # returns  no internet - eth0 - wlan0
+    if params.get("internetReachable") == "1":
+        if on_ethernet():
+            interface = "eth0"
+        else:
+            interface = "wlan0"
+    else:
+        interface = "no internet"
+    params.put("router_eth_or_wlan", interface)
+    return interface
+
