@@ -34,6 +34,7 @@ def show_info():
     network = get_network_info()
     eth0_router_MAC_address = network["eth0"]["mac_router"] or "N/A"
     eth0_router_ip = network["eth0"]["ip_router"] or "N/A"
+    print(f"eth0_router_ip - {eth0_router_ip}")
     eth0_device_ip = network["eth0"]["ip_device"] or "N/A"
     eth0_secondary_ip = network["eth0"]["ip_secondary"] or "N/A"
     wlan0_router_MAC_address = network["wlan0"]["mac_router"] or "N/A"

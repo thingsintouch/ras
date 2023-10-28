@@ -713,7 +713,7 @@ def read_wifi_credentials():
 def get_ip_from_mac_router(mac_router):
     try:
         if mac_router:
-            return rs_no_next_line("sudo arp-scan --localnet | grep \""+mac_router+"\" | awk '{print $1}'")
+            return rs_no_next_line("-")
     except Exception as e:
         loggerINFO(f"could not get ip from router with MAC {mac_router} - Exception: {e}")
     return False

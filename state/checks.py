@@ -197,7 +197,7 @@ class Status_Flags_To_Check():
                 "    gateway "+ network["eth0"]["ip_router"]+"\n"+ \
                 "    hwaddress ether "+ network["eth0"]["mac_router"]+"\n"
             write_to_file(filename=FILE_ETH0_CONF, content=content_eth0_conf)
-        if network["wlan0"]["ip_device"] and network["wlan0"]["mac_router"] and network["wlan0"]["ip_router"]:
+        if network["wlan0"]["ip_device"] and network["wlan0"]["mac_router"]:
             ssid, psk = read_wifi_credentials()
             if ssid and psk:
                 content_wpa_conf = \
@@ -209,11 +209,12 @@ class Status_Flags_To_Check():
                     "    bssid="+ network["wlan0"]["mac_router"] + "\n"+ \
                     "}\n"
                 write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)
-                content_wlan0_conf = \
-                    "auto wlan0"+"\n"+ \
-                    "iface wlan0 inet dhcp"+"\n"+ \
-                    "    gateway "+ network["wlan0"]["ip_router"]+"\n"
-                write_to_file(filename=FILE_WLAN0_CONF, content=content_wlan0_conf)
+                if network["wlan0"]["ip_router"]:
+                    content_wlan0_conf = \
+                        "auto wlan0"+"\n"+ \
+                        "iface wlan0 inet dhcp"+"\n"+ \
+                        "    gateway "+ network["wlan0"]["ip_router"]+"\n"
+                    write_to_file(filename=FILE_WLAN0_CONF, content=content_wlan0_conf)
         os.system("sudo service networking restart")
         os.system("sudo ifconfig eth0 up")   
 
