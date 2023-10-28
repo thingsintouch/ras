@@ -751,6 +751,7 @@ def get_network_info():
         interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
         if interface == "eth0":
             network["eth0"]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
+            print(f'network["eth0"]["ip_router"]: {network["eth0"]["ip_router"]}; i: {i}')
             for j in [1,2]:
                 interface_arp = (rs_no_next_line("arp -n | awk '/"+network["eth0"]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
                 print(f"interface_arp: {interface_arp}")
