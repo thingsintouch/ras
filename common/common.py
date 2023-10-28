@@ -753,8 +753,10 @@ def get_network_info():
             network["eth0"]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
             for j in [1,2]:
                 interface_arp = (rs_no_next_line("arp -n | awk '/"+network["eth0"]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
+                print(f"interface_arp: {interface_arp}")
                 if interface_arp =="eth0":
                     network["eth0"]["mac_router"]= get_router_mac_address(network["eth0"]["ip_router"], j)
+                    print(f'network["eth0"]["mac_router"]: {network["eth0"]["mac_router"]}')
                     break
             break
     return network
