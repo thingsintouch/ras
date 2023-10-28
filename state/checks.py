@@ -86,7 +86,7 @@ class Status_Flags_To_Check():
     def check_and_execute(self):
         self.check_if_registered_once_after_every_launch()
         for package in list_of_packages_to_be_installed:
-            self.install_package[package]
+            self.install_package(package)
         for boolean_flag in list_of_boolean_flags:
             if params.get(boolean_flag) == "1":
                 set_all_boolean_flags_to_false()
