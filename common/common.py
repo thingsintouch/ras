@@ -671,6 +671,18 @@ def rs_no_next_line(command):
         answer = False
     return answer
 
+def rs_get_two_lines(command):
+    try:
+        answer = rs(command)
+        if answer:
+            lines = answer.split("\n")
+            return lines[:2]
+    except Exception as e:
+        loggerERROR(f"could not get two lines from {command} - Exception: {e}")
+    return ["",""]
+        
+            
+
 def get_router_mac_address(ip, i):
     if ip and i:
         command = "arp -n | awk '/"+ip+" / {count++; if (count == "+str(i)+") {print $3; exit}}'"
@@ -706,17 +718,20 @@ def get_ip_from_mac_router(mac_router):
         loggerINFO(f"could not get ip from router with MAC {mac_router} - Exception: {e}")
     return False
 
+
 def get_network_info():
     network = {
         "eth0":  {
             "ip_router": False,##
             "ip_device": False,##
+            "ip_secondary": False,
             "mac_router": False,##
             "mac_device": False##
             },
         "wlan0":  {
             "ip_router": False,##
             "ip_device": False,##
+            "ip_secondary": False,
             "mac_router": False,##
             "mac_device": False,##
             "ssid": False,##
@@ -731,7 +746,7 @@ def get_network_info():
         network["wlan0"]["ip_router"] = get_ip_from_mac_router(wlan0_mac_router)
     for interface in ["eth0","wlan0"]:
         network[interface]["mac_device"] = params.get(interface+"_MAC_address") or False
-        network[interface]["ip_device"] = (rs_no_next_line("ip -4 addr show dev "+interface+" | grep -oP '(?<=inet\s)\d+\.\d+\.\d+\.\d+'"))
+        network[interface]["ip_device"] ,  network[interface]["ip_secondary"]= rs_get_two_lines("ip -4 addr show dev "+interface+" | grep -oP '(?<=inet\s)\d+\.\d+\.\d+\.\d+'")
     for i in [1,3]:
         interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
         if interface == "eth0":

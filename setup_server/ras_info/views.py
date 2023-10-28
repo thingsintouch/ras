@@ -35,9 +35,11 @@ def show_info():
     eth0_router_MAC_address = network["eth0"]["mac_router"] or "N/A"
     eth0_router_ip = network["eth0"]["ip_router"] or "N/A"
     eth0_device_ip = network["eth0"]["ip_device"] or "N/A"
+    eth0_secondary_ip = network["eth0"]["ip_secondary"] or "N/A"
     wlan0_router_MAC_address = network["wlan0"]["mac_router"] or "N/A"
     wlan0_router_ip = network["wlan0"]["ip_router"] or "N/A"
     wlan0_device_ip = network["wlan0"]["ip_device"] or "N/A"
+    wlan0_secondary_ip = network["wlan0"]["ip_secondary"] or "N/A"
 
     return render_template('ras_info.html',
                 temperatureCurrent=temperatureCurrent, 
@@ -54,9 +56,11 @@ def show_info():
                 eth0_router_MAC_address = eth0_router_MAC_address,
                 eth0_router_ip = eth0_router_ip,
                 eth0_device_ip = eth0_device_ip,
+                eth0_secondary_ip = eth0_secondary_ip,
                 wlan0_router_MAC_address = wlan0_router_MAC_address,
                 wlan0_router_ip = wlan0_router_ip,
-                wlan0_device_ip = wlan0_device_ip
+                wlan0_device_ip = wlan0_device_ip,
+                wlan0_secondary_ip = wlan0_secondary_ip
                 )
 
 @ras_info.route('/show_stored_clockings',methods=['GET','POST'])
