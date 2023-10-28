@@ -698,42 +698,50 @@ def read_wifi_credentials():
 
     return ssid, psk
 
+def get_ip_from_mac_router(mac_router):
+    try:
+        if mac_router:
+            return rs_no_next_line("sudo arp-scan --localnet | grep \""+mac_router+"\" | awk '{print $1}'")
+    except Exception as e:
+        loggerINFO(f"could not get ip from router with MAC {mac_router} - Exception: {e}")
+    return False
+
 def get_network_info():
     network = {
         "eth0":  {
-            "ip_router": False,
-            "ip_device": False,
-            "mac_router": False,
-            "mac_device": False
+            "ip_router": False,##
+            "ip_device": False,##
+            "mac_router": False,##
+            "mac_device": False##
             },
         "wlan0":  {
-            "ip_router": False,
-            "ip_device": False,
-            "mac_router": False,
-            "mac_device": False,
-            "ssid": False,
-            "psk": False
+            "ip_router": False,##
+            "ip_device": False,##
+            "mac_router": False,##
+            "mac_device": False,##
+            "ssid": False,##
+            "psk": False##
             },    
         }
     ssid, psk = read_wifi_credentials()
     network["wlan0"]["ssid"] = ssid
     network["wlan0"]["psk"] = psk
     if ssid:
-        network["wlan0"]["mac_router"]= rs_no_next_line("iwlist wlan0 scan | grep -B 6 -A 1 '"+ssid+"' | awk -F'Address:' '/Address/{print $2}'")
+        wlan0_mac_router = network["wlan0"]["mac_router"]= rs_no_next_line("iwlist wlan0 scan | grep -B 6 -A 1 '"+ssid+"' | awk -F'Address:' '/Address/{print $2}'")
+        network["wlan0"]["ip_router"] = get_ip_from_mac_router(wlan0_mac_router)
     for interface in ["eth0","wlan0"]:
         network[interface]["mac_device"] = params.get(interface+"_MAC_address") or False
-        network[interface]["ip_device"]= (rs_no_next_line("ip -4 addr show dev "+interface+" | grep -oP '(?<=inet\s)\d+\.\d+\.\d+\.\d+'"))
+        network[interface]["ip_device"] = (rs_no_next_line("ip -4 addr show dev "+interface+" | grep -oP '(?<=inet\s)\d+\.\d+\.\d+\.\d+'"))
     for i in [1,3]:
         interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
-        if interface:
-            network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
-    for j in [1,2]:
-        interface_arp = (rs_no_next_line("arp -n | awk '/"+network[interface]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
-        if interface_arp =="eth0":
-            network[interface_arp]["mac_router"]= get_router_mac_address(network[interface_arp]["ip_router"], j)
-
-    # network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
-    # network["wlan0"]["mac_device"] = params.get("wlan0_MAC_address") or False
+        if interface == "eth0":
+            network["eth0"]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
+            for j in [1,2]:
+                interface_arp = (rs_no_next_line("arp -n | awk '/"+network["eth0"]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
+                if interface_arp =="eth0":
+                    network["eth0"]["mac_router"]= get_router_mac_address(network["eth0"]["ip_router"], j)
+                    break
+            break
     return network
 
 

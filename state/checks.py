@@ -3,6 +3,7 @@ from os.path import isfile, join, exists
 import time
 import sys
 import fcntl
+import apt
 
 from display.helpers import sh1106
 
@@ -38,6 +39,10 @@ list_of_boolean_flags = [
     "divorce_router"
 ]
 
+list_of_packages_to_be_installed = [
+    "arp-scan",
+]
+
 def display_off():
     try:
         display = sh1106()
@@ -66,9 +71,22 @@ class Status_Flags_To_Check():
             "marry_router"              : self.marry_router,
             "divorce_router"            : self.divorce_router,
         }
+        self.apt_cache = apt.Cache()
+
+    def install_package(self, package):
+        try:
+            if not self.apt_cache[package].is_installed:
+                self.apt_cache[package].mark_install()
+                self.apt_cache.commit()
+                self.apt_cache.update()
+                loggerINFO(f"package {package} has been installed.")
+        except Exception as e:
+            loggerERROR(f"Error installing or 'checking if installed' package {package}: {e}")
 
     def check_and_execute(self):
         self.check_if_registered_once_after_every_launch()
+        for package in list_of_packages_to_be_installed:
+            self.install_package[package]
         for boolean_flag in list_of_boolean_flags:
             if params.get(boolean_flag) == "1":
                 set_all_boolean_flags_to_false()
