@@ -113,8 +113,10 @@ def runShellCommand(command):
             stderr=subprocess.STDOUT)
         loggerDEBUG(f'shell command {command} - returncode: {completed.returncode}')
         return completed.returncode
-    except:
-        loggerERROR(f"error on shell command: {command}")
+    except  Exception as e:
+        traceback_info = traceback.format_exc()
+        loggerERROR(f"error on shell command: {command} - exception {e}")
+        loggerERROR(traceback_info)
         return False
 
 def runShellCommand_and_returnOutput(command):
