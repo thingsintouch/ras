@@ -28,6 +28,7 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from datetime import datetime
 import pytz
+import traceback
 
 progname = "com.example.HelloWorld"
 objpath  = "/HelloWorld"
@@ -121,8 +122,10 @@ def runShellCommand_and_returnOutput(command):
         completed = subprocess.check_output(command, shell=True)
         #loggerDEBUG(f'shell command {command} - returncode: {completed}')
         return str(completed, 'utf-8', 'ignore')
-    except:
-        loggerERROR(f"error on shell command: {command}")
+    except  Exception as e:
+        traceback_info = traceback.format_exc()
+        loggerERROR(f"error on shell command: {command} - exception {e}")
+        loggerERROR(traceback_info)
         return False
 
 rs = runShellCommand_and_returnOutput
