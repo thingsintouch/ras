@@ -715,13 +715,13 @@ def read_wifi_credentials():
 
     return ssid, psk
 
-def get_ip_from_mac_router(mac_router):
-    try:
-        if mac_router:
-            return rs_no_next_line("-")
-    except Exception as e:
-        loggerINFO(f"could not get ip from router with MAC {mac_router} - Exception: {e}")
-    return False
+# def get_ip_from_mac_router(mac_router):
+#     try:
+#         if mac_router:
+#             return rs_no_next_line("-")
+#     except Exception as e:
+#         loggerINFO(f"could not get ip from router with MAC {mac_router} - Exception: {e}")
+#     return False
 
 
 def get_network_info():
@@ -747,16 +747,17 @@ def get_network_info():
     network["wlan0"]["ssid"] = ssid
     network["wlan0"]["psk"] = psk
     if ssid:
-        wlan0_mac_router = network["wlan0"]["mac_router"]= rs_no_next_line("iwlist wlan0 scan | grep -B 6 -A 1 '"+ssid+"' | awk -F'Address:' '/Address/{print $2}'")
-        network["wlan0"]["ip_router"] = get_ip_from_mac_router(wlan0_mac_router)
+        network["wlan0"]["mac_router"]= rs_no_next_line("iwlist wlan0 scan | grep -B 6 -A 1 '"+ssid+"' | awk -F'Address:' '/Address/{print $2}'")
     for interface in ["eth0","wlan0"]:
         network[interface]["mac_device"] = params.get(interface+"_MAC_address") or False
         network[interface]["ip_device"] ,  network[interface]["ip_secondary"]= rs_get_two_lines("ip -4 addr show dev "+interface+" | grep -oP '(?<=inet\s)\d+\.\d+\.\d+\.\d+'")
     for i in [1,3]:
         interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
+        if interface =="wlan0":
+            network["wlan0"]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
         if interface == "eth0":
             network["eth0"]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
-            print(f'network["eth0"]["ip_router"]: {network["eth0"]["ip_router"]}; i: {i}')
+            #print(f'network["eth0"]["ip_router"]: {network["eth0"]["ip_router"]}; i: {i}')
             for j in [1,2]:
                 interface_arp = (rs_no_next_line("arp -n | awk '/"+network["eth0"]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
                 print(f"interface_arp: {interface_arp}")
@@ -764,7 +765,6 @@ def get_network_info():
                     network["eth0"]["mac_router"]= get_router_mac_address(network["eth0"]["ip_router"], j)
                     print(f'network["eth0"]["mac_router"]: {network["eth0"]["mac_router"]}')
                     break
-            break
     return network
 
 
