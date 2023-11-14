@@ -1,34 +1,34 @@
 from pprint import PrettyPrinter
+
 pPrint = PrettyPrinter(indent=1).pprint
 
-import subprocess
+import fcntl
 import os
-import time
-import socket
-import secrets
 import random
 import re
-
-from hashlib import blake2b
-
-from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
-
-from common.params import Params
-import common.constants as co
-from common.keys import keys_by_Type, TxType
-from factory_settings.custom_params import factory_settings
-from os.path import isfile, exists, join
-import dbus
-import sys
-import fcntl
-
+import secrets
 import smtplib
+import socket
+import subprocess
+import sys
+import time
+import traceback
+from datetime import datetime
+from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.application import MIMEApplication
-from datetime import datetime
+from hashlib import blake2b
+from os.path import exists, isfile, join
+
+import dbus
 import pytz
-import traceback
+
+import common.constants as co
+from common.keys import TxType, keys_by_Type
+from common.logger import (loggerCRITICAL, loggerDEBUG, loggerERROR,
+                           loggerINFO, loggerWARNING)
+from common.params import Params
+from factory_settings.custom_params import factory_settings
 
 progname = "com.example.HelloWorld"
 objpath  = "/HelloWorld"
