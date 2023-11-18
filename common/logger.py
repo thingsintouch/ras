@@ -3,7 +3,8 @@ from systemd import journal
 import time
 import os
 
-from common.constants import PARAMS
+from common.constants import PARAMS, LAST_LOGS
+from common.common_avoid_circularity import insert_line_at_top
 from common.params import Params, Log
 import re
 
@@ -32,32 +33,29 @@ def appendToIncrementalLog(message):
     message = escape_ansi(message)
     log_db.put(message)
 
-    # currentLog = params.get("incrementalLog")
-    # if currentLog:
-    #     currentLog = currentLog + "\n" + message
-    # else:
-    #     currentLog = message
-    # params.put("incrementalLog", currentLog)
+def add_to_log_file(line_to_insert):
+    insert_line_at_top(LAST_LOGS, line_to_insert)
 
 def loggerDEBUG(message):
     if params.get("show_debug") is not None and params.get("show_debug")=="0":
         pass
     else:
+        add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "DEBUG " + message + "\n")
         logger.debug(message)
 
 def loggerINFO(message):
-    #appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "INFO " + message)
+    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "INFO " + message + "\n")
     logger.info(message)
 
 def loggerWARNING(message):
-    #appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "WARNING " + message)
+    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "WARNING " + message + "\n")
     logger.warning(message)
 
 def loggerERROR(message):
-    #appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "ERROR " + message)
+    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "ERROR " + message + "\n")
     logger.error(message)
 
 def loggerCRITICAL(message):
-    #appendToIncrementalLog(time.strftime("%a, %d %b %Y %H:%M:%S ") + "CRITICAL " + message)
+    add_to_log_file(time.strftime("%a, %d %b %Y %H:%M:%S ") + "CRITICAL " + message + "\n")
     logger.critical(message)
 

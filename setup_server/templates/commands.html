@@ -13,9 +13,15 @@
     Delete all locally stored clockings (in the device) {{ form.command_delete_clockings() }}
     <br>
     <br>
-    Set the Ethernet MAC Address of the Device to match the MAC Address of the Raspberry Pi and not the MAC Address of the Adapter {{ form.command_set_ethernet_mac() }}
+    Set the distinct Ethernet MAC Address {{ form.command_set_ethernet_mac() }}
     <br>
-    <br>    
+    <br>
+    Delete all IP addresses (Ethernet and WiFi) {{ form.command_delete_IPs() }}
+    <br>
+    <br>
+    Send Email with Log of last 500 registered cards (define the Email before) {{ form.command_send_emailLogs() }}
+    <br>
+    <br>   
     Reboot the Device {{ form.command_reboot() }}
     <br>
     <br>
@@ -23,6 +29,12 @@
     <br>
     <br>
     Full Factory Reset: set the parameters to their factory values {{ form.command_full_reset() }}
+    <br>
+    <br>
+    Associate current routers (wlan and ethernet) permanently to the device {{ form.command_marry_router() }}
+    <br>
+    <br>
+    Remove any association to a specific router {{ form.command_divorce_router() }}
     <br>
     <br>
     Shutdown the Device {{ form.command_shutdown() }}

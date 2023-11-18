@@ -7,6 +7,7 @@ import time
 import socket
 import secrets
 import random
+import re
 
 from hashlib import blake2b
 
@@ -16,10 +17,17 @@ from common.params import Params
 import common.constants as co
 from common.keys import keys_by_Type, TxType
 from factory_settings.custom_params import factory_settings
-from os.path import isfile, exists
+from os.path import isfile, exists, join
 import dbus
 import sys
 import fcntl
+
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+from datetime import datetime
+import pytz
 
 progname = "com.example.HelloWorld"
 objpath  = "/HelloWorld"
@@ -285,16 +293,51 @@ def set_bluetooth_device_name():
     params.put("bluetooth_device_name", bluetooth_device_name)
 
 def get_own_IP_address():
+    # employs UDP broadcast to retrieve the local IP address. The choice of '10.255.255.255' 
+    # as the IP address is commonly used for this purpose, as it's a broadcast address 
+    # that reaches all devices within the local network
+    # It's plausible that certain networks or firewalls might impose restrictions 
+    # or block UDP broadcast packets.
+    # So, the device could be connected but show on the display "not connected".
     st = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         st.connect(('10.255.255.255', 1))
+        st.settimeout(2)  # Set a timeout for socket operations
         IP = st.getsockname()[0]
-    except Exception:
+    except Exception as e:
+        loggerDEBUG(f"Exception while retrieving IP address making a UDP broadcast: {e}")
         IP = '127.0.0.1'
     finally:
         st.close()
+    # if IP == '127.0.0.1':
+    #     IP = get_own_IP_address_with_google()
     params.put("ip", IP)
     return IP
+
+def get_own_IP_address_with_google():
+    try:
+        # Create a temporary socket to get the local IP address
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(2)  # Set a timeout for socket operations
+
+        # Connect to a remote server (Google's DNS server)
+        s.connect(("8.8.8.8", 80))
+
+        # Get the local IP address from the socket's address
+        local_ip = s.getsockname()[0]
+
+    except socket.error as e:
+        loggerDEBUG(f"Error while retrieving IP address contacting 8.8.8.8 (google): {e}")
+        local_ip = '127.0.0.1'
+    
+    except Exception as e:
+        loggerDEBUG(f"Exception while retrieving IP address contacting 8.8.8.8 (google): {e}")
+        local_ip = '127.0.0.1'
+
+    finally:
+        s.close()
+
+    return local_ip
 
 def isIpPortOpen(ipPort): # you can not ping ports, you have to use connect_ex for ports
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -397,10 +440,13 @@ def ensure_wpa_supplicant():
             setup_wpa_supplicant()
 
 def write_to_file(filename, content):
-    with open(filename, 'w') as file:
-        fcntl.flock(file, fcntl.LOCK_EX)  # Acquire an exclusive lock
-        file.write(content)
-        fcntl.flock(file, fcntl.LOCK_UN)  # Release the lock
+    try:
+        with open(filename, 'w') as file:
+            fcntl.flock(file, fcntl.LOCK_EX)  # Acquire an exclusive lock
+            file.write(str(content))
+            fcntl.flock(file, fcntl.LOCK_UN)
+    except Exception as e:
+            loggerERROR(f"could not release the lock on {filename} while writing {content} in it - Exception {e}")
 
 def initialize_show_debug_messages():
     if params.get("show_debug") is None:
@@ -475,10 +521,221 @@ def get_self_generated_eth0_MAC_address():
     loggerDEBUG(f"wlan0_MAC_address {wlan0_MAC_address}")
     return eth0_MAC_address
 
+def store_permanently_eth0_ḾAC_address(eth0_MAC_address):
+    try:
+        file_name = "/etc/systemd/network/99-default.link"
+        rs("sudo rm " + file_name)
+        lines_to_write = [
+            "[Match]",
+            "OriginalName=eth0",
+            " ",
+            "[Link]",
+            "MACAddress="+eth0_MAC_address
+        ]
+        # Open the file in write mode (or create if it doesn't exist)
+        with open(file_name, "w") as file:
+            for line in lines_to_write:
+                file.write(line + "\n")
+        loggerINFO(f"successfully stored permanently_eth0_ḾAC_address {eth0_MAC_address}")    
+    except Exception as e:
+        loggerINFO(f"store_permanently_eth0_ḾAC_address {eth0_MAC_address} - Exception: {e}")    
+
+
 def use_self_generated_eth0_MAC_address():
-    set_eth0_MAC_address(get_self_generated_eth0_MAC_address())
+    eth0_MAC_address = get_self_generated_eth0_MAC_address()
+    set_eth0_MAC_address(eth0_MAC_address)
+    store_permanently_eth0_ḾAC_address(eth0_MAC_address)
+
+def check_if_eth_mac_is_set():
+    if params.get("use_self_generated_eth0_MAC_address")=="1":
+        stored_mac_address = params.get("eth0_MAC_address")
+        if stored_mac_address is None:
+            stored_mac_address = get_self_generated_eth0_MAC_address()
+        loggerDEBUG(f"ethernet mac stored {stored_mac_address} - used {get_MAC_address('eth0')}")
+        if get_MAC_address("eth0") != stored_mac_address:
+            params.put("setEthernetMAC", "1")
  
 def initialize_eth0_MAC_address():
     if params.get("use_self_generated_eth0_MAC_address")==1:  #and params.get("eth0_MAC_address") is None
         use_self_generated_eth0_MAC_address()
+    check_if_eth_mac_is_set()
 
+
+def return_lines_from_file(file_path):
+    try:
+        # Read the existing file content
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+    except FileNotFoundError:
+        loggerDEBUG(f"File not found: {file_path}")
+        lines = []
+    return lines
+
+# Email configuration
+EMAIL_PROVIDER_SMTP_ADDRESS = 'smtp.gmail.com'
+MY_EMAIL = 'logsras@gmail.com'
+
+def send_email(email, subject, message_text, attachment_filename):
+    try:
+        # Create the email message
+        message = MIMEMultipart()
+        message['From'] = MY_EMAIL
+        message['To'] = email
+        message['Subject'] = subject
+
+        # Attach the file if provided
+        if attachment_filename:
+            with open(attachment_filename, 'r') as file:
+                lines = file.readlines()
+            for line in lines:
+                message_text = message_text + line
+
+        # Attach the plain text message
+        message.attach(MIMEText(message_text, 'plain'))
+
+        with smtplib.SMTP(EMAIL_PROVIDER_SMTP_ADDRESS, timeout=20) as connection:
+            connection.starttls()
+            MY_PASSWORD = params.get("smtp_password") or False
+            if MY_PASSWORD:
+                connection.login(MY_EMAIL, MY_PASSWORD)
+                connection.sendmail(
+                    from_addr=MY_EMAIL,
+                    to_addrs=email,
+                    msg=f"Subject:{subject}\n\n{message_text}".encode('utf-8')
+                )
+    except Exception as e:
+        loggerDEBUG(f"Exception sending E-Mail: {e}")
+
+def delete_file(file_path):
+    with open(file_path, 'w') as lockfile:
+        timeout = 1.1  # Specify your desired timeout in seconds
+        start_time = time.time()
+        locked = False
+        while time.time() - start_time < timeout:
+            try:
+                fcntl.flock(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                locked = True
+                break
+            except BlockingIOError:
+                # Another process holds the lock; wait for a moment and retry
+                time.sleep(0.05)
+        if not locked:
+            loggerINFO(f"Failed to acquire the lock for {file_path} that was set for deletion")
+        else:
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                loggerERROR(f"Failed to delete the file {file_path} - Exception: {e}")
+        # Check if the file has been successfully deleted
+    file_deleted = not exists(file_path)
+    return file_deleted
+
+def create_file(directory, file_name):
+    if not exists(directory): os.makedirs(directory)
+    file_path = join(directory, file_name)
+    if not exists(file_path):
+        with open(file_path, 'w') as f:
+            pass
+
+def get_timestamp_human(timestamp_int):
+    try:
+        tz = params.get("tz") or "Europe/Berlin"
+        tzinfo = pytz.timezone(tz)
+        timestamp_human = datetime.fromtimestamp(int(timestamp_int), tz=tzinfo).strftime('%H:%M:%S %A %d-%b-%y')
+    except Exception as e:
+        loggerINFO(f"could not calculate human readable timestamp from {timestamp_int} - Exception: {e}")
+        timestamp_human = "unconverted timestamp " + str(timestamp_int)
+    return timestamp_human
+
+def mac_address_is_plausible(mac_address):
+    if mac_address:
+        # Regular expression pattern to match a valid MAC address
+        mac_pattern = r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'
+        # Check if the string matches the MAC address pattern
+        if re.match(mac_pattern, mac_address):
+            # Check if the length is appropriate (17 characters)
+            if len(mac_address) == 17:
+                # Check if the number of colons (:) is correct (5 colons)
+                if mac_address.count(':') == 5:
+                    return True
+    return False
+
+def rs_no_next_line(command):
+    if command:
+        answer = rs(command)
+        if answer:
+            answer = answer.replace("\n", "")
+        else:
+            answer = False
+    else:
+        answer = False
+    return answer
+
+def get_router_mac_address(ip, i):
+    if ip and i:
+        command = "arp -n | awk '/"+ip+" / {count++; if (count == "+str(i)+") {print $3; exit}}'"
+        mac_address = (rs_no_next_line(command)) 
+        if mac_address_is_plausible(mac_address):
+            return mac_address 
+    return False
+
+# def get_ip_router():
+def get_network_info():
+    network = {
+        "eth0":  {
+            "ip_router": False,
+            "ip_device": False,
+            "mac_router": False,
+            "mac_device": False
+            },
+        "wlan0":  {
+            "ip_router": False,
+            "ip_device": False,
+            "mac_router": False,
+            "mac_device": False
+            },    
+        }
+    for i in [1,2]:
+        interface = (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $5}'"))
+        if interface:
+            network[interface]["ip_router"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $3}'"))
+            network[interface]["ip_device"]= (rs_no_next_line("ip route show default | awk '/via/ {count++} count == "+str(i)+" {print $9}'"))
+            for j in [1,2]:
+                interface_arp = (rs_no_next_line("arp -n | awk '/"+network[interface]["ip_router"]+" / {count++; if (count == "+str(j)+") {print $5; exit}}'"))
+                if interface_arp and interface_arp == interface:
+                    network[interface_arp]["mac_router"]= get_router_mac_address(network[interface_arp]["ip_router"], j)
+
+    network["eth0"]["mac_device"] = params.get("eth0_MAC_address") or False
+    network["wlan0"]["mac_device"] = params.get("wlan0_MAC_address") or False
+    return network
+
+
+def get_interface(): # returns  no internet - eth0 - wlan0
+    if params.get("internetReachable") == "1":
+        if on_ethernet():
+            interface = "eth0"
+        else:
+            interface = "wlan0"
+    else:
+        interface = "no internet"
+    params.put("router_eth_or_wlan", interface)
+    return interface
+
+def read_wifi_credentials():
+    file_path = co.FILE_WPA_SUPP_CONF
+    ssid = False
+    psk = False
+    
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+            for line in lines:
+                if line.strip().startswith("ssid="):
+                    ssid = line.split('"')[1]
+                elif line.strip().startswith("psk="):
+                    psk = line.split('"')[1]
+
+    except FileNotFoundError:
+        loggerERROR(f"File not found: {file_path}")
+
+    return ssid, psk

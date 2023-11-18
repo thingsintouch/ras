@@ -7,7 +7,7 @@ PERIOD_CONNECTIVITY_MANAGER = 10 # in seconds
 PERIOD_THERMAL_MANAGER = 360 # in seconds
 PERIOD_DISPLAY_MANAGER = 0.8 # in seconds
 PERIOD_CLOCK_MANAGER = 0.7 # in seconds
-PERIOD_READER_MANAGER = 0.3 # in seconds
+PERIOD_READER_MANAGER = 0.6 # in seconds
 PERIOD_STATE_MANAGER = 3 # in seconds
 PERIOD_ACK_STATE_MANAGER = 1 # in seconds
 PERIOD_BUZZER_MANAGER = 0.5 # in seconds
@@ -31,13 +31,19 @@ HASH_DIGEST_SIZE = int(config("HASH_DIGEST_SIZE"))
 HASH_PERSON_REGISTER_TERMINAL = bytes(config("HASH_PERSON_REGISTER_TERMINAL"), encoding='utf8')
 
 PARAMS = WORKING_DIR + "/data/params"
+CUSTOM_PARAMS = WORKING_DIR + "/factory_settings/custom_params.py"
+LAST_REGISTERED = WORKING_DIR + "/data/last_registered.txt"
+LAST_LOGS = WORKING_DIR + "/data/last_logs.txt"
 CLOCKINGS = WORKING_DIR + "/data/clockings"
+TO_BE_DELETED = WORKING_DIR + "/data/to_be_deleted"
 IN_OR_OUT = WORKING_DIR + "/data/in_or_out"
 LOG = WORKING_DIR + "/data/log"
 KEYS = WORKING_DIR + "/data/keys"
 KEY_ACTIONS = WORKING_DIR + "/data/key_actions"
 ETHERNET_FLAG_FILE = "/sys/class/net/eth0/carrier" # if 1, ethernet is up
-
+FILE_ETH0_CONF = "/etc/network/interfaces.d/eth0.conf"
+FILE_WPA_SUPP_CONF = "/etc/wpa_supplicant/wpa_supplicant.conf"
+FILE_WLAN0_CONF= "/etc/network/interfaces.d/wlan0.conf"
 
 MAX_NUMBER_OF_LOG_ENTRIES = 100
 

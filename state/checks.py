@@ -1,20 +1,26 @@
 import os
-from os.path import isfile, join
+from os.path import isfile, join, exists
 import time
 import sys
+import fcntl
 
 from display.helpers import sh1106
 
 from common.logger import loggerDEBUG, loggerINFO, loggerWARNING, loggerERROR, loggerCRITICAL
 
-from common.constants import WORKING_DIR, PARAMS, CLOCKINGS
+from common.constants import (
+    WORKING_DIR, PARAMS, CLOCKINGS, LAST_REGISTERED, 
+    TO_BE_DELETED, FILE_ETH0_CONF, FILE_WPA_SUPP_CONF, FILE_WLAN0_CONF)
 
 from common.params import Params
 from odoo.odooRequests import check_if_registered
 from common.connectivity import isPingable
 from common.common import (
     setTimeZone, reboot, use_self_generated_eth0_MAC_address, 
-    on_ethernet, get_self_generated_eth0_MAC_address, get_MAC_address)
+    on_ethernet, read_wifi_credentials, write_to_file,
+    send_email, delete_file, create_file, get_network_info)
+from factory_settings.custom_params import factory_settings
+
 
 
 params = Params(db=PARAMS)
@@ -26,7 +32,10 @@ list_of_boolean_flags = [
     "fullFactoryReset",
     "shutdownTerminal",
     "deleteClockings",
-    "setEthernetMAC"
+    "setEthernetMAC",
+    "send_emailLogs",
+    "marry_router",
+    "divorce_router"
 ]
 
 def display_off():
@@ -44,7 +53,6 @@ class Status_Flags_To_Check():
 
     def __init__(self):
         self.acknowledged = False
-        # self.tz = params.get("tz")
         self.action_for_boolean_flag = {
             "shouldGetFirmwareUpdate"   : self.shouldGetFirmwareUpdate,
             "shutdownTerminal"          : self.shutdownTerminal,
@@ -52,29 +60,21 @@ class Status_Flags_To_Check():
             "partialFactoryReset"       : self.partialFactoryReset,
             "fullFactoryReset"          : self.fullFactoryReset,
             "deleteClockings"           : self.deleteClockings,
-            "setEthernetMAC"            : self.setEthernetMAC
+            "setEthernetMAC"            : self.setEthernetMAC,
+            "deleteIPs"                 : self.deleteIPs,
+            "send_emailLogs"            : self.send_emailLogs,
+            "marry_router"              : self.marry_router,
+            "divorce_router"            : self.divorce_router,
         }
 
     def check_and_execute(self):
         self.check_if_registered_once_after_every_launch()
-        self.check_if_eth_mac_is_set()
         for boolean_flag in list_of_boolean_flags:
             if params.get(boolean_flag) == "1":
                 set_all_boolean_flags_to_false()
-                # display_off()
                 loggerINFO("-"*20 + boolean_flag + "#"*20)
                 self.action_for_boolean_flag[boolean_flag]()
                 time.sleep(2)
-    
-    def check_if_eth_mac_is_set(self):
-        if params.get("use_self_generated_eth0_MAC_address")=="1":
-            stored_mac_address = params.get("eth0_MAC_address")
-            if stored_mac_address is None:
-                stored_mac_address = get_self_generated_eth0_MAC_address()
-            loggerDEBUG(f"ethernet mac stored {stored_mac_address} - used {get_MAC_address('eth0')}")
-            if get_MAC_address("eth0") != stored_mac_address:
-                params.put("setEthernetMAC", "1")
-
 
     def check_if_registered_once_after_every_launch(self):
         if not self.acknowledged and params.get("odooPortOpen") == "1":
@@ -124,13 +124,17 @@ class Status_Flags_To_Check():
 
     def deleteClockings(self):
         loggerINFO("-----############### deleteClockings stored in the device (locally) ###############------")
+        file_path ="still not defined"
         try:
             for f in os.listdir(CLOCKINGS):
                 if isfile(join(CLOCKINGS, f)):
-                    os.remove(join(CLOCKINGS,f))
-        except:
-            pass
-        time.sleep(1)
+                    file_path = join(CLOCKINGS, f)
+                    delete_file(file_path)
+                    if exists(file_path):
+                        create_file(TO_BE_DELETED, f)
+            time.sleep(0.2)
+        except Exception as e:
+            loggerINFO(f"there was an Exception while trying to delete the clockings files: {e} - file_path was: {file_path}")
 
     def check_daily_reboot(self):
         current_time =  time.localtime()
@@ -146,8 +150,72 @@ class Status_Flags_To_Check():
                     self.rebootTerminal()
     
     def setEthernetMAC(self):
+        loggerINFO("-----############### set unique Ethernet MAC ###############------")
         use_self_generated_eth0_MAC_address()
+    
+    def deleteIPs(self):
+        loggerINFO("-----############### delete all IPs on wlan0 and etho ###############------")
+        os.system("sudo ip addr flush eth0")
+        os.system("sudo ip addr flush wlan0")
 
+    def send_emailLogs(self):
+        loggerINFO("-----############### send email Logs ###############------")
+        try:
+            email = params.get("emailLogs") or False
+            serial_number = factory_settings["productionNumber"] or "no s/n"
+            subject = f"RAS #{serial_number} - log of last registered cards"
+            if email:
+                send_email(email, subject, "Please find attached the last 500 registered cards. \n\n", LAST_REGISTERED)
+        except:
+            pass
+    
+    def marry_router(self):
+        loggerINFO("-----############### Associate current router permanently to the device ###############------")
+        network = get_network_info()
+        if network["eth0"]["ip_device"] and network["eth0"]["mac_router"] and network["eth0"]["ip_router"]:
+            content_eth0_conf = \
+                "allow-hotplug eth0"+"\n"+ \
+                "iface eth0 inet dhcp"+"\n"+ \
+                "    gateway "+ network["eth0"]["ip_router"]+"\n"+ \
+                "    hwaddress ether "+ network["eth0"]["mac_router"]+"\n"
+            write_to_file(filename=FILE_ETH0_CONF, content=content_eth0_conf)
+        if network["wlan0"]["ip_device"] and network["wlan0"]["mac_router"] and network["wlan0"]["ip_router"]:
+            ssid, psk = read_wifi_credentials()
+            if ssid and psk:
+                content_wpa_conf = \
+                    "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev"+"\n"+ \
+                    "update_config=1"+"\n"+ \
+                    "\n"+ \
+                    "network={ \n" + "    ssid=\""+ ssid + "\"\n"+ \
+                    "    psk=\""+ psk + "\"\n"+ \
+                    "    bssid="+ network["wlan0"]["mac_router"] + "\n"+ \
+                    "}\n"
+                write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)
+                content_wlan0_conf = \
+                    "auto wlan0"+"\n"+ \
+                    "iface wlan0 inet dhcp"+"\n"+ \
+                    "    gateway "+ network["wlan0"]["ip_router"]+"\n"
+                write_to_file(filename=FILE_WLAN0_CONF, content=content_wlan0_conf)
+        os.system("sudo service networking restart")
+        os.system("sudo ifconfig eth0 up")   
+
+    def divorce_router(self):
+        loggerINFO("-----############### Remove any association to a specific router ###############------")
+        delete_file(FILE_ETH0_CONF)
+        delete_file(FILE_WLAN0_CONF)
+        ssid, psk = read_wifi_credentials()
+        if ssid and psk:
+            content_wpa_conf = \
+                "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev"+"\n"+ \
+                "update_config=1"+"\n"+ \
+                "\n"+ \
+                "network={ \n" + "    ssid=\""+ ssid + "\"\n"+ \
+                "    psk=\""+ psk + "\"\n"+ \
+                "}\n"
+            write_to_file(filename=FILE_WPA_SUPP_CONF, content=content_wpa_conf)
+        os.system("sudo service networking restart")
+        os.system("sudo ifconfig eth0 up")
+        
 class Timezone_Checker():
 
     def __init__(self):

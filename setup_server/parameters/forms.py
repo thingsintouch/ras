@@ -70,6 +70,16 @@ class ParametersForm(FlaskForm):
         choices=[("0","No DEBUG messages are logged"), ("1","DEBUG Messages are logged")])
     option_show_debug = SubmitField('Set')
 
+    emailLogs = StringField('E-mail address to receive the last 400 registered cards')
+    option_emailLogs = SubmitField('E-mail address')
+
+    smtp_password = StringField('SMTP password')
+    option_smtp_password = SubmitField('SMTP password')
+
+    delete_clockings_not_recognized = SelectField(u'Delete not recognized clockings',
+        choices=[("0","Do not delete"), ("1","Delete not recognized clockings")])
+    option_delete_clockings_not_recognized = SubmitField('Set')
+
 
 class ParametersResult(FlaskForm):
     submit = SubmitField('OK')

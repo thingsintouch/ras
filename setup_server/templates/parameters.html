@@ -51,6 +51,15 @@
     {{ form.show_debug.label }} {{ form.show_debug() }} {{ form.option_show_debug() }}
     <br>
     <br>
+    {{ form.emailLogs.label }} {{ form.emailLogs() }} {{ form.option_emailLogs() }}
+    <br>
+    <br>
+    {{ form.smtp_password.label }} {{ form.smtp_password() }} {{ form.option_smtp_password() }}
+    <br>
+    <br>
+    {{ form.delete_clockings_not_recognized.label }} {{ form.delete_clockings_not_recognized() }} {{ form.option_delete_clockings_not_recognized() }}  
+    <br>
+    <br>
     <br>
     <a style="font-size:1.5vw;" class='btn btn-primary' href="{{ url_for('daily_reboot.daily_reboot_time') }}">Daily reboot</a>
     <br>
