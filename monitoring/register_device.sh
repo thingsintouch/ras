@@ -128,7 +128,8 @@ PAYLOAD_UPDATE_DEVICE=$(echo "$PAYLOAD_UPDATE_DEVICE" | tr -d '\n')
 RESPONSE=$(curl -s -X POST -H "$CONTENT_TYPE" -H "$SECRET_KEY" -d "$PAYLOAD_GET_DEVICE" "$URL")
 
 # Using jq to parse the JSON object and check the length of the device list
-# echo "$RESPONSE"
+echo "GET DEVICE RESPONSE"
+echo "$RESPONSE"
 
 DEVICE_IN_DB=$(echo "$RESPONSE" | jq '.data.device | length')
 
@@ -148,7 +149,7 @@ else
 fi
 
 # Printing the value of the boolean variable
-#echo "HAS_DEVICE=$HAS_DEVICE"
+echo "HAS_DEVICE=$HAS_DEVICE"
 
 # Navigate to the Git repository directory
 cd /home/pi/ras
@@ -173,8 +174,7 @@ echo "git_hash=$git_hash"
 echo "git_repository='$git_repository'"
 
 # Get the boot duration using systemd-analyze and convert it to milliseconds
-boot_duration_seconds=$(systemd-analyze | grep "Startup finished" | awk '{print $10}' | tr -d 's')
-boot_duration_milliseconds=$(bc <<< "scale=0; ($boot_duration_seconds*1000)/1")
+boot_time=$(systemd-analyze | grep "Startup finished" | awk '/=/{print $NF}')
 
 # Print the boot duration in milliseconds
-echo "Last boot took approximately $boot_duration_milliseconds milliseconds."
+echo "Last boot took approximately $boot_time"
