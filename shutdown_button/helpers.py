@@ -12,7 +12,7 @@ pin_power_for_shutdown_button = PIN_POWER_FOR_SHUTDOWN_BUTTON
 def setup_GPIO_shutdown_button():
     # Setup GPIO
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(pin_shutdown_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(pin_shutdown_button, GPIO.IN, pull_up_down=GPIO.PUD_OFF)
     GPIO.setup(pin_power_for_shutdown_button, GPIO.OUT)
     # Provide power to the switch
     GPIO.output(pin_power_for_shutdown_button, GPIO.HIGH)
