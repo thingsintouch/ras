@@ -10,7 +10,8 @@ def get_managed_essential_processes(template):
         "state_d": "state.manager",
         "buzzer_d": "buzzer.manager",
         "odoo_register_clockings_d": "odooRegisterClockings.manager",
-        "setup_server_d": "setup_server.server"
+        "setup_server_d": "setup_server.server",
+        "shutdown_button_d": "shutdown_button.manager"
     }
 
     if template == "thingsintouch.ras_simplified":
