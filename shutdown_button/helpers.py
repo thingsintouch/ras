@@ -19,6 +19,7 @@ def setup_GPIO_shutdown_button():
 
 def is_shutdown_button_pressed():
     input_state = GPIO.input(pin_shutdown_button)
+    print(input_state)
     if input_state == GPIO.LOW:
         print("Button Pressed")
         time.sleep(0.1)  # Add a small delay to debounce the button
