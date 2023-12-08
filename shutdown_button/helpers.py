@@ -2,8 +2,13 @@ import RPi.GPIO as GPIO
 import time
 from common.constants import (
     PIN_SHUTDOWN_BUTTON,
-    PIN_POWER_FOR_SHUTDOWN_BUTTON
+    PIN_POWER_FOR_SHUTDOWN_BUTTON,
+    PARAMS
 )
+from common.params import Params
+from common.logger import loggerINFO
+
+params = Params(db=PARAMS)
 
 # Define GPIO pins
 pin_shutdown_button = PIN_SHUTDOWN_BUTTON  
@@ -32,6 +37,5 @@ def cleanup_GPIO():
     GPIO.cleanup()
 
 def set_for_shutdown():
-    print("#"*100)
-    print("set for shutdown")
-    print("#"*100)
+    loggerINFO(f"shutdown Terminal FLAG set to 1 - device should shutdown shortly")
+    params.put("shutdownTerminal","1")
