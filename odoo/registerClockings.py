@@ -83,7 +83,7 @@ def registerClockings():
                     store_name_for_a_rfid_code(card_code, employee_name)
                     params.put("lastConnectionWithOdoo", time.strftime("%d-%b-%Y %H:%M", time.localtime()))
                     loggerDEBUG(f"full answer from Odoo {answer}")
-                    if answer.get("logged", False):
+                    if answer.get("logged", False) or answer.get("in_rfid_log", False):
                         message = clocking_info + f"{employee_name} logged in Odoo"
                         in_or_out = answer.get("action", "no action")
                         write_to_file(join(IN_OR_OUT,card_code),in_or_out + "\n")
