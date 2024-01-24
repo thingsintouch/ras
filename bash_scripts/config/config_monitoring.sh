@@ -1,2 +1,2 @@
-source ./define_variables.sh
-source ./home/pi/ras/bash_scripts/all_alive_boolean.sh
+source define_variables.sh
+source $SCRIPTS_DIR/tasks/all_alive_boolean.sh
