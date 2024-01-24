@@ -8,6 +8,7 @@ setup_aliases() {
     alias allalive='source $TASKS_DIR/all_alive_boolean.sh'
     alias stats='source $TASKS_DIR/stats.sh'
     alias fepu='source $TASKS_DIR/update_repo.sh'
+    alias conmo='source $SCRIPTS_DIR/config/config_monitoring.sh'
 }
 # Call the function to set up aliases
 setup_aliases
