@@ -1,22 +1,15 @@
 #!/bin/bash
 
-# Get the directory of the current script
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+RAS_DIR="/home/pi/ras"
+SCRIPTS_DIR="$RAS_DIR/bash_scripts"
+TASKS_DIR="$SCRIPTS_DIR/tasks"
+CONFIG_DIR="$SCRIPTS_DIR/config"
+export RAS_DIR SCRIPTS_DIR TASKS_DIR CONFIG_DIR
 
 # Load variables from .env file
-if [ -f "$CURRENT_DIR/.env" ]; then
-    source "$CURRENT_DIR/.env"
+if [ -f "$CONFIG_DIR/.env" ]; then
+    source "$CONFIG_DIR/.env"
 fi
-
-
-RAS_DIR="/home/pi/ras"
-export RAS_DIR
-
-SCRIPTS_DIR="$RAS_DIR/bash_scripts"
-export SCRIPTS_DIR
-
-TASKS_DIR="$SCRIPTS_DIR/tasks"
-export TASKS_DIR
 
 # Define the endpoint URL
 ENDPOINT_URL="$ENV__ENDPOINT_URL"
