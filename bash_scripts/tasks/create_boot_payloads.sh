@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 # Define the query JSON payload to see if the device exists in the database
 # Use a heredoc to define it
 read -r -d '' PAYLOAD_GET_DEVICE <<EOF
