@@ -10,6 +10,7 @@ setup_aliases() {
     alias fepu='source $TASKS_DIR/update_repo.sh'
     alias conmo='source $SCRIPTS_DIR/config/config_monitoring.sh'
     alias bootparams='source $TASKS_DIR/boot_params.sh'
+    alias create_boot_payloads='source $TASKS_DIR/create_boot_payloads.sh'
 }
 # Call the function to set up aliases
 setup_aliases

@@ -8,3 +8,5 @@ source "$CURRENT_DIR/setup_aliases.sh"
 
 # get the boot parameters into environment variables
 bootparams
+#create the payloads needed to send the boot params to db
+create_boot_payloads

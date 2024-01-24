@@ -9,6 +9,8 @@ export RAS_DIR SCRIPTS_DIR TASKS_DIR CONFIG_DIR
 # Load variables from .env file
 if [ -f "$CONFIG_DIR/.env" ]; then
     source "$CONFIG_DIR/.env"
+else
+    source "$CONFIG_DIR/.env.example"
 fi
 
 # Define the endpoint URL
