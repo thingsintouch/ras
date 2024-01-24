@@ -32,10 +32,10 @@ echo "used RAM:       $USED_RAM_MB MB"
 echo "max RAM:        $MAX_RAM_MB MB"
 echo "used RAM:       $USED_RAM_PERCENT%"
 
-export $CPU_LOAD_1MIN_PERCENT
-export $CPU_LOAD_5MIN_PERCENT
-export $TEMP_C
-export $TIMESTAMP
-export $USED_RAM_MB
-export $MAX_RAM_MB
-export $USED_RAM_PERCENT
+export CPU_LOAD_1MIN_PERCENT
+export CPU_LOAD_5MIN_PERCENT
+export TEMP_C
+export TIMESTAMP
+export USED_RAM_MB
+export MAX_RAM_MB
+export USED_RAM_PERCENT
