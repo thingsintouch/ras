@@ -11,6 +11,7 @@ setup_aliases() {
     alias conmo='source $SCRIPTS_DIR/config/config_monitoring.sh'
     alias bootparams='source $TASKS_DIR/boot_params.sh'
     alias create_boot_payloads='source $TASKS_DIR/create_boot_payloads.sh'
+    alias post_get_device='source $TASKS_DIR/post_get_device.sh'
 }
 # Call the function to set up aliases
 setup_aliases
