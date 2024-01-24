@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Define a function that performs the desired action
+
 setup_aliases() {
-    alias startras='bash /home/pi/ras/bash_scripts/startras.sh'
-    alias stopras='bash /home/pi/ras/bash_scripts/stopras.sh'
-    alias allalive='source $SCRIPTS_DIR/tasks/all_alive_boolean.sh'
+    alias startras='bash $TASKS_DIR/startras.sh'
+    alias stopras='bash $TASKS_DIR/stopras.sh'
+    alias allalive='source $TASKS_DIR/all_alive_boolean.sh'
 }
 # Call the function to set up aliases
 setup_aliases
