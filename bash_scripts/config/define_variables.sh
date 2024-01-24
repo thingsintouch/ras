@@ -1,8 +1,11 @@
 #!/bin/bash
 
+# Get the directory of the current script
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Load variables from .env file
-if [ -f "$(dirname "$0")/.env" ]; then
-    source "$(dirname "$0")/.env"
+if [ -f "$CURRENT_DIR/.env" ]; then
+    source "$CURRENT_DIR/.env"
 fi
 
 
