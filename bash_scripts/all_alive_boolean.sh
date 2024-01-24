@@ -17,17 +17,18 @@ for key in "${!bool_vars[@]}"; do
   fi
 done
 
-# Initialize the all_alive variable to true
-all_alive=true
+# Initialize the ALL_ALIVE variable to true
+ALL_ALIVE=true
 
 # Loop through the values of the boolean variables
 for value in "${bool_vars[@]}"; do
   # Check if any value is false
   if [ "$value" = false ]; then
-    all_alive=false
+    ALL_ALIVE=false
     break  # No need to continue checking if one is false
   fi
 done
 
-# Print the value of all_alive
-echo "$all_alive"
+# Print the value of ALL_ALIVE
+export ALL_ALIVE
+echo "$ALL_ALIVE"
