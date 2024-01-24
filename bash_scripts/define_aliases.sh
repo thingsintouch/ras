@@ -1,19 +1,14 @@
 #!/bin/bash
 
-# Function to check if alias is defined
-alias_is_defined() {
-    alias "$1" &>/dev/null
+# Define a function that performs the desired action
+setup_aliases() {
+    alias startras='bash /home/pi/ras/bash_scripts/startras.sh'
+    alias stopras='bash /home/pi/ras/bash_scripts/stopras.sh'
 }
 
-# Check if 'startras' alias is defined
-if ! alias_is_defined 'startras'; then
-    echo "alias startras='bash /home/pi/ras/bash_scripts/startras.sh'" >> ~/.bashrc
-fi
+# Call the function to set up aliases
+setup_aliases
 
-# Check if 'stopras' alias is defined
-if ! alias_is_defined 'stopras'; then
-    echo "alias startras='bash /home/pi/ras/bash_scripts/startras.sh'" >> ~/.bashrc
-fi
-
-source ~/.bashrc
+# Rest of your script
+echo "Aliases defined..."
 
