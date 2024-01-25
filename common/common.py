@@ -536,7 +536,7 @@ def store_permanently_eth0_ḾAC_address(eth0_MAC_address):
         with open(file_name, "w") as file:
             for line in lines_to_write:
                 file.write(line + "\n")
-        loggerINFO(f"successfully stored permanently_eth0_ḾAC_address {eth0_MAC_address}")    
+        loggerINFO(f"successfully stored permanently_eth0_MAC_address {eth0_MAC_address}")    
     except Exception as e:
         loggerINFO(f"store_permanently_eth0_ḾAC_address {eth0_MAC_address} - Exception: {e}")    
 
